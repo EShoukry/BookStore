@@ -1,0 +1,461 @@
+<?php
+ob_start();
+session_start();
+if (isset($_SESSION['user']) != "") {
+    header("Location: home.php");
+}
+$database = include('config.php');
+
+function phpAlert($msg) {
+    echo '<script type="text/javascript">alert("' . $msg . '")</script>';
+}
+
+// Create connection
+$mysqli = new mysqli($database['host'], $database['user'], $database['pass'], $database['name']);
+
+// Check connection
+if (mysqli_connect_error()) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+$error = false;
+
+if (isset($_POST['regbtn'])) {
+
+    // clean user inputs to prevent sql injections
+    $username = trim($_POST['username']);
+    $username = strip_tags($username);
+    $username = htmlspecialchars($username);
+
+    $firstname = trim($_POST['firstname']);
+    $firstname = strip_tags($firstname);
+    $firstname = htmlspecialchars($firstname);
+
+    $lastname = trim($_POST['lastname']);
+    $lastname = strip_tags($lastname);
+    $lastname = htmlspecialchars($lastname);
+
+    $nickname = trim($_POST['nickname']);
+    $nickname = strip_tags($nickname);
+    $nickname = htmlspecialchars($nickname);
+
+    $email = trim($_POST['email']);
+    $email = strip_tags($email);
+    $email = htmlspecialchars($email);
+
+    $password = trim($_POST['password']);
+    $password = strip_tags($password);
+    $password = htmlspecialchars($password);
+
+    $confpassword = trim($_POST['confpassword']);
+    $confpassword = strip_tags($confpassword);
+    $confpassword = htmlspecialchars($confpassword);
+
+    $address = trim($_POST['address1']);
+    $address = strip_tags($address);
+    $address = htmlspecialchars($address);
+
+    $city = trim($_POST['city']);
+    $city = strip_tags($city);
+    $city = htmlspecialchars($city);
+
+    $state = trim($_POST['state']);
+    $state = strip_tags($state);
+    $state = htmlspecialchars($state);
+
+    $zipcode = trim($_POST['zipcode']);
+    $zipcode = strip_tags($zipcode);
+    $zipcode = htmlspecialchars($zipcode);
+
+    // basic username validation
+    if (empty($username)) {
+        $error = true;
+        $usernameError = "Please enter your desired Username.";
+    } else if (strlen($username) < 3) {
+        $error = true;
+        $usernameError = "Username must have atleat 3 characters.";
+    } else if (!ctype_alnum($username)) {
+        $error = true;
+        $usernameError = "Username must contain alphabets and/or Numbers.";
+    } else {
+        // check username exist or not
+        $query = "SELECT u_login_id FROM users WHERE u_login_id='$username'";
+        $result = (mysqli_query($mysqli, $query));
+        $count = mysqli_num_rows($result);
+        if ($count != 0) {
+            $error = true;
+            $usernameError = "Provided Username is already in use.";
+        }
+    }
+//
+    if (empty($firstname)) {
+        $error = true;
+        $firstnameError = "Please enter your first name.";
+    } else if (strlen($firstname) < 3) {
+        $error = true;
+        $firstnameError = "First name must have atleat 3 characters.";
+    } else if (!ctype_alpha($firstname)) {
+        $error = true;
+        $firstnameError = "First name must contain alphabets.";
+    }
+
+    if (empty($lastname)) {
+        $error = true;
+        $lastnameError = "Please enter your last name.";
+    } else if (strlen($lastname) < 3) {
+        $error = true;
+        $lastnameError = "Last name must have atleat 3 characters.";
+    } else if (!ctype_alpha($lastname)) {
+        $error = true;
+        $firstnameError = "Last name must contain alphabets.";
+    }
+
+    if (empty($nickname)) {
+        $error = true;
+        $nicknameError = "Please enter your Nick name.";
+    } else if (strlen($nickname) < 3) {
+        $error = true;
+        $nicknameError = "Nick name must have atleat 3 characters.";
+    } else if (!ctype_alnum($nickname)) {
+        $error = true;
+        $nicknameError = "Nick name must contain alphabets and/or Numbers.";
+    }
+
+//    //basic email validation
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $error = true;
+        $emailError = "Please enter valid email address.";
+    } else {
+        // check email exist or not
+        $query = "SELECT u_email FROM users WHERE u_email='$email'";
+        $result = (mysqli_query($mysqli, $query));
+        $count = mysqli_num_rows($result);
+        if ($count != 0) {
+            $error = true;
+            $emailError = "Provided Email is already in use.";
+        }
+    }
+
+
+    if (empty($address)) {
+        $error = true;
+        $addressError = "Please enter your address.";
+    } else if (strlen($address) < 3) {
+        $error = true;
+        $addressError = "Address must have atleat 3 characters.";
+    }
+
+    if (empty($city)) {
+        $error = true;
+        $cityError = "Please enter your City.";
+    } else if (strlen($city) < 3) {
+        $error = true;
+        $cityError = "City must have atleat 3 characters.";
+    } else if (!ctype_alpha($city)) {
+        $error = true;
+        $cityError = "City must contain alphabets.";
+    }
+
+    if (empty($state)) {
+        $error = true;
+        $stateError = "Please enter your State.";
+    } else if (strlen($state) != 2) {
+        $error = true;
+        $stateError = "State must have 2 characters.";
+    } else if (!ctype_alpha($state)) {
+        $error = true;
+        $stateError = "State must contain Capitals only.";
+    }
+    $state = strtoupper($state);
+
+    if (empty($zipcode)) {
+        $error = true;
+        $zipError = "Please enter your Zip Code.";
+    } else if (strlen($zipcode) != 5) {
+        $error = true;
+        $zipError = "Zip Code must have 5 Numbers.";
+    } else if (!is_numeric($zipcode)) {
+        $error = true;
+        $zipError = "Zip Code must contain numbers only.";
+    }
+    //concatenate address city state zip
+
+    $address = $address . " " . $city . ", " . $state . " " . $zipcode;
+
+
+
+    // password validation
+    if (empty($password)) {
+        $error = true;
+        $passwordError = "Please enter password.";
+    } else if (strlen($password) < 6) {
+        $error = true;
+        $passwordError = "Password must have atleast 6 characters.";
+    } else if ($password != $confpassword) {
+        $error = true;
+        $passwordError = "Passwords do not match.";
+    }
+
+    // password encrypt using SHA256();
+    $password = md5($password);
+
+    // if there's no error, continue to signup
+    if (!$error) {
+
+        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_address,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$address','$nickname','$lastname')";
+        $res = mysqli_query($mysqli, $query);
+
+        if ($res) {
+            $errTyp = "success";
+            $errMSG = "Successfully registered! You may login now";
+            unset($firstname);
+            unset($lastname);
+            unset($username);
+            unset($nickname);
+            unset($address);
+            unset($email);
+            unset($password);
+            unset($city);
+            unset($state);
+            unset($zipcode);
+        } else {
+            $errTyp = "danger";
+            $errMSG = "Something went wrong, try again later...";
+        }
+    }
+}
+?>
+
+
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">    
+        <title>Register </title>
+        <meta http-equiv="content-type" content="text/plain">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+
+        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    </head>
+    <body>
+        <?php
+        require "header.php";
+        ?>
+        <div id=main_image>
+            <img src="images/index.jpeg" alt="Team 7 book store" >
+        </div>  
+
+
+        <div id="login-form">
+            <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+                <div class="form-group">
+                    <div class=section_title>
+                        <h1>Register A New Account</h1>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <hr />
+                </div>
+                <?php
+                if (isset($errMSG)) {
+                    phpAlert($errMSG);
+                }
+                ?>
+
+
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Username</b></label>
+                        <input type="text" placeholder="User Name" name="username" class="form-control" maxlength="50" value="<?php
+                        if (isset($username)) {
+                            echo $username;
+                        }
+                        ?>"  />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($usernameError)) {
+                            echo $usernameError;
+                        }
+                        ?></span>
+                </div>
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>First Name</b></label>
+                        <input type="text" placeholder="First Name" name="firstname" class="form-control" maxlength="50" value="<?php
+                        if (isset($firstname)) {
+                            echo $firstname;
+                        }
+                        ?>"  />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($firstnameError)) {
+                            echo $firstnameError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Last Name</b></label>
+                        <input type="text" placeholder="Last Name" name="lastname" class="form-control" maxlength="50" value="<?php
+                        if (isset($lastname)) {
+                            echo $lastname;
+                        }
+                        ?>"  />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($lastnameError)) {
+                            echo $lastnameError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Nick Name</b></label>
+                        <input type="text" placeholder="Nick Name" name="nickname" class="form-control" maxlength="50" value="<?php
+                        if (isset($nickname)) {
+                            echo $nickname;
+                        }
+                        ?>"  />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($nicknameError)) {
+                            echo $nicknameError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Email</b></label>
+                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+                        if (isset($email)) {
+                            echo $email;
+                        }
+                        ?>"  />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($emailError)) {
+                            echo $emailError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Password</b></label>
+                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($passwordError)) {
+                            echo $passwordError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Confirm Password</b></label>
+                        <input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Permanent Address</b></label>
+                        <input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
+                    </div>
+                    <span class="text-danger"><?php
+                        if (isset($addressError)) {
+                            echo $addressError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>City</b></label>
+                        <input type="text" placeholder="City" name="city" class="form-control" maxlength="50" value="<?php
+                        if (isset($city)) {
+                            echo $city;
+                        }
+                        ?>" />
+                    </div> 
+                    <span class="text-danger"><?php
+                        if (isset($cityError)) {
+                            echo $cityError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>State</b></label>
+                        <input type="text" placeholder="State" name="state" class="form-control" value="<?php
+                        if (isset($state)) {
+                            echo $state;
+                        }
+                        ?>" />
+                    </div> 
+                    <span class="text-danger"><?php
+                        if (isset($stateError)) {
+                            echo $stateError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <div class="input-group">
+                        <label><b>Zip Code</b></label>
+                        <input type="text" placeholder="Zip Code" name="zipcode" class="form-control" value="<?php
+                        if (isset($zipcode)) {
+                            echo $zipcode;
+                        }
+                        ?>" />
+                    </div> 
+                    <span class="text-danger"><?php
+                        if (isset($zipError)) {
+                            echo $zipError;
+                        }
+                        ?></span>
+                </div>
+
+                <div class="form-group">
+                    <hr />
+                </div>
+
+                <button type="submit" name="regbtn" class="btn btn-success btn-block"/>Register</button>
+                <button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
+
+
+                <div class="form-group">
+                    <hr />
+                </div>
+
+            </form>
+        </div>
+
+
+
+        <div id="end_body"></div>  
+    </body>
+
+
+    <?php
+    require "footer.php";
+    echo "</html>";
+    mysqli_close($mysqli);
+    ob_end_flush();
+    ?>
+
