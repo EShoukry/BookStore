@@ -5,8 +5,8 @@
                  <ul>
                      <li><a href="index.php">Home</a></li>
                      <li><a href="categories.php">Categories</a></li>
-                     <li>Best Sellers</li>
-                     <li>New Releases</li>
+                     <li><a href="bestseller.php">Best Sellers</a></li>
+                     <li><a href="newreleases.php">New Releases</a></li>
                  </ul>
              </nav> 
          </div>
