@@ -1,5 +1,5 @@
 <?php
-             $servername = "db720121368.db.1and1.com";
+            $servername = "db720121368.db.1and1.com";
             $username = "dbo720121368";
             $password = "TeamSeven7@";
             $dbname = "db720121368"; 
@@ -7,7 +7,7 @@
             /*$servername = "localhost";
             $username = "root";
             $password = "";
-            $dbname = "bookstore"; */
+            $dbname = "bookstore";*/ 
 
             // Create connection
             $mysqli = new mysqli($servername, $username, $password, $dbname);
