@@ -2,18 +2,9 @@
 ob_start();
 session_start();
 
-$servername = "db720121368.db.1and1.com";
-$username = "dbo720121368";
-$password = "TeamSeven7@";
-$dbname = "db720121368";
-
-//$servername = "localhost";
-//$username = "root";
-//$password = "";
-//$dbname = "bookstore";
-
 // Create connection
-$mysqli = new mysqli($servername, $username, $password, $dbname);
+$dbConfig = include('config.php');
+$mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
 
 // Check connection
 if (mysqli_connect_error()) {
