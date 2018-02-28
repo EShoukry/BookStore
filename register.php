@@ -257,6 +257,7 @@ if (isset($_POST['regbtn'])) {
 		
 			<div id="login-form">
 				<form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+					<div class="col-lg-12">
 					<div class="form-group">
 						<div class=section_title>
 							<h1>Register A New Account</h1>
@@ -266,11 +267,22 @@ if (isset($_POST['regbtn'])) {
 					<div class="form-group">
 						<hr />
 					</div>
+					
 					<?php
-					if (isset($errMSG)) {
-						phpAlert($errMSG);
-					}
-					?>
+						if ( isset($errMSG) ) {
+				
+							?>
+
+							<div class="form-group">
+						
+            				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+						
+            				</div>
+							</div>
+							<?php
+						}
+						?>
 
 
 
@@ -439,14 +451,23 @@ if (isset($_POST['regbtn'])) {
 						<hr />
 					</div>
 
+					<div class="form-group">
+					<div class="input-group">
 					<button type="submit" name="regbtn" class="btn btn-success btn-block"/>Register</button>
 					<button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
-
-
+					</div>
+					</div>
+					<div class="form-group">
+					<hr />
+					
+					<div class="input-group">
+					<a href="login.php" class="btn btn-primary btn-block"/>Already Registered? Sign In Now</a>
+					</div>
+					</div>
 					<div class="form-group">
 						<hr />
 					</div>
-
+					</div>
 				</form>
 			</div>
 		</div>

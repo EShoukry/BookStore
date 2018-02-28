@@ -61,9 +61,9 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 			<ul class="nav navbar-nav navbar-right">
 					<li class="nav-item dropdown nohover">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span class="glyphicon glyphicon-user"></span>&nbsp;Hi <?php echo $userRow['u_login_id']; ?>&nbsp;<span class="caret"></span>
+							<span class="glyphicon glyphicon-th-list"></span>&nbsp;Hi <?php echo $userRow['u_login_id']; ?>&nbsp;<span class="caret"></span>
 						</a>
-						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
+						<div class="dropdown-menu dropdown-menu-right " aria-labelledby="navbarDropdownMenuLink" >
 
 						<!-- Placeholder for edit info and credit cards-->
 							<a class="dropdown-item" href="home.php">
@@ -77,11 +77,11 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							</a><br>
 							<a class="dropdown-item" href="#">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
-							</a><br>
+							</a>
 							
 							<!--Leave sign out for last option. -->
-
-							<a class="dropdown-item" href="logout.php?logout">
+							<hr />
+							<a class="nav-item dropdown-item" href="logout.php?logout">
 								<span class="glyphicon glyphicon-log-out"></span>&nbsp;Sign Out
 							</a><br>
 						</div>

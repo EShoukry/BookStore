@@ -144,9 +144,9 @@ if (isset($_POST['savebtn'])) {
 		$changes = true;
 		$emflag = true;
 	}
-	$sqlerr = false;
+	$res = false;
 	$update = "";
-	//if no errors update records. else phpAlert error
+	//if no errors update records.
 	if(!$error && $changes){
 		if($emflag){
 			$update = $update . "u_email = '". $email . "', ";
@@ -165,11 +165,11 @@ if (isset($_POST['savebtn'])) {
 		$update = substr($update,0,$len) . " WHERE user_id_number = " . $userRow['user_id_number'];
 		}
 		$query = "UPDATE users SET " . $update;
-		$sqlerr = !mysqli_query($mysqli, $query);
+		$res = mysqli_query($mysqli, $query);
 
-		if($sqlerr){
-			phpAlert("Something went wrong!");
-		} else{
+		if($res){
+			$errTyp = "success";
+            $errMSG = "Successfully Saved! Review Saved Information Below";
 			unset($firstname);
             unset($lastname);
             unset($username);
@@ -178,7 +178,14 @@ if (isset($_POST['savebtn'])) {
 			$query = "SELECT * FROM users WHERE user_id_number =" . $_SESSION['user'];
 			$res = mysqli_query($mysqli, $query);
 			$userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+		} else{
+			$errTyp = "danger";
+            $errMSG = "Something went wrong, try again later...";
+			
         }
+	} else if($error){
+		$errTyp= "danger";
+		$errMSG = "Fix Mistakes Below and Resubmit...";
 	}
 }
 
@@ -227,21 +234,21 @@ if (isset($_POST['savebtn'])) {
 							<a class="dropdown-item" href="home.php">
 								<span class="glyphicon glyphicon-user"></span>&nbsp;View Profile
 							</a><br>
-							<a class="dropdown-item" href="edituser.php">
+							<a class="dropdown-item " href="edituser.php">
 								<span class="glyphicon glyphicon-edit"></span>&nbsp;Edit Profile
 							</a><br>
 							<a class="dropdown-item" href="#">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Add/Edit Payment Methods
 							</a><br>
-							<a class="dropdown-item" href="#">
+							<a class="dropdown-item " href="#">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
-							</a><br>
-							
+							</a>
+							<hr />
 							<!--Leave sign out for last option. -->
-
-							<a class="dropdown-item" href="logout.php?logout">
+							<a class="dropdown-item " href="logout.php?logout">
 								<span class="glyphicon glyphicon-log-out"></span>&nbsp;Sign Out
 							</a><br>
+							
 						</div>
 					</li>
 				</ul>
@@ -256,7 +263,20 @@ if (isset($_POST['savebtn'])) {
     	<div class="page-header">
     	<div class=section_title><h3>Edit User Information</h3></div>
     	</div>
-        
+        <?php
+			if ( isset($errMSG) ) {
+				
+		?>
+			<div class="form-group">
+			
+           	<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+			<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+			
+           	</div>
+			</div>
+		<?php
+			}
+		?>
         <div class="row">
         <div class="col-lg-12">
         <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">

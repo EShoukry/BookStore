@@ -105,7 +105,7 @@ if (isset($_POST['login'])) {
 
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
-				<div class="col-md-12">
+				<div class="col-lg-12">
                 <div class="form-group"><div class=section_title>
                         <h1>Login to Your Account</h1>
                     </div>
@@ -147,19 +147,23 @@ if (isset($_POST['login'])) {
                 <div class="form-group">
                     <hr />
                 </div>
+
+				<div class="form-group">
+				<div class="input-group">
                 <button type="submit" name="login" class="btn btn-primary btn-block">Login</button>
                 <button type="reset"  name="clear" class="btn btn-warning btn-block">Clear</button>
+				</div>
+				</div>
+				<div class="form-group">
+				<hr />
+				<div class="input-group">
+				<a href="register.php" class="btn btn-success btn-block"/>Don't Have an Account? Sign Up Now</a>
+				</div>
+				</div>
 
-
-                <div class="form-group">
-                    <hr />
-                </div>
-
-                <div class="form-group">
-                    <a href="register.php">Sign Up Here...</a>
-                </div>
-
-
+				<div class="form-group">
+					<hr />
+				</div>
 			</div>
 
             </form>
