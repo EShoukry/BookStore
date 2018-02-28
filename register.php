@@ -249,203 +249,204 @@ if (isset($_POST['regbtn'])) {
         <?php
         require "header.php";
         ?>
+		<div class="hd_container" >
         <div id=main_image>
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
+		
+		
+			<div id="login-form">
+				<form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+					<div class="form-group">
+						<div class=section_title>
+							<h1>Register A New Account</h1>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<hr />
+					</div>
+					<?php
+					if (isset($errMSG)) {
+						phpAlert($errMSG);
+					}
+					?>
 
 
-        <div id="login-form">
-            <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
-                <div class="form-group">
-                    <div class=section_title>
-                        <h1>Register A New Account</h1>
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <hr />
-                </div>
-                <?php
-                if (isset($errMSG)) {
-                    phpAlert($errMSG);
-                }
-                ?>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Username</b></label>
+							<input type="text" placeholder="User Name" name="username" class="form-control" maxlength="50" value="<?php
+							if (isset($username)) {
+								echo $username;
+							}
+							?>"  />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($usernameError)) {
+								echo $usernameError;
+							}
+							?></span>
+					</div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>First Name</b></label>
+							<input type="text" placeholder="First Name" name="firstname" class="form-control" maxlength="50" value="<?php
+							if (isset($firstname)) {
+								echo $firstname;
+							}
+							?>"  />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($firstnameError)) {
+								echo $firstnameError;
+							}
+							?></span>
+					</div>
 
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Last Name</b></label>
+							<input type="text" placeholder="Last Name" name="lastname" class="form-control" maxlength="50" value="<?php
+							if (isset($lastname)) {
+								echo $lastname;
+							}
+							?>"  />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($lastnameError)) {
+								echo $lastnameError;
+							}
+							?></span>
+					</div>
 
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Nick Name</b></label>
+							<input type="text" placeholder="Nick Name" name="nickname" class="form-control" maxlength="50" value="<?php
+							if (isset($nickname)) {
+								echo $nickname;
+							}
+							?>"  />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($nicknameError)) {
+								echo $nicknameError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Username</b></label>
-                        <input type="text" placeholder="User Name" name="username" class="form-control" maxlength="50" value="<?php
-                        if (isset($username)) {
-                            echo $username;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($usernameError)) {
-                            echo $usernameError;
-                        }
-                        ?></span>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>First Name</b></label>
-                        <input type="text" placeholder="First Name" name="firstname" class="form-control" maxlength="50" value="<?php
-                        if (isset($firstname)) {
-                            echo $firstname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($firstnameError)) {
-                            echo $firstnameError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Email</b></label>
+							<input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+							if (isset($email)) {
+								echo $email;
+							}
+							?>"  />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($emailError)) {
+								echo $emailError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Last Name</b></label>
-                        <input type="text" placeholder="Last Name" name="lastname" class="form-control" maxlength="50" value="<?php
-                        if (isset($lastname)) {
-                            echo $lastname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($lastnameError)) {
-                            echo $lastnameError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Password</b></label>
+							<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($passwordError)) {
+								echo $passwordError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Nick Name</b></label>
-                        <input type="text" placeholder="Nick Name" name="nickname" class="form-control" maxlength="50" value="<?php
-                        if (isset($nickname)) {
-                            echo $nickname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($nicknameError)) {
-                            echo $nicknameError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Confirm Password</b></label>
+							<input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
+						</div>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Email</b></label>
-                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
-                        if (isset($email)) {
-                            echo $email;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($emailError)) {
-                            echo $emailError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Permanent Address</b></label>
+							<input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
+						</div>
+						<span class="text-danger"><?php
+							if (isset($addressError)) {
+								echo $addressError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Password</b></label>
-                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($passwordError)) {
-                            echo $passwordError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>City</b></label>
+							<input type="text" placeholder="City" name="city" class="form-control" maxlength="50" value="<?php
+							if (isset($city)) {
+								echo $city;
+							}
+							?>" />
+						</div> 
+						<span class="text-danger"><?php
+							if (isset($cityError)) {
+								echo $cityError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Confirm Password</b></label>
-                        <input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
-                    </div>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>State</b></label>
+							<input type="text" placeholder="State" name="state" class="form-control" value="<?php
+							if (isset($state)) {
+								echo $state;
+							}
+							?>" />
+						</div> 
+						<span class="text-danger"><?php
+							if (isset($stateError)) {
+								echo $stateError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Permanent Address</b></label>
-                        <input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($addressError)) {
-                            echo $addressError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Zip Code</b></label>
+							<input type="text" placeholder="Zip Code" name="zipcode" class="form-control" value="<?php
+							if (isset($zipcode)) {
+								echo $zipcode;
+							}
+							?>" />
+						</div> 
+						<span class="text-danger"><?php
+							if (isset($zipError)) {
+								echo $zipError;
+							}
+							?></span>
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>City</b></label>
-                        <input type="text" placeholder="City" name="city" class="form-control" maxlength="50" value="<?php
-                        if (isset($city)) {
-                            echo $city;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($cityError)) {
-                            echo $cityError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<hr />
+					</div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>State</b></label>
-                        <input type="text" placeholder="State" name="state" class="form-control" value="<?php
-                        if (isset($state)) {
-                            echo $state;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($stateError)) {
-                            echo $stateError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Zip Code</b></label>
-                        <input type="text" placeholder="Zip Code" name="zipcode" class="form-control" value="<?php
-                        if (isset($zipcode)) {
-                            echo $zipcode;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($zipError)) {
-                            echo $zipError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <hr />
-                </div>
-
-                <button type="submit" name="regbtn" class="btn btn-success btn-block"/>Register</button>
-                <button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
+					<button type="submit" name="regbtn" class="btn btn-success btn-block"/>Register</button>
+					<button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
 
 
-                <div class="form-group">
-                    <hr />
-                </div>
+					<div class="form-group">
+						<hr />
+					</div>
 
-            </form>
-        </div>
-
+				</form>
+			</div>
+		</div>
 
 
         <div id="end_body"></div>  

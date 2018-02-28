@@ -95,6 +95,7 @@ if (isset($_POST['login'])) {
         <?php
         require "header.php";
         ?>
+		<div class="hd_container" >
         <div id=main_image>
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
@@ -104,7 +105,7 @@ if (isset($_POST['login'])) {
 
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
-
+				<div class="col-md-12">
                 <div class="form-group"><div class=section_title>
                         <h1>Login to Your Account</h1>
                     </div>
@@ -159,11 +160,12 @@ if (isset($_POST['login'])) {
                 </div>
 
 
-
+			</div>
 
             </form>
 
         </div>  
+		</div>
 
         <div id="end_body"></div>  
     </body>
