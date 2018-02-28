@@ -51,9 +51,14 @@ if (isset($_POST['regbtn'])) {
     $confpassword = strip_tags($confpassword);
     $confpassword = htmlspecialchars($confpassword);
 
+	
     $address = trim($_POST['address1']);
     $address = strip_tags($address);
     $address = htmlspecialchars($address);
+
+	$address2 = trim($_POST['address2']);
+    $address2 = strip_tags($address2);
+    $address2 = htmlspecialchars($address2);
 
     $city = trim($_POST['city']);
     $city = strip_tags($city);
@@ -66,6 +71,11 @@ if (isset($_POST['regbtn'])) {
     $zipcode = trim($_POST['zipcode']);
     $zipcode = strip_tags($zipcode);
     $zipcode = htmlspecialchars($zipcode);
+
+    $country = trim($_POST['country']);
+    $country = strip_tags($country);
+    $country = htmlspecialchars($country);
+	
 
     // basic username validation
     if (empty($username)) {
@@ -87,7 +97,7 @@ if (isset($_POST['regbtn'])) {
             $usernameError = "Provided Username is already in use.";
         }
     }
-//
+
     if (empty($firstname)) {
         $error = true;
         $firstnameError = "Please enter your first name.";
@@ -136,13 +146,19 @@ if (isset($_POST['regbtn'])) {
         }
     }
 
-
+	
     if (empty($address)) {
         $error = true;
-        $addressError = "Please enter your address.";
+        $addressError = "Please enter your Street Address, P.O. Box, Company Name, C/O.";
     } else if (strlen($address) < 3) {
         $error = true;
         $addressError = "Address must have atleat 3 characters.";
+    }
+
+
+	if (strlen($address2)>0 && strlen($address2) < 3) {
+        $error = true;
+        $address2Error = "Apt, Suite, Unit, Floor, etc. must have atleat 3 characters.";
     }
 
     if (empty($city)) {
@@ -158,30 +174,32 @@ if (isset($_POST['regbtn'])) {
 
     if (empty($state)) {
         $error = true;
-        $stateError = "Please enter your State.";
-    } else if (strlen($state) != 2) {
+        $stateError = "Please enter your State/Province/Region.";
+    } else if (!ctype_alnum($state)) {
         $error = true;
-        $stateError = "State must have 2 characters.";
-    } else if (!ctype_alpha($state)) {
-        $error = true;
-        $stateError = "State must contain Capitals only.";
+        $stateError = "State/Province/Region must contain Alphanumericals only.";
     }
     $state = strtoupper($state);
 
     if (empty($zipcode)) {
         $error = true;
-        $zipError = "Please enter your Zip Code.";
-    } else if (strlen($zipcode) != 5) {
+        $zipError = "Please enter your Zip/Postal Code.";
+    } else if (strlen($zipcode) > 15) {
         $error = true;
-        $zipError = "Zip Code must have 5 Numbers.";
-    } else if (!is_numeric($zipcode)) {
+        $zipError = "Zip/Postal Code must be less than 15 Alphanumericals.";
+    } else if (!ctype_alnum($zipcode)) {
         $error = true;
-        $zipError = "Zip Code must contain numbers only.";
+        $zipError = "Zip/Postal Code must contain Alphanumericals only.";
     }
-    //concatenate address city state zip
 
-    $address = $address . " " . $city . ", " . $state . " " . $zipcode;
-
+	if (empty($country)) {
+        $error = true;
+        $countryError = "Please enter your Country.";
+    } else if (strlen($country) > 50) {
+        $error = true;
+        $countryError = "Country must be less than 15 Alphanumericals.";
+    } 
+	
 
 
     // password validation
@@ -202,22 +220,65 @@ if (isset($_POST['regbtn'])) {
     // if there's no error, continue to signup
     if (!$error) {
 
-        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_address,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$address','$nickname','$lastname')";
+        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$nickname','$lastname')";
         $res = mysqli_query($mysqli, $query);
 
         if ($res) {
             $errTyp = "success";
-            $errMSG = "Successfully registered! You may login now";
-            unset($firstname);
-            unset($lastname);
+			$errMSG = "Registered Successfully!" . "\n";
+
             unset($username);
             unset($nickname);
-            unset($address);
-            unset($email);
+
+			$query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+			$res = mysqli_query($mysqli, $query);
+			$row = mysqli_fetch_array($res, MYSQLI_BOTH);
+			$count = mysqli_num_rows($res);
+			
+
+			unset($email);
             unset($password);
-            unset($city);
-            unset($state);
-            unset($zipcode);
+
+			//set session after registering
+			if ($count == 1) {
+				$_SESSION['user'] = $row['user_id_number'];
+				$errMSG = $errMSG . "Login Successful! User ID: " . $_SESSION['user'] . "\n";
+
+			} else {
+				$error = true;
+				$errTyp = "danger";
+				$errMSG = $errMSG . "Error In Login, Try again...";
+			}
+
+			//add address information as primary(only) address upon session set.
+			if(!$error){
+				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
+								VALUES('" . $_SESSION['user'] . "','1','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
+				$res = mysqli_query($mysqli, $query);
+				if ($res) {
+
+					$errMSG = $errMSG . "Address Inserted Successfully!" . "\n";
+					unset($firstname);
+					unset($lastname);
+					unset($address);
+					unset($address2);
+					unset($city);
+					unset($state);
+					unset($zipcode);
+					unset($country);
+
+				}else{
+					$error = true;
+					$errTyp = "danger";
+					$errMSG = $errMSG . "Error In Address Insert, Please Enter Address Manually...";
+				}
+
+			}				
+            
+
+
+
+			
         } else {
             $errTyp = "danger";
             $errMSG = "Something went wrong, try again later...";
@@ -270,14 +331,14 @@ if (isset($_POST['regbtn'])) {
 					
 					<?php
 						if ( isset($errMSG) ) {
-				
+						
 							?>
 
 							<div class="form-group">
-						
+							<div class="input-group">
             				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
 							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
-						
+							</div>
             				</div>
 							</div>
 							<?php
@@ -389,8 +450,8 @@ if (isset($_POST['regbtn'])) {
 
 					<div class="form-group">
 						<div class="input-group">
-							<label><b>Permanent Address</b></label>
-							<input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
+							<label><b>Address Line 1</b></label>
+							<input type="text" placeholder="Street Address, P.O. Box, Company Name, C/O" name="address1" class="form-control" maxlength="50" />
 						
 							<br><span class="text-danger"><?php
 							if (isset($addressError)) {
@@ -399,6 +460,18 @@ if (isset($_POST['regbtn'])) {
 							?></span>
 					</div></div>
 
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Address Line 2</b></label>
+							<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" />
+						
+							<br><span class="text-danger"><?php
+							if (isset($address2Error)) {
+								echo $address2Error;
+							}
+							?></span>
+					</div></div>
+					
 					<div class="form-group">
 						<div class="input-group">
 							<label><b>City</b></label>
@@ -446,6 +519,18 @@ if (isset($_POST['regbtn'])) {
 							}
 							?></span>
 					</div> </div>
+
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Country</b></label>
+							<input type="text" placeholder="Country" name="country" class="form-control" maxlength="50" />
+						
+							<br><span class="text-danger"><?php
+							if (isset($countryError)) {
+								echo $countryError;
+							}
+							?></span>
+					</div></div>
 
 					<div class="form-group">
 						<hr />
