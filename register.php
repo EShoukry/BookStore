@@ -337,7 +337,7 @@ if (isset($_POST['regbtn'])) {
 							<div class="form-group">
 							<div class="input-group">
             				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
-							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+							<span class="glyphicon glyphicon-info-sign"></span> <?php echo nl2br ($errMSG); ?>
 							</div>
             				</div>
 							</div>

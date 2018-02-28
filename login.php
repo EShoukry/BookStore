@@ -64,12 +64,15 @@ if (isset($_POST['login'])) {
 
         if ($count == 1) {
             $_SESSION['user'] = $row['user_id_number'];
-            phpAlert("Login Successful! User ID: " . $_SESSION['user']);
             header("Location: home.php");
         } else {
-            phpAlert("Incorrect Credentials, Try again...");
+			$errTyp = "danger";
+            $errMSG = "Incorrect Credentials, Try again...";
         }
-    }
+    } else{
+	
+
+	}
 }
 ?>
 
@@ -114,6 +117,22 @@ if (isset($_POST['login'])) {
                 <div class="form-group">
                     <hr />
                 </div>
+
+				<?php
+						if ( isset($errMSG) ) {
+						
+							?>
+
+							<div class="form-group">
+							<div class="input-group">
+            				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+							</div>
+            				</div>
+							</div>
+							<?php
+						}
+				?>
 
 
                 <div class="form-group">
