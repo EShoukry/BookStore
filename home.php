@@ -130,7 +130,28 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
                 </tr>
                 <tr>
                     <th>Address</th>
-                    <td><?php echo $userRow['u_address']; ?></td>
+                    <td><?php 
+					$addMSG;
+					$query = "SELECT `fname`, `lname`, `line1`, `line2`, `city`, `state`, `zip`, `country` FROM `address` WHERE `p_address` = 1 AND `user_id` = " . $userRow['user_id_number'];
+					$res = mysqli_query($mysqli, $query);
+					if($res){
+						$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+						$addMSG = $addRow['fname'] . " " . $addRow['lname'] . "\n" . $addRow['line1'] . "\n";
+						if($addRow['line2'] != ""){
+							$addMSG = $addMSG . $addRow['line2'] ."\n";
+						}
+
+						$addMSG = $addMSG . $addRow['city'] . ", " . $addRow['state'] . "\n" . $addRow['zip'] . "\n" . $addRow['country'];
+
+					} else{
+						$addMSG = "No Primary Address on File Currently";
+					}
+
+
+					echo nl2br ($addMSG);
+					
+					
+					?></td>
                 </tr>
             </tbody>
         </table>
