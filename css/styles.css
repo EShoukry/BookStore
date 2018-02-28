@@ -331,10 +331,17 @@ input{
 
 .navbar-nav > li > .dropdown-menu {
     background-color: beige;
-    text-align: center;
     width: 200px;
 }
+
 
 .input-group {
     width: 50%;
 }
+
+.editinfo {
+    width: 100%;
+}
+
+
+
