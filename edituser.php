@@ -1,0 +1,364 @@
+<?php
+ob_start();
+session_start();
+$database = include('config.php');
+
+function phpAlert($msg) {
+    echo '<script type="text/javascript">alert("' . $msg . '")</script>';
+}
+
+if (!isset($_SESSION['user'])) {
+    header("Location: login.php");
+    exit;
+}
+
+// Create connection
+$mysqli = new mysqli($database['host'], $database['user'], $database['pass'], $database['name']);
+
+// Check connection
+if (mysqli_connect_error()) {
+    die("Database connection failed: " . mysqli_connect_error());
+}
+
+
+//select logged in user's info
+$query = "SELECT * FROM users WHERE user_id_number =" . $_SESSION['user'];
+$res = mysqli_query($mysqli, $query);
+$userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+
+
+$error = false;
+$changes = false;
+$emflag = false;
+$fnflag = false;
+$lnflag = false;
+$unflag = false;
+$nnflag = false;
+
+if (isset($_POST['savebtn'])) {
+	
+		$username = trim($_POST['username']);
+		$username = strip_tags($username);
+		$username = htmlspecialchars($username);
+	
+		$firstname = trim($_POST['firstname']);
+		$firstname = strip_tags($firstname);
+		$firstname = htmlspecialchars($firstname);
+	
+		$lastname = trim($_POST['lastname']);
+		$lastname = strip_tags($lastname);
+		$lastname = htmlspecialchars($lastname);
+	
+		$nickname = trim($_POST['nickname']);
+		$nickname = strip_tags($nickname);
+		$nickname = htmlspecialchars($nickname);
+
+		$email = trim($_POST['email']);
+		$email = strip_tags($email);
+		$email = htmlspecialchars($email);
+	
+
+	if($username != $userRow['u_login_id']){
+		if (empty($username)) {
+			$error = true;
+			$usernameError = "Please enter your desired Username.";
+		} else if (strlen($username) < 3) {
+			$error = true;
+			$usernameError = "Username must have atleat 3 characters.";
+		} else if (!ctype_alnum($username)) {
+			$error = true;
+			$usernameError = "Username must contain alphabets and/or Numbers.";
+		} else {
+			// check username exist in db or not
+			$query = "SELECT u_login_id FROM users WHERE u_login_id='$username'";
+			$result = (mysqli_query($mysqli, $query));
+			$count = mysqli_num_rows($result);
+			if ($count != 0) {
+				$error = true;
+				$usernameError = "Provided Username is already in use.";
+			}
+		}
+		$changes = true;
+		$unflag = true;
+	}
+
+	if($firstname != $userRow['u_fname']){
+		if (empty($firstname)) {
+			$error = true;
+			$firstnameError = "Please enter your first name.";
+		} else if (strlen($firstname) < 3) {
+			$error = true;
+			$firstnameError = "First name must have atleat 3 characters.";
+		} else if (!ctype_alpha($firstname)) {
+			$error = true;
+			$firstnameError = "First name must contain alphabets.";
+		}
+		$changes = true;
+		$fnflag = true;
+	}
+
+	if($lastname != $userRow['u_lname']){
+		if (empty($lastname)) {
+			$error = true;
+			$lastnameError = "Please enter your last name.";
+		} else if (strlen($lastname) < 3) {
+			$error = true;
+			$lastnameError = "Last name must have atleat 3 characters.";
+		} else if (!ctype_alpha($lastname)) {
+			$error = true;
+			$firstnameError = "Last name must contain alphabets.";
+		}
+		$changes = true;
+		$lnflag = true;
+	}
+
+	if($nickname != $userRow['u_nick']){
+		if (empty($nickname)) {
+			$error = true;
+			$nicknameError = "Please enter your Nick name.";
+		} else if (strlen($nickname) < 3) {
+			$error = true;
+			$nicknameError = "Nick name must have atleat 3 characters.";
+		} else if (!ctype_alnum($nickname)) {
+			$error = true;
+			$nicknameError = "Nick name must contain alphabets and/or Numbers.";
+		}
+		$changes = true;
+		$nnflag = true;
+	}
+
+	if($email != $userRow['u_email']){
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$error = true;
+			$emailError = "Please enter valid email address.";
+		} else {
+			// check email exist in db already or not
+			$query = "SELECT u_email FROM users WHERE u_email='$email'";
+			$result = (mysqli_query($mysqli, $query));
+			$count = mysqli_num_rows($result);
+			if ($count != 0) {
+				$error = true;
+				$emailError = "Provided Email is already in use.";
+			}
+		}
+		$changes = true;
+		$emflag = true;
+	}
+	$sqlerr = false;
+	$update = "";
+	//if no errors update records. else phpAlert error
+	if(!$error && $changes){
+		if($emflag){
+			$update = $update . "u_email = '". $email . "', ";
+		} if($fnflag){
+			$update = $update . "u_fname = '" . $firstname . "', ";
+		} if($lnflag){
+			$update = $update . "u_lname = '" . $lastname . "', ";
+		} if($nnflag){
+			$update = $update . "u_nick = '" . $nickname . "', ";
+		} if($unflag){
+			$update = $update . "u_login_id = '" . $username . "', ";
+		}
+		$len = strlen($update) - 2;
+		
+		if($len>0){
+		$update = substr($update,0,$len) . " WHERE user_id_number = " . $userRow['user_id_number'];
+		}
+		$query = "UPDATE users SET " . $update;
+		$sqlerr = !mysqli_query($mysqli, $query);
+
+		if($sqlerr){
+			phpAlert("Something went wrong!");
+		} else{
+			unset($firstname);
+            unset($lastname);
+            unset($username);
+            unset($nickname);
+            unset($email);
+			$query = "SELECT * FROM users WHERE user_id_number =" . $_SESSION['user'];
+			$res = mysqli_query($mysqli, $query);
+			$userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+        }
+	}
+}
+
+
+?>
+
+
+
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">    
+        <title>Edit Profile</title>
+        <meta http-equiv="content-type" content="text/plain">
+        <link rel="stylesheet" type="text/css" href="css/styles.css">
+		<!-- BootStrap Import from CDN-->
+		<!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+		        <!-- jQuery library -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+		        <!-- Latest compiled JavaScript -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    </head>
+    <body>
+        <?php
+        require "header.php";
+        ?>
+
+
+        <div id=main_image>		
+            <img src="images/index.jpeg" alt="Team 7 book store" >
+        </div>  
+
+	<div id="hd_container">
+	<div class="container">
+			<nav class="navbar navbar-light bg-faded" style="background-color: biege">
+			<div class="container-fluid">
+			<ul class="nav navbar-nav navbar-right">
+					<li class="nav-item dropdown nohover">
+						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="glyphicon glyphicon-th-list"></span>&nbsp;Hi <?php echo $userRow['u_login_id']; ?>&nbsp;<span class="caret"></span>
+						</a>
+						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
+
+						<!-- Placeholder for edit info and credit cards-->
+							<a class="dropdown-item" href="home.php">
+								<span class="glyphicon glyphicon-user"></span>&nbsp;View Profile
+							</a><br>
+							<a class="dropdown-item" href="edituser.php">
+								<span class="glyphicon glyphicon-edit"></span>&nbsp;Edit Profile
+							</a><br>
+							<a class="dropdown-item" href="#">
+								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Add/Edit Payment Methods
+							</a><br>
+							<a class="dropdown-item" href="#">
+								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
+							</a><br>
+							
+							<!--Leave sign out for last option. -->
+
+							<a class="dropdown-item" href="logout.php?logout">
+								<span class="glyphicon glyphicon-log-out"></span>&nbsp;Sign Out
+							</a><br>
+						</div>
+					</li>
+				</ul>
+				</div>
+			</nav>
+	</div>
+	</div>
+	
+	<div id="wrapper">
+	<div class="container">
+    
+    	<div class="page-header">
+    	<div class=section_title><h3>Edit User Information</h3></div>
+    	</div>
+        
+        <div class="row">
+        <div class="col-lg-12">
+        <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+		<table class="table">
+            <tbody>
+                <tr>
+                    <th>User ID #</th>
+                    <td><?php echo $userRow['user_id_number']; ?></td>
+                </tr>
+                <tr>
+                    <th>First Name</th>
+                    <td>
+						<div class="input-group editinfo">
+						
+							<input type="text"  name="firstname" class="form-control" maxlength="50" value="<?php echo $userRow['u_fname']; ?>" />
+							<br><span class="text-danger"><?php
+							if (isset($firstnameError)) {
+								echo $firstnameError;
+							}
+							?></span>
+						</div>
+						
+					</td>
+                </tr>
+                <tr>
+                    <th>Last Name</th>
+                    <td>
+					<div class="input-group editinfo">
+						
+							<input type="text"  name="lastname" class="form-control" maxlength="50" value="<?php echo $userRow['u_lname']; ?>" />
+						<br><span class="text-danger"><?php
+							if (isset($lastnameError)) {
+								echo $lastnameError;
+							}
+							?></span>
+						</div>
+					</td>
+                </tr>
+                <tr>
+                    <th>Username</th>
+                    <td>
+					<div class="input-group editinfo">
+						
+						<input type="text"  name="username" class="form-control" maxlength="50" value="<?php echo $userRow['u_login_id']; ?>" />
+						<br><span class="text-danger"><?php
+							if (isset($usernameError)) {
+								echo $usernameError;
+							}
+							?></span>
+
+						</div>
+					</td>
+                </tr>
+                <tr>
+                    <th>Nickname</th>
+                    <td>
+					<div class="input-group editinfo">
+						
+							<input type="text"  name="nickname" class="form-control" maxlength="50" value="<?php echo $userRow['u_nick']; ?>" />
+						<br><span class="text-danger"><?php
+							if (isset($nicknameError)) {
+								echo $nicknameError;
+							}
+							?></span>
+						</div>
+					</td>
+                </tr>
+                <tr>
+                    <th>Email</th>
+                    <td>
+					<div class="input-group editinfo">
+						<input type="text"  name="email" class="form-control" maxlength="50" value="<?php echo $userRow['u_email']; ?>" />
+						
+						<br><span class="text-danger"><?php
+							if (isset($emailError)) {
+								echo $emailError;
+							}
+							?></span>
+						</div>
+					</td>
+                </tr>
+                <tr>
+                    <th>Address</th>
+                    <td><?php echo $userRow['u_address']; ?></td>
+                </tr>
+            </tbody>
+        </table>
+		<button type="submit" name="savebtn" class="btn btn-primary btn-block"/>Save Edits</button>
+		<button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
+		</form>
+        </div>
+        </div>
+    </div>
+    
+    </div>
+
+
+</body>
+<?php
+require "footer.php";
+echo "</html>";
+mysqli_close($mysqli);
+ob_end_flush();
+?>
+

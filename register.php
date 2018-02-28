@@ -196,7 +196,7 @@ if (isset($_POST['regbtn'])) {
         $passwordError = "Passwords do not match.";
     }
 
-    // password encrypt using SHA256();
+    // password encrypt using md5();
     $password = md5($password);
 
     // if there's no error, continue to signup
@@ -282,12 +282,13 @@ if (isset($_POST['regbtn'])) {
 								echo $username;
 							}
 							?>"  />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($usernameError)) {
 								echo $usernameError;
 							}
 							?></span>
+							</div>
 					</div>
 					<div class="form-group">
 						<div class="input-group">
@@ -297,12 +298,13 @@ if (isset($_POST['regbtn'])) {
 								echo $firstname;
 							}
 							?>"  />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($firstnameError)) {
 								echo $firstnameError;
 							}
 							?></span>
+						</div>
 					</div>
 
 					<div class="form-group">
@@ -313,12 +315,13 @@ if (isset($_POST['regbtn'])) {
 								echo $lastname;
 							}
 							?>"  />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($lastnameError)) {
 								echo $lastnameError;
 							}
 							?></span>
+						</div>
 					</div>
 
 					<div class="form-group">
@@ -329,13 +332,13 @@ if (isset($_POST['regbtn'])) {
 								echo $nickname;
 							}
 							?>"  />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($nicknameError)) {
 								echo $nicknameError;
 							}
 							?></span>
-					</div>
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
@@ -345,44 +348,44 @@ if (isset($_POST['regbtn'])) {
 								echo $email;
 							}
 							?>"  />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($emailError)) {
 								echo $emailError;
 							}
 							?></span>
-					</div>
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
 							<label><b>Password</b></label>
 							<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($passwordError)) {
 								echo $passwordError;
 							}
 							?></span>
-					</div>
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
 							<label><b>Confirm Password</b></label>
 							<input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
-						</div>
-					</div>
+						
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
 							<label><b>Permanent Address</b></label>
 							<input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
-						</div>
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($addressError)) {
 								echo $addressError;
 							}
 							?></span>
-					</div>
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
@@ -392,13 +395,13 @@ if (isset($_POST['regbtn'])) {
 								echo $city;
 							}
 							?>" />
-						</div> 
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($cityError)) {
 								echo $cityError;
 							}
 							?></span>
-					</div>
+					</div> </div>
 
 					<div class="form-group">
 						<div class="input-group">
@@ -408,13 +411,13 @@ if (isset($_POST['regbtn'])) {
 								echo $state;
 							}
 							?>" />
-						</div> 
-						<span class="text-danger"><?php
+						 
+							<br><span class="text-danger"><?php
 							if (isset($stateError)) {
 								echo $stateError;
 							}
 							?></span>
-					</div>
+					</div></div>
 
 					<div class="form-group">
 						<div class="input-group">
@@ -424,13 +427,13 @@ if (isset($_POST['regbtn'])) {
 								echo $zipcode;
 							}
 							?>" />
-						</div> 
-						<span class="text-danger"><?php
+						
+							<br><span class="text-danger"><?php
 							if (isset($zipError)) {
 								echo $zipError;
 							}
 							?></span>
-					</div>
+					</div> </div>
 
 					<div class="form-group">
 						<hr />

@@ -66,12 +66,18 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
 
 						<!-- Placeholder for edit info and credit cards-->
-							<a class="dropdown-item" href="#">
+							<a class="dropdown-item" href="home.php">
+								<span class="glyphicon glyphicon-user"></span>&nbsp;View Profile
+							</a><br>
+							<a class="dropdown-item" href="edituser.php">
 								<span class="glyphicon glyphicon-edit"></span>&nbsp;Edit Profile
 							</a><br>
 							<a class="dropdown-item" href="#">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Add/Edit Payment Methods
-							</a>
+							</a><br>
+							<a class="dropdown-item" href="#">
+								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
+							</a><br>
 							
 							<!--Leave sign out for last option. -->
 

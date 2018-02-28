@@ -117,32 +117,32 @@ if (isset($_POST['login'])) {
 
 
                 <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Email</b></label>
-                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
-                        if (isset($email)) {
-                            echo $email;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($emailError)) {
-                            echo $emailError;
-                        }
-                        ?></span>
-                </div>
+						<div class="input-group">
+							<label><b>Email</b></label>
+							<input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+							if (isset($email)) {
+								echo $email;
+							}
+							?>"  />
+						
+							<br><span class="text-danger"><?php
+							if (isset($emailError)) {
+								echo $emailError;
+							}
+							?></span>
+					</div></div>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Password</b></label>
-                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($passwordError)) {
-                            echo $passwordError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group">
+						<div class="input-group">
+							<label><b>Password</b></label>
+							<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+						
+							<br><span class="text-danger"><?php
+							if (isset($passwordError)) {
+								echo $passwordError;
+							}
+							?></span>
+					</div></div>
 
                 <div class="form-group">
                     <hr />
