@@ -1,11 +1,11 @@
 <div id="hd_container">
 	<div class="container">
 			<nav class="navbar navbar-light bg-faded" style="background-color: biege">
-			<div class="container-fluid">
+			<div class="container">
 			<ul class="nav navbar-nav navbar-right">
 					<li class="nav-item dropdown nohover">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							<span class="glyphicon glyphicon-th-list"></span>&nbsp;Hi <?php echo $userRow['u_login_id']; ?>&nbsp;<span class="caret"></span>
+							<span class="glyphicon glyphicon-th-list"></span>&nbsp;<span class="caret"></span>
 						</a>
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
 
@@ -19,7 +19,7 @@
 							<a class="dropdown-item" href="#">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Add/Edit Payment Methods
 							</a><br>
-							<a class="dropdown-item " href="#">
+							<a class="dropdown-item " href="addressedit.php">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
 							</a>
 							<hr />
