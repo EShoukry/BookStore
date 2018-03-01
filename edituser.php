@@ -351,8 +351,20 @@ if (isset($_POST['savebtn'])) {
                 </tr>
             </tbody>
         </table>
-		<button type="submit" name="savebtn" class="btn btn-primary btn-block"/>Save Edits</button>
-		<button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
+		<div
+
+
+
+
+		<div class="form-group text-center">
+
+					<div class="btn-group">
+					<button type="submit" name="regbtn" class="btn btn-primary" Style="width: 300px;"/>Save Edits</button>
+					<button type="reset"  name="reset" class="btn btn-warning" Style="width: 300px;"/>Reset</button>
+					</div>
+		</div>
+
+
 		</form>
         </div>
         </div>

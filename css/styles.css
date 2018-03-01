@@ -337,11 +337,45 @@ input{
 
 .input-group {
     width: 50%;
+    margin-bottom: 4px;
+    margin-top: 2px;
+
 }
 
 .editinfo {
     width: 100%;
 }
 
+.btn {
+    margin: 4px 4px 4px 4px;
+    display:block;
+    width: 200px;
+}
 
+.btn-secondary {
+    background-color: #616161;
+    color: white;
+}
+span.text-danger {
+    text-align:left;
+}
+
+
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 2px 4px;
+        font-size: 60%;
+        line-height: 1;
+        width: 220px;
+    }
+}
+
+@media (min-width: 769px) {
+    .btn-responsive {
+        padding: 4px 9px;
+        font-size: 80%;
+        line-height: 1.2;
+        width: 400px;
+    }
+}
 
