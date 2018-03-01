@@ -19,7 +19,7 @@
 							<a class="dropdown-item" href="#">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Add/Edit Payment Methods
 							</a><br>
-							<a class="dropdown-item " href="addressedit.php">
+							<a class="dropdown-item " href="addresseditadd.php">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Add/Edit Addresses
 							</a>
 							<hr />

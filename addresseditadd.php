@@ -30,6 +30,7 @@ $count = mysqli_num_rows($res);
 if (isset($_POST['edit'])) {
 	phpAlert("Edit Pressed for " . $_POST['add_id']);
 } else if(isset($_POST['delete'])){
+/**TODO: when adding addresses is implemented, UNCOMMENT
 	$query = "DELETE FROM `address` WHERE `address`.`address_id` = " . $_POST['add_id'];
 	$res = mysqli_query($mysqli, $query);
 	if($res){
@@ -39,7 +40,7 @@ if (isset($_POST['edit'])) {
 	$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 	$count = mysqli_num_rows($res);
 
-
+	**/
 }
 
 ?>
