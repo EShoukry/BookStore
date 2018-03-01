@@ -23,8 +23,147 @@ if (mysqli_connect_error()) {
 
 
 if (isset($_POST['addbtn'])) {
-	phpAlert("Adding Address *beep* *b00p*");
-} 
+	$error = false;
+	//Verify Input
+	$firstname = trim($_POST['firstname']);
+    $firstname = strip_tags($firstname);
+    $firstname = htmlspecialchars($firstname);
+
+    $lastname = trim($_POST['lastname']);
+    $lastname = strip_tags($lastname);
+    $lastname = htmlspecialchars($lastname);
+	
+    $address = trim($_POST['address1']);
+    $address = strip_tags($address);
+    $address = htmlspecialchars($address);
+
+	$address2 = trim($_POST['address2']);
+    $address2 = strip_tags($address2);
+    $address2 = htmlspecialchars($address2);
+
+    $city = trim($_POST['city']);
+    $city = strip_tags($city);
+    $city = htmlspecialchars($city);
+
+    $state = trim($_POST['state']);
+    $state = strip_tags($state);
+    $state = htmlspecialchars($state);
+
+    $zipcode = trim($_POST['zipcode']);
+    $zipcode = strip_tags($zipcode);
+    $zipcode = htmlspecialchars($zipcode);
+
+    $country = trim($_POST['country']);
+    $country = strip_tags($country);
+    $country = htmlspecialchars($country);
+
+	$primaryAdd = (isset($_POST['primaryCheck']) ? 1 : 0);
+
+
+	if (empty($firstname)) {
+        $error = true;
+        $firstnameError = "Please enter your first name.";
+    } else if (strlen($firstname) < 3) {
+        $error = true;
+        $firstnameError = "First name must have atleat 3 characters.";
+    } else if (!ctype_alpha($firstname)) {
+        $error = true;
+        $firstnameError = "First name must contain alphabets.";
+    }
+
+    if (empty($lastname)) {
+        $error = true;
+        $lastnameError = "Please enter your last name.";
+    } else if (strlen($lastname) < 3) {
+        $error = true;
+        $lastnameError = "Last name must have atleat 3 characters.";
+    } else if (!ctype_alpha($lastname)) {
+        $error = true;
+        $firstnameError = "Last name must contain alphabets.";
+    }
+
+    if (empty($address)) {
+        $error = true;
+        $addressError = "Please enter your Street Address, P.O. Box, Company Name, C/O.";
+    } else if (strlen($address) < 3) {
+        $error = true;
+        $addressError = "Address must have atleat 3 characters.";
+    }
+
+	if (strlen($address2)>0 && strlen($address2) < 3) {
+        $error = true;
+        $address2Error = "Apt, Suite, Unit, Floor, etc. must have atleat 3 characters.";
+    }
+
+    if (empty($city)) {
+        $error = true;
+        $cityError = "Please enter your City.";
+    } else if (strlen($city) < 3) {
+        $error = true;
+        $cityError = "City must have atleat 3 characters.";
+    } else if (!ctype_alpha($city)) {
+        $error = true;
+        $cityError = "City must contain alphabets.";
+    }
+
+    if (empty($state)) {
+        $error = true;
+        $stateError = "Please enter your State/Province/Region.";
+    } else if (!ctype_alnum($state)) {
+        $error = true;
+        $stateError = "State/Province/Region must contain Alphanumericals only.";
+    }
+    $state = strtoupper($state);
+
+    if (empty($zipcode)) {
+        $error = true;
+        $zipError = "Please enter your Zip/Postal Code.";
+    } else if (strlen($zipcode) > 15) {
+        $error = true;
+        $zipError = "Zip/Postal Code must be less than 15 Alphanumericals.";
+    } else if (!ctype_alnum($zipcode)) {
+        $error = true;
+        $zipError = "Zip/Postal Code must contain Alphanumericals only.";
+    }
+
+	if (empty($country)) {
+        $error = true;
+        $countryError = "Please enter your Country.";
+    } else if (strlen($country) > 50) {
+        $error = true;
+        $countryError = "Country must be less than 15 Alphanumericals.";
+    } 
+	//add address information as primary(only) address upon session set.
+		if(!$error){
+				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
+								VALUES('" . $_SESSION['user'] . "', '$primaryAdd','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
+				$res = mysqli_query($mysqli, $query);
+				if ($res) {
+					$errTyp = "success";
+					$errMSG = "Address Inserted Successfully!" . "\n" . $primaryAdd;
+					unset($primaryAdd);
+					unset($firstname);
+					unset($lastname);
+					unset($address);
+					unset($address2);
+					unset($city);
+					unset($state);
+					unset($zipcode);
+					unset($country);
+
+				}else{
+					$error = true;
+					$errTyp = "danger";
+					$errMSG = $errMSG . "Error In Address Insert, Please Enter Try Again...";
+				}
+
+        } else {
+            $errTyp = "danger";
+            $errMSG = "Something went wrong, try again later...";
+        }
+    }
+
+
 
 ?>
 
@@ -52,17 +191,33 @@ if (isset($_POST['addbtn'])) {
         <div id=main_image>		
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
-
-	<?php
-        require "includes/navbar_user.php";
-    ?>
 	
 	<div id="wrapper">
 	<div class="container">
     
+	<?php
+        require "includes/navbar_user.php";
+    ?>
+
     <div class="page-header">
     <div class=section_title><h3>Add New Address</h3></div>
     </div>
+	<?php
+							if ( isset($errMSG) ) {
+						
+								?>
+
+								<div class="form-group">
+								<div class="input-group">
+            					<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+								<span class="glyphicon glyphicon-info-sign"></span> <?php echo nl2br ($errMSG); ?>
+								</div>
+            					</div>
+								</div>
+								<?php
+							}
+							?>
+
 		<div class="form-group ">
 		<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
@@ -169,16 +324,21 @@ if (isset($_POST['addbtn'])) {
 			<div class="input-group text-center">
 
 			<div class="form-check text-right">
-			  <input class="form-check-input" type="checkbox" value="" id="primaryCheck">
+			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
 			  <label class="form-check-label" for="primaryCheck">
 				New Priamry Address?
 			  <label>
 			</div>
 
-			<div class="btn-group">
+			<div class="btn-group" Style="margin-bottom: 5px;">
 			<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
 			<button type="submit" name="addbtn" class="btn btn-primary" Style="width: 200px;"/>Add Address</button>
 			</div>
+
+			<div class="btn-group">
+				<a href="manageaddress.php" class="btn btn-secondary" Style="width: 400px;" />View Your Addresses</a>
+			</div>
+			
 			</div>
 
 

@@ -30,17 +30,22 @@ $count = mysqli_num_rows($res);
 if (isset($_POST['edit'])) {
 	phpAlert("Edit Pressed for " . $_POST['add_id']);
 } else if(isset($_POST['delete'])){
-/**TODO: when adding addresses is implemented, UNCOMMENT
-	$query = "DELETE FROM `address` WHERE `address`.`address_id` = " . $_POST['add_id'];
+
+	$query = "DELETE FROM `address` WHERE `address_id` = " . $_POST['add_id'] . " AND user_id =" . $_SESSION['user'];
 	$res = mysqli_query($mysqli, $query);
 	if($res){
-		phpAlert("Delete Success");
+		$errTyp = "success";
+		$errMSG = "Delete Success";
 		$res = mysqli_query($mysqli, $addressquery);
+		$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+		$count = mysqli_num_rows($res);
+	} else {
+		$errTyp = "danger";
+		$errMSG = "Delete Failed \n" . $query;
 	}
-	$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
-	$count = mysqli_num_rows($res);
 
-	**/
+
+
 }
 
 ?>
@@ -70,16 +75,37 @@ if (isset($_POST['edit'])) {
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
 
-	<?php
-        require "includes/navbar_user.php";
-    ?>
+
 	
 	<div id="wrapper">
 	<div class="container">
     
+
     	<div class="page-header">
     	<div class=section_title><h3>Add/Edit Addresses</h3></div>
     	</div>
+		<?php
+							if ( isset($errMSG) ) {
+						
+								?>
+
+								<div class="form-group">
+								<div class="input-group">
+            					<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+								<span class="glyphicon glyphicon-info-sign"></span> <?php echo nl2br ($errMSG); ?>
+								</div>
+            					</div>
+								</div>
+								<?php
+							}
+							?>
+
+
+			<?php
+				require "includes/navbar_user.php";
+			?>
+
+
 
 
 		<div id="accordion">
@@ -95,7 +121,7 @@ if (isset($_POST['edit'])) {
 				<div class="card">
 				<div class="card-header" id="heading<?php echo ($x + 1)?>">
 				  <h5 class="mb-0 text-center">
-					<button class="btn btn-link" data-toggle="collapse" data-target="#collapse<?php echo ($x + 1)?>" aria-expanded="true" aria-controls="collapse<?php echo ($x + 1)?>">
+					<button class="btn btn-light" data-toggle="collapse" data-target="#collapse<?php echo ($x + 1)?>" aria-expanded="true" aria-controls="collapse<?php echo ($x + 1)?>">
 					  Address #<?php echo ($x + 1) ?>&nbsp;<span class="caret"></span>
 					</button>
 				  </h5>
@@ -116,9 +142,14 @@ if (isset($_POST['edit'])) {
 									$addMSG = $addMSG . $addRow['line2'] ."\n";
 								}
 
-								$addMSG = $addMSG . $addRow['city'] . ", " . $addRow['state'] . "\n" . $addRow['zip'] . "\n" . $addRow['country'];
-								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								$addMSG = $addMSG . $addRow['city'] . ", " . $addRow['state'] . "\n" . $addRow['zip'] . "\n" . $addRow['country'] . "\n";
+								
 								echo nl2br ($addMSG);
+
+								echo ("Primary Address: ");
+								echo ($addRow['p_address'] ? "Yes" : "No");
+
+								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
 							</div>
 							<div class="col-sm-4">

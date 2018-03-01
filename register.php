@@ -510,7 +510,7 @@ if (isset($_POST['regbtn'])) {
 
 					<div class="form-group text-center">
 
-					<div class="btn-group">
+					<div class="btn-group" Style="margin-bottom: 5px;">
 					<button type="submit" name="regbtn" class="btn btn-primary " />Register</button>
 					<button type="reset"  name="clear" class="btn btn-warning " />Clear</button>
 					</div>

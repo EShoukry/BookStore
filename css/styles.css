@@ -327,8 +327,13 @@ input{
 
 .navbar-nav > li > .dropdown-menu {
     background-color: beige;
-    width: 200px;
+    width: fit-content;
 }
+
+.navbar-nav > li > .dropdown-menu > a{
+    width: 100%;
+}
+
 
 
 .input-group {
@@ -347,6 +352,8 @@ input{
     display: block;
     width: 200px;
 }
+
+
 
 .btn-secondary {
     background-color: #616161;

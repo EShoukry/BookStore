@@ -54,13 +54,13 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
 
-	<?php
-        require "includes/navbar_user.php";
-    ?>
+
 	
 	<div id="wrapper">
 	<div class="container">
-    
+    	<?php
+        require "includes/navbar_user.php";
+    ?>
     	<div class="page-header">
     	<div class=section_title><h3>User Information</h3></div>
     	</div>

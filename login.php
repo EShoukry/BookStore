@@ -167,7 +167,7 @@ if (isset($_POST['login'])) {
 
 				<div class="form-group text-center">
 
-					<div class="btn-group">
+					<div class="btn-group" Style="margin-bottom: 5px;">
 					<button type="submit" name="login" class="btn btn-primary" Style="width: 200px;"/>Login</button>
 					<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
 					</div>

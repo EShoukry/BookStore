@@ -219,13 +219,13 @@ if (isset($_POST['savebtn'])) {
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
 
-	<?php
-        require "includes/navbar_user.php";
-    ?>
+
 	
 	<div id="wrapper">
-	<div class="container">
-    
+	<div class="container" >
+    	<?php
+        require "includes/navbar_user.php";
+    ?>
     	<div class="page-header">
     	<div class=section_title><h3>Edit User Information</h3></div>
     	</div>
@@ -244,8 +244,8 @@ if (isset($_POST['savebtn'])) {
 			}
 		?>
         <div class="row">
-        <div class="col-lg-12">
-        <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+        <div class="col-lg-12" >
+        <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" style="width:80%" autocomplete="off">
 		<table class="table">
             <tbody>
                 <tr>
