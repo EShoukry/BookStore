@@ -1,8 +1,10 @@
 {
   "ExpandedNodes": [
     "",
-    "\\css"
+    "\\css",
+    "\\includes",
+    "\\sql"
   ],
-  "SelectedNode": "\\login.php",
+  "SelectedNode": "\\includes\\navbar_user.php",
   "PreviewInSolutionExplorer": false
 }

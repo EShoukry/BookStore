@@ -241,11 +241,7 @@ section{
 }
 
 label{
-    font-family: cursive;
-    color: rgba(11, 95, 4, 1);
-    font-size: 14px;
-    display: block;
-    float: left;
+    font-family: inherit;
 }
 
 .form_container{
@@ -347,8 +343,8 @@ input{
 }
 
 .btn {
-    margin: 4px 4px 4px 4px;
-    display:block;
+    padding: 4px 4px 4px 4px;
+    display: block;
     width: 200px;
 }
 
