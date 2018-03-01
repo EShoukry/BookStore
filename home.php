@@ -114,6 +114,7 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 					}
 
 
+
 					echo nl2br ($addMSG);
 					
 					

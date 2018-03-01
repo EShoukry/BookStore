@@ -448,7 +448,7 @@ if (isset($_POST['regbtn'])) {
 									echo $addressError;
 								}
 								?></span>
-						</div>
+							</div>
 							<div class="input-group">
 								<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" />
 						
@@ -457,7 +457,7 @@ if (isset($_POST['regbtn'])) {
 									echo $address2Error;
 								}
 								?></span>
-						</div>
+							</div>
 							<div class="input-group">
 
 								<input type="text" placeholder="City" name="city" class="form-control" Style="width: 50%;" maxlength="50" value="<?php
@@ -483,7 +483,7 @@ if (isset($_POST['regbtn'])) {
 									echo $stateError;
 								}
 								?></span>
-						</div>
+							</div>
 							<div class="input-group">
 								<input type="text" placeholder="Zip/Poastal Code" name="zipcode" class="form-control" Style="width: 50%;" value="<?php
 								if (isset($zipcode)) {
@@ -502,7 +502,7 @@ if (isset($_POST['regbtn'])) {
 									echo $countryError;
 								}
 								?></span>
-						</div>
+							</div>
 						<br />
 						</div>
 						</div>
