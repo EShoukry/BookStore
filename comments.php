@@ -6,8 +6,6 @@ if (mysqli_connect_error()) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
-
-
 ?>
 
 <html>
@@ -25,14 +23,7 @@ if (mysqli_connect_error()) {
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
-$(document).ready(function(){
-    $("#hide").click(function(){
-        $("p").hide();
-    });
-    $("#show").click(function(){
-        $("p").show();
-    });
-});
+
 </script>
 </head>
 <body>
@@ -41,7 +32,7 @@ $(document).ready(function(){
     	</div>  
 		<input type="radio" name="Anon_User" checked > Anonymous<br>
 		<input type="radio" name="Anon_User" > Username<br>
-	</form>
+	<form action="commentsend.php" method="post">
 	<label><b>Comment on this book!</b></label>
 	</br>
 	</br>
@@ -49,4 +40,5 @@ $(document).ready(function(){
 	<textarea name= "bookcomments" placeholder="Comment Here" style="width:500px; height:200px;"></textarea>
 
 	<input type="submit" value="Submit">
+        </form>
 	</br>
