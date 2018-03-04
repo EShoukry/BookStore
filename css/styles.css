@@ -40,10 +40,11 @@ nav ul li{
     color: black; 
 }
 
-nav ul li:hover{
+nav ul li:not(.nohover):hover {
     background-color: rgba(11, 95, 4, 0.25);
     transition-duration: 1s;
     border-radius: 0px 0px 0px 15px;
+
 }
 
 nav ul li a{
@@ -240,50 +241,13 @@ section{
 }
 
 label{
-    font-family: cursive;
-    color: rgba(11, 95, 4, 1);
-    font-size: 14px;
-    display: block;
-    float: left;
+    font-family: inherit;
 }
 
 .form_container{
     padding: 16px;
 }
 
-input[type=text], input[type=password], input[type=email] {
-  width: 100%;
-  padding: 10px;
-  margin: 5px 0 5px 0;
-  float: left;
-  display: inline-block;
-  border: none;
-  background: #f1f1f1;
-}
-
-input[type=text]:focus, input[type=password]:focus, input[type=email]:focus {
-  background-color: #ddd;
-  outline: none;
-}
-
-
-.clrbtn {
-  background-color: red;
-}
-.regbtn{
-  background-color: green;
-}
-
-.clrbtn,.regbtn{
-  float: left;
-  width: 50%;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  opacity: 0.9;
-}
 
 button:hover {
   opacity:1;
@@ -360,3 +324,61 @@ input{
      margin-right: 3px;
      padding-top: 3px;
 }
+
+.navbar-nav > li > .dropdown-menu {
+    background-color: beige;
+    width: fit-content;
+}
+
+.navbar-nav > li > .dropdown-menu > a{
+    width: 100%;
+}
+
+
+
+.input-group {
+    width: 50%;
+    margin-bottom: 4px;
+    margin-top: 2px;
+
+}
+
+.editinfo {
+    width: 100%;
+}
+
+.btn {
+    padding: 4px 4px 4px 4px;
+    display: block;
+    width: 200px;
+}
+
+
+
+.btn-secondary {
+    background-color: #616161;
+    color: white;
+}
+span.text-danger {
+    text-align:left;
+}
+
+
+@media (max-width: 768px) {
+    .btn-responsive {
+        padding: 2px 4px;
+        font-size: 60%;
+        line-height: 1;
+        width: 220px;
+    }
+}
+
+@media (min-width: 769px) {
+    .btn-responsive {
+        padding: 4px 9px;
+        font-size: 80%;
+        line-height: 1.2;
+        width: 400px;
+    }
+}
+
