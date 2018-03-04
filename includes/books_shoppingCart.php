@@ -15,7 +15,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         <link rel="stylesheet" href="css/cart_styles.css">
     </head></head>
 
-    <form method="get">
+    <form method="post">
         <?php
         // output data of each row
         $numRows;
@@ -39,7 +39,6 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
 
             for ($i = 0; $dataTableRow = $dataTable->fetch_assoc(); $i++) {
                 ?>
-
                 <div class = "cart_book_container">
                     <div class = "cart_book_cover"><img src = "<?php echo $dataTableRow["b_picture"] ?>" class = "cover_img"></div>
                     <div class = "cart_book_rate"> <img src = "images/<?php echo $dataTableRow["b_rate"] ?>stars.png"></div>
@@ -61,7 +60,6 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                            name="id_<?php echo $i ?>"
                            value="<?php echo $dataTableRow["book_id"] ?>" 
                            hidden="true" />
-
                 </div>
                 <?php
             }
@@ -75,14 +73,18 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
             echo '</div>';
         }
         ?>
-
     </form>
 
+    <form method="post">
+        
+    </form>
+    
     <?php
-    if (isset($_GET['cart_update'])) {
+    //Update book quantities
+    if (isset($_POST['cart_update'])) {
         for ($i = 0; $i < $numRows; $i++) {
-            $bookId = $_GET['id_' . $i];
-            $toUpdateQuantity = $_GET['quantity_' . $i];
+            $bookId = $_POST['id_' . $i];
+            $toUpdateQuantity = $_POST['quantity_' . $i];
 
             $updateQuery = ""
                     . "UPDATE books_users b"
@@ -111,7 +113,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         <?php
     }
 } else {
-    echo "0 results";
+    echo "Empty Cart";
 }
 mysqli_close($mysqli);
 ?>
