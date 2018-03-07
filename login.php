@@ -64,12 +64,15 @@ if (isset($_POST['login'])) {
 
         if ($count == 1) {
             $_SESSION['user'] = $row['user_id_number'];
-            phpAlert("Login Successful! User ID: " . $_SESSION['user']);
             header("Location: home.php");
         } else {
-            phpAlert("Incorrect Credentials, Try again...");
+			$errTyp = "danger";
+            $errMSG = "Incorrect Credentials, Try again...";
         }
-    }
+    } else{
+	
+
+	}
 }
 ?>
 
@@ -95,6 +98,7 @@ if (isset($_POST['login'])) {
         <?php
         require "header.php";
         ?>
+		<div class="hd_container" >
         <div id=main_image>
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
@@ -104,9 +108,9 @@ if (isset($_POST['login'])) {
 
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
-
+				<div class="col-lg-12">
                 <div class="form-group"><div class=section_title>
-                        <h1>Login to Your Account</h1>
+                        <h2>Login to Your Account</h2>
                     </div>
                 </div>
 
@@ -114,56 +118,74 @@ if (isset($_POST['login'])) {
                     <hr />
                 </div>
 
+				<?php
+						if ( isset($errMSG) ) {
+						
+							?>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Email</b></label>
-                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
-                        if (isset($email)) {
-                            echo $email;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($emailError)) {
-                            echo $emailError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Password</b></label>
-                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($passwordError)) {
-                            echo $passwordError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <hr />
-                </div>
-                <button type="submit" name="login" class="btn btn-primary btn-block">Login</button>
-                <button type="reset"  name="clear" class="btn btn-warning btn-block">Clear</button>
+							<div class="form-group">
+							<div class="input-group">
+            				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+							</div>
+            				</div>
+							</div>
+							<?php
+						}
+				?>
 
 
                 <div class="form-group">
-                    <hr />
-                </div>
+						<div class="input-group">
 
-                <div class="form-group">
-                    <a href="register.php">Sign Up Here...</a>
-                </div>
+							<input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+							if (isset($email)) {
+								echo $email;
+							}
+							?>"  />
+						
+							<br><span class="text-danger"><?php
+							if (isset($emailError)) {
+								echo $emailError;
+							}
+							?></span>
+					</div></div>
+
+					<div class="form-group">
+						<div class="input-group">
+
+							<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+						
+							<br><span class="text-danger"><?php
+							if (isset($passwordError)) {
+								echo $passwordError;
+							}
+							?></span>
+					</div></div>
 
 
 
+				<div class="form-group text-center">
+
+					<div class="btn-group" Style="margin-bottom: 5px;">
+					<button type="submit" name="login" class="btn btn-primary" Style="width: 200px;"/>Login</button>
+					<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
+					</div>
+					<br>
+					<div class="btn-group">
+					<a href="register.php" class="btn btn-secondary btn-block" Style="width: 400px;"/>Don't Have an Account? Sign Up Now</a>
+					</div>
+
+
+
+					</div>
+
+			</div>
 
             </form>
 
         </div>  
+		</div>
 
         <div id="end_body"></div>  
     </body>
