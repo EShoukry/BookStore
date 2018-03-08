@@ -33,7 +33,7 @@ if (mysqli_connect_error()) {
 
                 <?php
                 if(!isset($_POST['search']) || ($_POST['search']==''))
-                   echo '0 Results for this serch';
+                   echo '0 Results for this search';
                 else{
                     //Query to get the book information
                 
