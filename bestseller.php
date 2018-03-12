@@ -9,8 +9,8 @@ if (mysqli_connect_error()) {
 }
 
 //Getting the information send by the forms related to the pages and sorting 
-$sort_values = ['book title', 'author', 'price', 'book rating', 'release date'];
-$sort_sql_values = ['b_name', 'author_id', 'b_price', 'b_rate', 'b_release'];
+$sort_values = ['book title --- A-Z','book title --- Z-A', 'author --- A-Z', 'author --- Z-A', 'price --- Low-High','price --- High-Low', 'book rating --- Low-High', 'book rating --- High-Low','release date --- Old-New', 'release date --- New-Old'];
+$sort_sql_values = ['b_name', 'b_name', 'author_id', 'author_id', 'b_price', 'b_price','b_rate', 'b_rate', 'b_release', 'b_release'];
 $pages_values = ['10', '20', '100'];
 
 
@@ -103,7 +103,7 @@ if (isset($_POST['bt_1'])) {  //First page case
                         echo 'onchange="this.form.submit()">' . ($i == 2 ? 'all' : $pages_values[$i]);
                     }
 
-//Query to get the book information
+                    //Query to get the book information
                     if ($sort_sql_values[$sort] == 'author_id') {
                         $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY books.b_times_sold DESC, authors.a_name");
                     } else {
@@ -135,11 +135,19 @@ if (isset($_POST['bt_1'])) {  //First page case
 
 
                 <?php
-//Query to get the book information
+                //Query to get the book information
                 if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY books.b_times_sold DESC, authors.a_name        LIMIT " . $initial_row . "," . $offset);
+                     if($sort%2==0){
+                        $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY books.b_times_sold DESC, authors.a_name ASC LIMIT " . $initial_row . "," . $offset);
+                     }else{
+                         $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY books.b_times_sold DESC, authors.a_name DESC LIMIT " . $initial_row . "," . $offset);
+                     }
                 } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY books.b_times_sold DESC," . $sort_sql_values[$sort] . " LIMIT " . $initial_row . "," . $offset);
+                     if($sort%2==0){
+                         $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY books.b_times_sold DESC," . $sort_sql_values[$sort] . " ASC LIMIT " . $initial_row . "," . $offset);
+                     }else{
+                         $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY books.b_times_sold DESC," . $sort_sql_values[$sort] . " DESC LIMIT " . $initial_row . "," . $offset);
+                     }
                 }
 
 
