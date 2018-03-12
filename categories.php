@@ -9,8 +9,8 @@ if (mysqli_connect_error()) {
 }
 
 //Getting the information send by the forms related to the pages and sorting 
-$sort_values = ['book title', 'author', 'price', 'book rating', 'release date'];
-$sort_sql_values = ['b_name', 'author_id', 'b_price', 'b_rate', 'b_release'];
+$sort_values = ['book title --- A-Z','book title --- Z-A', 'author --- A-Z', 'author --- Z-A', 'price --- Low-High','price --- High-Low', 'book rating --- Low-High', 'book rating --- High-Low','release date --- Old-New', 'release date --- New-Old'];
+$sort_sql_values = ['b_name', 'b_name', 'author_id', 'author_id', 'b_price', 'b_price','b_rate', 'b_rate', 'b_release', 'b_release'];
 $pages_values = ['10', '20', '100'];
 
 
@@ -82,26 +82,7 @@ if (isset($_POST['pages'])) {
 
 
         </div>
-        <section>
-            <div class=section_title><h1> New Releases</h1></div>
-            <hr>
-            <div id="new_releases" class="book_genre">  
-
-
-                <?php
-                //Query to get the book information
-                if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_is_new='1' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name LIMIT " . $pages_values[$page]);
-                } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books WHERE b_is_new='1' ORDER BY " . $sort_sql_values[$sort] . " LIMIT " . $pages_values[$page]);
-                }
-
-                $GLOBALS["result"] = $result;
-                require "includes/books_shown.php";
-                ?>
-
-            </div> 
-        </section>
+        
 
         <section>
             <div class=section_title><h1> Fantasy</h1></div>
@@ -111,9 +92,17 @@ if (isset($_POST['pages'])) {
                 <?php
                 //Query to get the book information
                 if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Fantasy' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name LIMIT " . $pages_values[$page]);
+                    if($sort%2==0){
+                        $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Fantasy' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name ASC LIMIT " . $pages_values[$page]);
+                    }else{
+                         $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Fantasy' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name DESC LIMIT " . $pages_values[$page]);
+                    }
                 } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Fantasy' ORDER BY " . $sort_sql_values[$sort] . " LIMIT " . $pages_values[$page]);
+                     if($sort%2==0){
+                         $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Fantasy' ORDER BY " . $sort_sql_values[$sort] . " ASC LIMIT " . $pages_values[$page]);
+                     }else{
+                         $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Fantasy' ORDER BY " . $sort_sql_values[$sort] . " DESC LIMIT " . $pages_values[$page]);   
+                     }
                 }
 
 
@@ -132,9 +121,17 @@ if (isset($_POST['pages'])) {
                 <?php
                 //Query to get the book information
                 if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Health_Fitness' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name LIMIT " . $pages_values[$page]);
+                     if($sort%2==0){
+                         $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Health_Fitness' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name ASC LIMIT " . $pages_values[$page]);
+                     }else{
+                          $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Health_Fitness' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name DESC LIMIT " . $pages_values[$page]);
+                     }
                 } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Health_Fitness' ORDER BY " . $sort_sql_values[$sort] . " LIMIT " . $pages_values[$page]);
+                    if($sort%2==0){
+                        $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Health_Fitness' ORDER BY " . $sort_sql_values[$sort] . " ASC LIMIT " . $pages_values[$page]);
+                    }else{
+                         $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Health_Fitness' ORDER BY " . $sort_sql_values[$sort] . " DESC LIMIT " . $pages_values[$page]);
+                    }
                 }
 
 
@@ -153,9 +150,17 @@ if (isset($_POST['pages'])) {
                 <?php
                 //Query to get the book information
                 if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Science Fiction' AND b_genre='Fantasy' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name LIMIT " . $pages_values[$page]);
+                    if($sort%2==0){
+                        $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Science Fiction'AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name ASC LIMIT " . $pages_values[$page]); 
+                    }else{
+                        $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE b_genre='Science Fiction' AND books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name DESC LIMIT " . $pages_values[$page]);
+                    }
                 } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Science Fiction' ORDER BY " . $sort_sql_values[$sort] . " LIMIT " . $pages_values[$page]);
+                    if($sort%2==0){
+                        $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Science Fiction' ORDER BY " . $sort_sql_values[$sort] . " ASC LIMIT " . $pages_values[$page]);
+                    }else{
+                        $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate, b_genre FROM books WHERE b_genre='Science Fiction' ORDER BY " . $sort_sql_values[$sort] . " DESC LIMIT " . $pages_values[$page]);
+                    }
                 }
 
 
