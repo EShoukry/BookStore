@@ -123,7 +123,7 @@ if (isset($_POST['edit'])) {
 				<div class="card">
 				<div class="card-header" id="heading<?php echo ($x + 1)?>">
 				  <h5 class="mb-0 text-center">
-					<button class="btn btn-light" data-toggle="collapse" data-target="#collapse<?php echo ($x + 1)?>" aria-expanded="true" aria-controls="collapse<?php echo ($x + 1)?>">
+					<button class="btn btn-info" data-toggle="collapse" data-target="#collapse<?php echo ($x + 1)?>" aria-expanded="true" aria-controls="collapse<?php echo ($x + 1)?>">
 					  Address #<?php echo ($x + 1) ?>&nbsp;<span class="caret"></span>
 					</button>
 				  </h5>
@@ -131,12 +131,12 @@ if (isset($_POST['edit'])) {
 
 				<div id="collapse<?php echo ($x + 1)?>" class="collapse" aria-labelledby="heading<?php echo ($x + 1)?>" data-parent="#accordion">
 				  <div class="card-body">
-					<div class="form-group ">
+					<div class="form-group text-center">
 						<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
 						<div class="input-group" >
-						<div class="row">
-							<div class="col-sm-8">
+							<div class="row">
+							
 							<input type="hidden" name="add_id" value="<?php echo $addRow['address_id']?>">
 							<?php
 								$addMSG = $addRow['fname'] . " " . $addRow['lname'] . "\n" . $addRow['line1'] . "\n";
@@ -154,14 +154,15 @@ if (isset($_POST['edit'])) {
 								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
 							</div>
-							<div class="col-sm-4">
-							<div class="btn-group-vertical ">
+							<hr/>
+							<div class="row">
+							<div class="btn-group-horizontal text-center">
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
 								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
 							</div>
 							</div>
 						</div>
-						</div>
+						
 						</form>
 					</div>
 				  </div>

@@ -131,18 +131,18 @@ if (isset($_POST['edit'])) {
 
 				<div id="collapse<?php echo ($x + 1)?>" class="collapse" aria-labelledby="heading<?php echo ($x + 1)?>" data-parent="#accordion">
 				  <div class="card-body">
-					<div class="form-group ">
+					<div class="form-group text-center">
 						<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
 						<div class="input-group" >
-						<div class="row">
+							<div class="row">
 							
 							<input type="hidden" name="CC_id" value="<?php echo $CCRow['CC_id']?>">
 							<?php
 								$expmm = ($CCRow['CC_expmm'] < 10 ? "0" . $CCRow['CC_expmm'] : $CCRow['CC_expmm']);
 								
 
-								$CCMSG = $CCRow['CC_title'] . "\nEnding in x" . $CCRow['CC_four'] . "\n" . $expmm . "/" . $CCRow['CC_expyy'] . "\n";
+								$CCMSG = "Ending in x" . $CCRow['CC_four'] . "\n" . $expmm . "/" . $CCRow['CC_expyy'] . "\n";
 
 								
 								echo nl2br ($CCMSG);
@@ -183,7 +183,7 @@ if (isset($_POST['edit'])) {
 							</div>
 							</div>
 						</div>
-						</div>
+					
 						</form>
 					</div>
 				  </div>
