@@ -29,6 +29,8 @@ $count = mysqli_num_rows($res);
 
 if (isset($_POST['edit'])) {
 	phpAlert("Edit Pressed for " . $_POST['add_id']);
+	header("Location: addressedit.php?addid=" . $_POST['add_id']);
+    exit;
 } else if(isset($_POST['delete'])){
 
 	$query = "DELETE FROM `address` WHERE `address_id` = " . $_POST['add_id'] . " AND user_id =" . $_SESSION['user'];
