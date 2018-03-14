@@ -41,3 +41,4 @@ ALTER TABLE `credit_card`
 --
 ALTER TABLE `credit_card`
   ADD CONSTRAINT `fk_user_creditcard` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id_number`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_address_creditcard` FOREIGN KEY (`add_id`) REFERENCES `address` (`address_id`) ON DELETE CASCADE ON UPDATE CASCADE;
