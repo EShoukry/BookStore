@@ -17,7 +17,7 @@
 							<a class="dropdown-item btn btn-link" href="manageaddress.php">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Manage Addresses
 							</a><br>
-							<a class="dropdown-item btn btn-link";href="#">
+							<a class="dropdown-item btn btn-link" href="manageCC.php">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Manage Payment Methods
 							</a>
 							<hr style="margin-top: 5px; margin-bottom: 5px;"/>

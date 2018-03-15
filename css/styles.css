@@ -382,3 +382,11 @@ span.text-danger {
     }
 }
 
+.caret{
+    background-color:inherit;
+}
+
+option{
+    background-color:#fff;
+}
+
