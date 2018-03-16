@@ -98,6 +98,17 @@ Book container
 }
 
 /*====================
+HTML Forms
+====================*/
+.wishlist_form {
+	overflow: auto;
+}
+
+.shopping_cart_form {
+	overflow: auto;
+}
+
+/*====================
 Review container
 ====================*/
 .cart_review_container{
