@@ -45,10 +45,9 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     }
     ?>
 
-    <h2>Items in Cart</h2>
-
     <!--Form for displaying logged in user's shopping cart-->
-    <form method="post">
+    <form method="post" class="shopping_cart_form">
+        <h2>Items in Cart</h2>
         <?php
         $cartSubtotalAmount = 0;
 
@@ -118,10 +117,9 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         ?>
     </form>
 
-    <h2>Items in Wishlist</h2>
-
     <!--Form for displaying logged in user's wishlist-->
-    <form method="post">
+    <form method="post" class="wishlist_form">
+        <h2>Items in Wishlist</h2>
         <?php
         //Query to obtain all data for shopping cart output
         $wishlistDataTable = $mysqli->query(""
