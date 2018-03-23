@@ -1,5 +1,5 @@
-			<nav class="navbar navbar-light bg-faded" style="background-color: biege">
-			<div class="container">
+			<nav class="navbar navbar-light bg-faded">
+			<div class="container" style="width:100%">
 			<ul class="nav navbar-nav navbar-right">
 					<li class="nav-item dropdown nohover">
 						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

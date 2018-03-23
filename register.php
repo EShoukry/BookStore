@@ -310,10 +310,9 @@ if (isset($_POST['regbtn'])) {
         <?php
         require "header.php";
         ?>
-		<div class="hd_container" >
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+		<div class="wrapper backAsImg">
+		<div class="container userContainer">
+
 		
 		
 			<div id="login-form">
@@ -530,7 +529,7 @@ if (isset($_POST['regbtn'])) {
 				</form>
 			</div>
 		</div>
-
+		</div>
 
         <div id="end_body"></div>  
     </body>

@@ -390,3 +390,13 @@ option{
     background-color:#fff;
 }
 
+.backAsImg {
+    background-image: url("/images/index.jpeg");
+    background-color: inherit;
+    background-size: cover;
+}
+
+.userContainer {
+    background-color: beige;
+    width: 75%;
+}
