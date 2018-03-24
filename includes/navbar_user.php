@@ -2,7 +2,7 @@
 			<div class="container" style="width:100%">
 			<ul class="nav navbar-nav navbar-right">
 					<li class="nav-item dropdown nohover">
-						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a href="#" class="btn nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="glyphicon glyphicon-th-list"></span>&nbsp;<span class="caret"></span>
 						</a>
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
