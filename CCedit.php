@@ -14,11 +14,11 @@ if (!isset($_SESSION['user'])) {
 	$userid = $_SESSION['user'];
 }
 
-if (!isset($_GET['addid'])){
-	header("Location: manageaddress.php");
+if (!isset($_GET['CCid'])){
+	header("Location: manageCC.php");
 	exit;
 }else{
-	$addid = $_GET['addid'];
+	$CCid = $_GET['CCid'];
 }
 
 // Create connection
@@ -206,7 +206,7 @@ if (isset($_POST['addbtn'])) {
 	$primaryAdd = $addRow['p_address'];
 
 	} else{
-		header("Location: manageaddress.php");
+		header("Location: manageCC.php");
 		exit;
 	}
 
@@ -233,12 +233,10 @@ if (isset($_POST['addbtn'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 	<?php
         require "includes/navbar_user.php";

@@ -3,9 +3,8 @@
     "",
     "\\css",
     "\\images",
-    "\\includes",
-    "\\sql"
+    "\\includes"
   ],
-  "SelectedNode": "\\register.php",
+  "SelectedNode": "\\sql",
   "PreviewInSolutionExplorer": false
 }
