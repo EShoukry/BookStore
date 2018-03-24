@@ -194,6 +194,12 @@ button{
     font-size: 15px;
 }
 
+.book_input_add_to_cart {
+	display: inline-block;
+	height: 22px;
+	width: 22px;
+}
+
 .book_rate{
     padding-left: 10px;
     display: inline-block;
@@ -389,4 +395,3 @@ span.text-danger {
 option{
     background-color:#fff;
 }
-

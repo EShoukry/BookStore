@@ -1,5 +1,10 @@
- <?php 
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="scripts/js/buttonClick.js"></script>
+</head> 
 
+<?php 
+          session_start();
           if (!$GLOBALS["result"]) {
                 die('Invalid Query: ' . mysql_error());
             }
@@ -33,7 +38,19 @@
                     
                     echo '</div>';        
                     echo '<div class="book_rate"><img src="images/'.$row["b_rate"].'stars.png"></div>';           
-                    echo '<div class="book_price">$'.$row["b_price"].'</div>';       
+                    echo '<div class="book_price">$'.$row["b_price"].'</div>';  
+                    
+                    
+                    if (isset($_SESSION['user']) != "") {
+                        echo $_SESSION["user"];
+                        ?>
+                        <input class="book_input_add_to_cart" 
+                               type="image" 
+                               src="images/shoppingCartAdd.png" 
+                               onclick="addBookToUserCart(<?php echo $row["book_id"] ?>, <?php echo $_SESSION['user']; ?> ,false)"/>
+                        
+                        <?php
+                    }
                     echo '</div>' ;     
                 }
             } else {
