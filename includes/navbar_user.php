@@ -1,8 +1,8 @@
-			<nav class="navbar navbar-light bg-faded" style="background-color: biege">
-			<div class="container">
+			<nav class="navbar navbar-light bg-faded">
+			<div class="container" style="width:100%">
 			<ul class="nav navbar-nav navbar-right">
 					<li class="nav-item dropdown nohover">
-						<a href="#" class="nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<a href="#" class="btn nav-link dropdown-toggle" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 							<span class="glyphicon glyphicon-th-list"></span>&nbsp;<span class="caret"></span>
 						</a>
 						<div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink" >
@@ -17,7 +17,7 @@
 							<a class="dropdown-item btn btn-link" href="manageaddress.php">
 								<span class="glyphicon glyphicon-envelope"></span>&nbsp;Manage Addresses
 							</a><br>
-							<a class="dropdown-item btn btn-link";href="#">
+							<a class="dropdown-item btn btn-link" href="manageCC.php">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Manage Payment Methods
 							</a>
 							<hr style="margin-top: 5px; margin-bottom: 5px;"/>

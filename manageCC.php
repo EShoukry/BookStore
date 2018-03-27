@@ -22,24 +22,24 @@ if (mysqli_connect_error()) {
 
 
 //select logged in user's info
-$addressquery = "SELECT * FROM address WHERE user_id =" . $_SESSION['user'];
-$res = mysqli_query($mysqli, $addressquery);
-$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+$CCquery = "SELECT * FROM credit_card WHERE user_id =" . $_SESSION['user'];
+$res = mysqli_query($mysqli, $CCquery);
+$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 $count = mysqli_num_rows($res);
 
 if (isset($_POST['edit'])) {
-	phpAlert("Edit Pressed for " . $_POST['add_id']);
-	header("Location: addressedit.php?addid=" . $_POST['add_id']);
+	phpAlert("Edit Pressed for " . $_POST['CC_id']);
+	header("Location: CCedit.php?CCid=" . $_POST['CC_id']);
     exit;
 } else if(isset($_POST['delete'])){
 
-	$query = "DELETE FROM `address` WHERE `address_id` = " . $_POST['add_id'] . " AND user_id =" . $_SESSION['user'];
+	$query = "DELETE FROM `credit_card` WHERE `CC_id` = " . $_POST['CC_id'] . " AND user_id =" . $_SESSION['user'];
 	$res = mysqli_query($mysqli, $query);
 	if($res){
 		$errTyp = "success";
 		$errMSG = "Delete Success";
-		$res = mysqli_query($mysqli, $addressquery);
-		$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+		$res = mysqli_query($mysqli, $CCquery);
+		$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 		$count = mysqli_num_rows($res);
 	} else {
 		$errTyp = "danger";
@@ -56,7 +56,7 @@ if (isset($_POST['edit'])) {
 <html>
     <head>
         <meta charset="utf-8">    
-        <title>Add/Edit Addresses</title>
+        <title>Add/Edit Payment Methods</title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
 		<!-- BootStrap Import from CDN-->
@@ -74,14 +74,13 @@ if (isset($_POST['edit'])) {
 
 
 
-
 	
 	<div class="wrapper backAsImg">
 	<div class="container userContainer">
     
 
     	<div class="page-header">
-    	<div class=section_title><h3>Add/Edit Addresses</h3></div>
+    	<div class=section_title><h3>Add/Edit Payment Mehtods</h3></div>
     	</div>
 		<?php
 							if ( isset($errMSG) ) {
@@ -121,7 +120,7 @@ if (isset($_POST['edit'])) {
 				<div class="card-header" id="heading<?php echo ($x + 1)?>">
 				  <h5 class="mb-0 text-center">
 					<button class="btn btn-info" data-toggle="collapse" data-target="#collapse<?php echo ($x + 1)?>" aria-expanded="true" aria-controls="collapse<?php echo ($x + 1)?>">
-					  Address #<?php echo ($x + 1) ?>&nbsp;<span class="caret"></span>
+					  <?php echo $CCRow['CC_title'] ?>&nbsp;<span class="caret"></span>
 					</button>
 				  </h5>
 				</div>
@@ -134,8 +133,28 @@ if (isset($_POST['edit'])) {
 						<div class="input-group" >
 							<div class="row">
 							
-							<input type="hidden" name="add_id" value="<?php echo $addRow['address_id']?>">
+							<input type="hidden" name="CC_id" value="<?php echo $CCRow['CC_id']?>">
 							<?php
+								$expmm = ($CCRow['CC_expmm'] < 10 ? "0" . $CCRow['CC_expmm'] : $CCRow['CC_expmm']);
+								
+
+								$CCMSG = "Ending in x" . $CCRow['CC_four'] . "\n" . $expmm . "/" . $CCRow['CC_expyy'] . "\n";
+
+								
+								echo nl2br ($CCMSG);
+
+								echo ("Primary CC: ");
+								echo ($CCRow['p_CC'] ? "Yes" : "No");
+								?>
+							
+								<h4 class="text-center">Billing Address</h4>
+
+								<?php
+								$addressquery = "SELECT * FROM address WHERE address_id=". $CCRow['add_id'] . " AND user_id =" . $_SESSION['user'];
+								$addres = mysqli_query($mysqli, $addressquery);
+								$addRow = mysqli_fetch_array($addres, MYSQLI_BOTH);
+
+
 								$addMSG = $addRow['fname'] . " " . $addRow['lname'] . "\n" . $addRow['line1'] . "\n";
 								if($addRow['line2'] != ""){
 									$addMSG = $addMSG . $addRow['line2'] ."\n";
@@ -145,21 +164,22 @@ if (isset($_POST['edit'])) {
 								
 								echo nl2br ($addMSG);
 
-								echo ("Primary Address: ");
-								echo ($addRow['p_address'] ? "Yes" : "No");
 
-								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+
+
+								$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
+				
 							</div>
-							<hr/>
 							<div class="row">
 							<div class="btn-group-horizontal text-center">
+							<hr/>
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
 								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
 							</div>
 							</div>
 						</div>
-						
+					
 						</form>
 					</div>
 				  </div>
@@ -173,7 +193,7 @@ if (isset($_POST['edit'])) {
 		</div>
 		<div class="input-group text-center">
 		<div class="btn-group">
-			<a href="addressadd.php" class="btn btn-secondary" />Add New Address</a>
+			<a href="CCadd.php" class="btn btn-secondary" />Add New CC</a>
 		</div>
 		</div>
     </div>

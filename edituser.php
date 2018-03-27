@@ -215,14 +215,11 @@ if (isset($_POST['savebtn'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
 
 
 	
-	<div id="wrapper">
-	<div class="container" >
+	<div class="wrapper backAsImg">
+	<div class="container userContainer" >
     	<?php
         require "includes/navbar_user.php";
     ?>

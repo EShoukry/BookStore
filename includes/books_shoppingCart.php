@@ -17,11 +17,40 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         <link rel="stylesheet" href="css/cart_styles.css">
     </head></head>
 
-    <h2>Items in Cart</h2>
+    <?php
+    //Update book quantities
+    if (isset($_POST['cart_update'])) {
+        for ($i = 0; $i < $_SESSION['cart_num_rows']; $i++) {
+            $bookId = $_POST['id_' . $i];
+            $toUpdateQuantity = $_POST['quantity_' . $i];
+
+            $updateQuery = ""
+                    . "UPDATE books_users b"
+                    . " SET b.b_quantity = " . $toUpdateQuantity
+                    . " WHERE b.book_id = " . $bookId
+                    . " AND b.user_id = " . $userId;
+            if ($mysqli->query($updateQuery) == FALSE) {
+                echo "Error updating record: " . $mysqli->error;
+                error_log("Error updating record: " . $mysqli->error);
+                adad();
+            }
+            $updateDeleteQuery = ""
+                    . "DELETE FROM books_users"
+                    . " WHERE books_users.b_quantity = 0";
+            if ($mysqli->query($updateDeleteQuery) == FALSE) {
+                echo '<h4>Wishlist is Empty</h4>';
+                error_log("Error updating record: " . $mysqli->error);
+            }
+        }
+    }
+    ?>
 
     <!--Form for displaying logged in user's shopping cart-->
-    <form method="post">
+    <form method="post" class="shopping_cart_form">
+        <h2>Items in Cart</h2>
         <?php
+        $cartSubtotalAmount = 0;
+
         //Query to obtain all data for output
         $cartDataTable = $mysqli->query(""
                 . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, bu.b_quantity, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
@@ -32,7 +61,10 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                 . " AND bu.user_id = '" . $userId . "'"
                 . " GROUP BY b.book_id");
 
-        $cartNumRows = $cartDataTable->num_rows;
+        $cartNumRows = 0;
+        if ($cartDataTable != null) {
+            $cartNumRows = $cartDataTable->num_rows;
+        }
 
         // output data of each row
 
@@ -41,6 +73,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         }
         for ($i = 0; $i < $cartNumRows; $i++) {
             $dataTableRow = $cartDataTable->fetch_assoc();
+            $cartSubtotalAmount += $dataTableRow["b_price"] * $dataTableRow["b_quantity"];
             ?>
             <div class = "cart_book_container">
                 <div class = "cart_book_cover"><img src = "<?php echo $dataTableRow["b_picture"] ?>" class = "cover_img"></div>
@@ -70,20 +103,26 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
 
         <?php
         if ($cartNumRows > 0) {
-            echo '<div class="cart_review_container">';
-            echo '<input type="submit" name="cart_update" value="update" />';
-            echo '</div>';
+            $_SESSION['cart_num_rows'] = $cartNumRows;
+            ?>
+
+            <div class="cart_review_container">
+                <h2>Subtotal: </h2> 
+                <h1><?php echo "$" . $cartSubtotalAmount; ?> </h1>
+                <input class ="cart_review_input_update" type="submit" name="cart_update" value="update" />
+            </div>
+
+            <?php
         }
         ?>
     </form>
 
-    <h2>Items in Wishlist</h2>
-
     <!--Form for displaying logged in user's wishlist-->
-    <form method="post">
+    <form method="post" class="wishlist_form">
+        <h2>Items in Wishlist</h2>
         <?php
         //Query to obtain all data for shopping cart output
-        $dataTable = $mysqli->query(""
+        $wishlistDataTable = $mysqli->query(""
                 . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
                 . " FROM books_authors ba, authors a, books b, wishlist w"
                 . " WHERE b.book_id = ba.book_id"
@@ -92,26 +131,30 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                 . " AND w.user_id = '" . $userId . "'"
                 . " GROUP BY b.book_id");
 
-        $numRows = $dataTable->num_rows;
-        if ($numRows == 0) {
+        $wishlistNumRows = 0;
+        if ($wishlistDataTable != null) {
+            $wishlistNumRows = $wishlistDataTable->num_rows;
+        }
+
+        if ($wishlistNumRows == 0) {
             echo '<h4>Wishlist is Empty</h4>';
         }
 
         // output data of each row
-        for ($i = 0; $i < $numRows; $i++) {
-            $dataTableRow = $dataTable->fetch_assoc();
+        for ($i = 0; $i < $wishlistNumRows; $i++) {
+            $wishlistDataTableRow = $wishlistDataTable->fetch_assoc();
             ?>
             <div class = "cart_book_container">
-                <div class = "cart_book_cover"><img src = "<?php echo $dataTableRow["b_picture"] ?>" class = "cover_img"></div>
-                <div class = "cart_book_rate"> <img src = "images/<?php echo $dataTableRow["b_rate"] ?>stars.png"></div>
-                <div class = "cart_book_name"><span>title</span><?php echo $dataTableRow["b_name"] ?> </div>
-                <div class = "cart_book_author"><span>author</span><?php echo $dataTableRow["a_name"] ?> </div>
+                <div class = "cart_book_cover"><img src = "<?php echo $wishlistDataTableRow["b_picture"] ?>" class = "cover_img"></div>
+                <div class = "cart_book_rate"> <img src = "images/<?php echo $wishlistDataTableRow["b_rate"] ?>stars.png"></div>
+                <div class = "cart_book_name"><span>title</span><?php echo $wishlistDataTableRow["b_name"] ?> </div>
+                <div class = "cart_book_author"><span>author</span><?php echo $wishlistDataTableRow["a_name"] ?> </div>
                 <div class = "cart_book_price"><span>price</span>
-                    $<?php echo $dataTableRow["b_price"] ?>
+                    $<?php echo $wishlistDataTableRow["b_price"] ?>
                 </div>
                 <input size="1"
                        name="id_<?php echo $i ?>"
-                       value="<?php echo $dataTableRow["book_id"] ?>" 
+                       value="<?php echo $wishlistDataTableRow["book_id"] ?>" 
                        hidden="true" />
             </div>
             <?php
@@ -120,38 +163,6 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     </form>
 
     <?php
-    //Update book quantities
-    if (isset($_POST['cart_update'])) {
-        for ($i = 0; $i < $numRows; $i++) {
-            $bookId = $_POST['id_' . $i];
-            $toUpdateQuantity = $_POST['quantity_' . $i];
-
-            $updateQuery = ""
-                    . "UPDATE books_users b"
-                    . " SET b.b_quantity = " . $toUpdateQuantity
-                    . " WHERE b.book_id = " . $bookId
-                    . " AND b.user_id = " . $userId;
-            if ($mysqli->query($updateQuery) == FALSE) {
-                echo "Error updating record: " . $mysqli->error;
-                error_log("Error updating record: " . $mysqli->error);
-                adad();
-            }
-            $updateDeleteQuery = ""
-                    . "DELETE FROM books_users"
-                    . " WHERE books_users.b_quantity = 0";
-            if ($mysqli->query($updateDeleteQuery) == FALSE) {
-                echo "Error updating record: " . $mysqli->error;
-                error_log("Error updating record: " . $mysqli->error);
-                adad();
-            }
-        }
-        ?>
-        <script>
-            window.location.reload();
-            window.location.href = window.location.href.split('?')[0];
-        </script>
-        <?php
-    }
 } else {
     echo "Empty Cart";
 }

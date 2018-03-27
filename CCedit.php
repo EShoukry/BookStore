@@ -10,6 +10,15 @@ function phpAlert($msg) {
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
+} else {
+	$userid = $_SESSION['user'];
+}
+
+if (!isset($_GET['CCid'])){
+	header("Location: manageCC.php");
+	exit;
+}else{
+	$CCid = $_GET['CCid'];
 }
 
 // Create connection
@@ -135,12 +144,12 @@ if (isset($_POST['addbtn'])) {
     } 
 	//add address information as primary(only) address upon session set.
 		if(!$error){
-				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
-								VALUES('" . $_SESSION['user'] . "', '$primaryAdd','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
+				$query = "UPDATE address SET p_address='$primaryAdd', fname='$firstname', lname='$lastname', line1='$address', line2='$address2', city='$city', state='$state', zip='$zipcode', country='$country' 
+								WHERE user_id='$userid' AND address_id='$addid'";
 				$res = mysqli_query($mysqli, $query);
 				if ($res) {
 					$errTyp = "success";
-					$errMSG = "Address Inserted Successfully!" . "\n" . $primaryAdd;
+					$errMSG = "Address Updated Successfully!";
 					unset($primaryAdd);
 					unset($firstname);
 					unset($lastname);
@@ -150,6 +159,7 @@ if (isset($_POST['addbtn'])) {
 					unset($state);
 					unset($zipcode);
 					unset($country);
+
 
 				}else{
 					$error = true;
@@ -163,7 +173,42 @@ if (isset($_POST['addbtn'])) {
         }
     }
 
+	$query = "SELECT * FROM address WHERE user_id ='$userid' AND address_id='$addid'";
+	$res = mysqli_query($mysqli, $query);
+	$count = mysqli_num_rows($res);
+	if($count == 1){
+	$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+	
+	$firstname = $addRow['fname'];
 
+
+    $lastname = $addRow['lname'];
+
+	
+    $address = $addRow['line1'];
+
+
+	$address2 = $addRow['line2'];
+
+
+    $city = $addRow['city'];
+
+
+    $state = $addRow['state'];
+
+
+    $zipcode = $addRow['zip'];
+
+
+    $country = $addRow['country'];
+
+
+	$primaryAdd = $addRow['p_address'];
+
+	} else{
+		header("Location: manageCC.php");
+		exit;
+	}
 
 ?>
 
@@ -171,7 +216,7 @@ if (isset($_POST['addbtn'])) {
 <html>
     <head>
         <meta charset="utf-8">    
-        <title>Add/Edit Addresses</title>
+        <title>Edit Address</title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
 		<!-- BootStrap Import from CDN-->
@@ -187,7 +232,8 @@ if (isset($_POST['addbtn'])) {
         require "header.php";
         ?>
 
-  
+
+
 	
 	<div class="wrapper backAsImg">
 	<div class="container userContainer">
@@ -216,7 +262,7 @@ if (isset($_POST['addbtn'])) {
 							?>
 
 		<div class="form-group ">
-		<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
+		<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?addid=<?php echo $addid; ?>" method="post" autocomplete="off">
 
 	<div class="col-sm-12 text-left">
 
@@ -252,7 +298,11 @@ if (isset($_POST['addbtn'])) {
 
 
 					<div class="input-group">
-						<input type="text" placeholder="Street Address, P.O. Box, Company Name, C/O" name="address1" class="form-control" maxlength="50" />
+						<input type="text" placeholder="Street Address, P.O. Box, Company Name, C/O" name="address1" class="form-control" maxlength="50" value="<?php
+						if (isset($address)) {
+							echo $address;
+						}
+						?>" />
 						
 						<br><span class="text-danger"><?php
 						if (isset($addressError)) {
@@ -261,7 +311,11 @@ if (isset($_POST['addbtn'])) {
 						?></span>
 					</div>
 					<div class="input-group">
-						<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" />
+						<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" value="<?php
+						if (isset($address2)) {
+							echo $address2;
+						}
+						?>" />
 						
 						<br><span class="text-danger"><?php
 						if (isset($address2Error)) {
@@ -301,7 +355,11 @@ if (isset($_POST['addbtn'])) {
 							echo $zipcode;
 						}
 						?>" />
-						<input type="text" placeholder="Country" name="country" class="form-control" Style="width: 50%;" maxlength="50" />
+						<input type="text" placeholder="Country" name="country" class="form-control" Style="width: 50%;" maxlength="50" value="<?php
+						if (isset($country)) {
+							echo $country;
+						}
+						?>" />
 								
 						<br><span class="text-danger" ><?php
 						if (isset($zipError)) {
@@ -321,15 +379,15 @@ if (isset($_POST['addbtn'])) {
 			<div class="input-group text-center">
 
 			<div class="form-check text-right">
-			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
+			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck" <?php if($primaryAdd) {echo "checked";}?>>
 			  <label class="form-check-label" for="primaryCheck">
-				New Priamry Address?
+				Priamry Address?
 			  <label>
 			</div>
 
 			<div class="btn-group" Style="margin-bottom: 5px;">
 			<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
-			<button type="submit" name="addbtn" class="btn btn-primary" Style="width: 200px;"/>Add Address</button>
+			<button type="submit" name="addbtn" class="btn btn-primary" Style="width: 200px;"/>Update Address</button>
 			</div>
 
 			<div class="btn-group">
