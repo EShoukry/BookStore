@@ -66,6 +66,18 @@ if (isset($_POST['login'])) {
 				$_SESSION['user'] = $row['user_id_number'];
 				header("Location: home.php");
 			}
+			else if (md5($password) == $row['u_password']){
+				$_SESSION['user'] = $row['user_id_number'];
+				$password = password_hash($password, PASSWORD_DEFAULT);
+				$query = "UPDATE users SET u_password='$password' WHERE user_id_number = '$row['user_id_number']'";
+				$res = mysqli_query($mysqli, $query);
+				if($res){
+					header("Location: home.php");
+				} else{
+					$errTyp = "danger";
+					$errMSG = "Error in updating password encryption method, Try again...";
+				}
+			}
 			else{
 				$errTyp = "danger";
 				$errMSG = "Incorrect credential for email, Try again...";
