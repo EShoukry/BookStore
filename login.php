@@ -55,19 +55,24 @@ if (isset($_POST['login'])) {
     // if there's no error, continue to signup
     if (!$error) {
 
-        $password = md5($password);
 
-        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email'";
         $res = mysqli_query($mysqli, $query);
         $row = mysqli_fetch_array($res, MYSQLI_BOTH);
         $count = mysqli_num_rows($res);
 
         if ($count == 1) {
-            $_SESSION['user'] = $row['user_id_number'];
-            header("Location: home.php");
+			if (password_verify($password, $row['u_password'])){
+				$_SESSION['user'] = $row['user_id_number'];
+				header("Location: home.php");
+			}
+			else{
+				$errTyp = "danger";
+				$errMSG = "Incorrect credential for email, Try again...";
+			}
         } else {
 			$errTyp = "danger";
-            $errMSG = "Incorrect Credentials, Try again...";
+            $errMSG = "Database corrupted, More than one instance of email...";
         }
     } else{
 	
