@@ -1,4 +1,4 @@
-DROP TABLE ` credit_card`;
+DROP TABLE `credit_card`;
 
 -- --------------------------------------------------------
 
@@ -48,8 +48,4 @@ ALTER TABLE `credit_card`
 ALTER TABLE `credit_card`
   ADD CONSTRAINT `fk_add_creditcard` FOREIGN KEY (`add_id`) REFERENCES `address` (`address_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_user_creditcard` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id_number`) ON DELETE CASCADE ON UPDATE CASCADE;
-COMMIT;
 
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -34,181 +34,74 @@ if (mysqli_connect_error()) {
 if (isset($_POST['addbtn'])) {
 	$error = false;
 	//Verify Input
-	$firstname = trim($_POST['firstname']);
-    $firstname = strip_tags($firstname);
-    $firstname = htmlspecialchars($firstname);
+	$addressid = $_POST['add_id'];
+	$p_CC = (isset($_POST['primaryCheck']) ? 1 : 0);
 
-    $lastname = trim($_POST['lastname']);
-    $lastname = strip_tags($lastname);
-    $lastname = htmlspecialchars($lastname);
+    $cc_title = trim($_POST['cc_title']);
+    $cc_title = strip_tags($cc_title);
+    $cc_title = htmlspecialchars($cc_title);
+
+
+	$month = trim($_POST['expmm']);
+    $month = strip_tags($month);
+    $month = htmlspecialchars($month);
+
+    $year = trim($_POST['expyy']);
+    $year = strip_tags($year);
+    $year = htmlspecialchars($year);
+
+
 	
-    $address = trim($_POST['address1']);
-    $address = strip_tags($address);
-    $address = htmlspecialchars($address);
 
-	$address2 = trim($_POST['address2']);
-    $address2 = strip_tags($address2);
-    $address2 = htmlspecialchars($address2);
-
-    $city = trim($_POST['city']);
-    $city = strip_tags($city);
-    $city = htmlspecialchars($city);
-
-    $state = trim($_POST['state']);
-    $state = strip_tags($state);
-    $state = htmlspecialchars($state);
-
-    $zipcode = trim($_POST['zipcode']);
-    $zipcode = strip_tags($zipcode);
-    $zipcode = htmlspecialchars($zipcode);
-
-    $country = trim($_POST['country']);
-    $country = strip_tags($country);
-    $country = htmlspecialchars($country);
-
-	$primaryAdd = (isset($_POST['primaryCheck']) ? 1 : 0);
-
-
-	if (empty($firstname)) {
-        $error = true;
-        $firstnameError = "Please enter your first name.";
-    } else if (strlen($firstname) < 3) {
-        $error = true;
-        $firstnameError = "First name must have atleat 3 characters.";
-    } else if (!ctype_alpha($firstname)) {
-        $error = true;
-        $firstnameError = "First name must contain alphabets.";
-    }
-
-    if (empty($lastname)) {
-        $error = true;
-        $lastnameError = "Please enter your last name.";
-    } else if (strlen($lastname) < 3) {
-        $error = true;
-        $lastnameError = "Last name must have atleat 3 characters.";
-    } else if (!ctype_alpha($lastname)) {
-        $error = true;
-        $firstnameError = "Last name must contain alphabets.";
-    }
-
-    if (empty($address)) {
-        $error = true;
-        $addressError = "Please enter your Street Address, P.O. Box, Company Name, C/O.";
-    } else if (strlen($address) < 3) {
-        $error = true;
-        $addressError = "Address must have atleat 3 characters.";
-    }
-
-	if (strlen($address2)>0 && strlen($address2) < 3) {
-        $error = true;
-        $address2Error = "Apt, Suite, Unit, Floor, etc. must have atleat 3 characters.";
-    }
-
-    if (empty($city)) {
-        $error = true;
-        $cityError = "Please enter your City.";
-    } else if (strlen($city) < 3) {
-        $error = true;
-        $cityError = "City must have atleat 3 characters.";
-    } else if (!ctype_alpha($city)) {
-        $error = true;
-        $cityError = "City must contain alphabets.";
-    }
-
-    if (empty($state)) {
-        $error = true;
-        $stateError = "Please enter your State/Province/Region.";
-    } else if (!ctype_alnum($state)) {
-        $error = true;
-        $stateError = "State/Province/Region must contain Alphanumericals only.";
-    }
-    $state = strtoupper($state);
-
-    if (empty($zipcode)) {
-        $error = true;
-        $zipError = "Please enter your Zip/Postal Code.";
-    } else if (strlen($zipcode) > 15) {
-        $error = true;
-        $zipError = "Zip/Postal Code must be less than 15 Alphanumericals.";
-    } else if (!ctype_alnum($zipcode)) {
-        $error = true;
-        $zipError = "Zip/Postal Code must contain Alphanumericals only.";
-    }
-
-	if (empty($country)) {
-        $error = true;
-        $countryError = "Please enter your Country.";
-    } else if (strlen($country) > 50) {
-        $error = true;
-        $countryError = "Country must be less than 15 Alphanumericals.";
-    } 
 	//add address information as primary(only) address upon session set.
 		if(!$error){
-				$query = "UPDATE address SET p_address='$primaryAdd', fname='$firstname', lname='$lastname', line1='$address', line2='$address2', city='$city', state='$state', zip='$zipcode', country='$country' 
-								WHERE user_id='$userid' AND address_id='$addid'";
+				$query = "UPDATE credit_card SET add_id = '$addressid', P_CC='$p_CC', CC_title='$cc_title', CC_expmm='$month', CC_expyy='$year' WHERE CC_id= '$CCid' AND user_id= '$userid'";
 				$res = mysqli_query($mysqli, $query);
 				if ($res) {
 					$errTyp = "success";
-					$errMSG = "Address Updated Successfully!";
-					unset($primaryAdd);
-					unset($firstname);
-					unset($lastname);
-					unset($address);
-					unset($address2);
-					unset($city);
-					unset($state);
-					unset($zipcode);
-					unset($country);
+					$errMSG = "CC Updated Successfully!";
+					unset($p_CC);
+					unset($cc_title);
+					unset($month);
+					unset($year);
+					unset($addressid);
+
 
 
 				}else{
 					$error = true;
 					$errTyp = "danger";
-					$errMSG = $errMSG . "Error In Address Insert, Please Enter Try Again...";
+					$errMSG = $errMSG . "Error In CC Insert, Please Enter Try Again...";
 				}
 
         } else {
             $errTyp = "danger";
             $errMSG = "Something went wrong, try again later...";
         }
-    }
+}
 
-	$query = "SELECT * FROM address WHERE user_id ='$userid' AND address_id='$addid'";
-	$res = mysqli_query($mysqli, $query);
-	$count = mysqli_num_rows($res);
-	if($count == 1){
-	$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+$query = "SELECT * FROM credit_card WHERE user_id ='$userid' AND CC_id='$CCid'";
+$res = mysqli_query($mysqli, $query);
+$count = mysqli_num_rows($res);
+if($count == 1){
+	$ccRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 	
-	$firstname = $addRow['fname'];
+	$addid = $ccRow['add_id'];
 
+    $title = $ccRow['CC_title'];
 
-    $lastname = $addRow['lname'];
+	$expmm = $ccRow['CC_expmm'];
 
-	
-    $address = $addRow['line1'];
+    $expyy = $ccRow['CC_expyy'];
 
+    $four = $ccRow['CC_four'];
 
-	$address2 = $addRow['line2'];
+	$primaryCC = $ccRow['p_CC'];
 
-
-    $city = $addRow['city'];
-
-
-    $state = $addRow['state'];
-
-
-    $zipcode = $addRow['zip'];
-
-
-    $country = $addRow['country'];
-
-
-	$primaryAdd = $addRow['p_address'];
-
-	} else{
+} else{
 		header("Location: manageCC.php");
 		exit;
-	}
+}
 
 ?>
 
@@ -243,7 +136,7 @@ if (isset($_POST['addbtn'])) {
     ?>
 
     <div class="page-header">
-    <div class=section_title><h3>Add New Address</h3></div>
+    <div class=section_title><h3>Edit Credit Card</h3></div>
     </div>
 	<?php
 							if ( isset($errMSG) ) {
@@ -262,136 +155,111 @@ if (isset($_POST['addbtn'])) {
 							?>
 
 		<div class="form-group ">
-		<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?addid=<?php echo $addid; ?>" method="post" autocomplete="off">
+		<form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>?CCid=<?php echo $CCid; ?>" method="post" autocomplete="off">
 
 	<div class="col-sm-12 text-left">
 
-<div class="input-group">
-									
-										<input type="text" placeholder="First Name" name="firstname" class="form-control" style="width:50%" maxlength="50" value="<?php
-										if (isset($firstname)) {
-											echo $firstname;
-										}
-										?>"  />
-								
-										
-									
-										
-										<input type="text" placeholder="Last Name" name="lastname" class="form-control" style="width:50%" maxlength="50" value="<?php
-										if (isset($lastname)) {
-											echo $lastname;
-										}
-										?>"  />
-										
-										<br<span class="text-danger"><?php
-										if (isset($firstnameError)) {
-											echo $firstnameError;
-										}
-										?></span>
-										<span class="text-danger"><?php
-										if (isset($lastnameError)) {
-											echo $lastnameError;
-										}
-										?></span>
-									</div>
+		<div class="input-group">
+			<input type="text" placeholder="Payment Title" name="cc_title" class="form-control" maxlength="50" value="<?php echo $title?>"/>
+		
+			<br><span class="text-danger"><?php
+			if (isset($cc_titleError)) {
+				echo $cc_titleError;
+			}
+			?></span>
+		</div>
 
-
-
-					<div class="input-group">
-						<input type="text" placeholder="Street Address, P.O. Box, Company Name, C/O" name="address1" class="form-control" maxlength="50" value="<?php
-						if (isset($address)) {
-							echo $address;
-						}
-						?>" />
+		<div class="input-group">
+		<div class="col-sm-4">
+			<input type="text" placeholder="last four" name="cc_num" class="form-control" maxlength="20" value="<?php echo "x" . $four; ?>" disabled/>
 						
-						<br><span class="text-danger"><?php
-						if (isset($addressError)) {
-							echo $addressError;
-						}
-						?></span>
-					</div>
-					<div class="input-group">
-						<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" value="<?php
-						if (isset($address2)) {
-							echo $address2;
-						}
-						?>" />
-						
-						<br><span class="text-danger"><?php
-						if (isset($address2Error)) {
-							echo $address2Error;
-						}
-						?></span>
-					</div>
-					<div class="input-group">
+			<br><span class="text-danger"><?php
+			if (isset($cc_numError)) {
+				echo $cc_numError;
+			}
+			?></span>
+		</div>
+		</div>
 
-						<input type="text" placeholder="City" name="city" class="form-control" Style="width: 50%;" maxlength="50" value="<?php
-						if (isset($city)) {
-							echo $city;
-						}
-						?>" />
+		<div class="input-group">
+							<div class="col-sm-4" style="padding-right:0px">
+							<label for="mm">Month</label>
+							<select class="form-control" id="mm" name="expmm">
+							<?php
+								for ($i=1; $i<=12; $i++)
+								{
+									?>
+										<option value="<?php echo $i;?>" <?php if ($expmm == $i) {echo " " . "selected";}?>><?php echo $i;?></option>
+									<?php
+								}
+							?>
+							</select>
 
-						<input type="text" placeholder="State/Province/Region" name="state" Style="width: 50%;" class="form-control" value="<?php
-						if (isset($state)) {
-							echo $state;
-						}
-						?>" />
 
-						<br><span class="text-danger"><?php
-						if (isset($cityError)) {
-							echo $cityError;
-						}
-						?></span>
+							</div>
+							<div class="col-sm-6" style="padding-left:0px">
+							<label for="yy">Year</label>
+							<select class="form-control" id= "yy" name="expyy" placeholder="Year">
+							<?php
+								for ($i=2018; $i<=2030; $i++)
+								{
+									?>
+										<option value="<?php echo $i;?>" <?php if ($expyy == $i) {echo " " . "selected";}?>><?php echo $i;?></option>
+									<?php
+								}
+							?>
+							</select>
+
+							</div>	
+
 								
-						<span class="text-danger"><?php
-						if (isset($stateError)) {
-							echo $stateError;
-						}
-						?></span>
-					</div>
-					<div class="input-group">
-						<input type="text" placeholder="Zip/Poastal Code" name="zipcode" class="form-control" Style="width: 50%;" value="<?php
-						if (isset($zipcode)) {
-							echo $zipcode;
-						}
-						?>" />
-						<input type="text" placeholder="Country" name="country" class="form-control" Style="width: 50%;" maxlength="50" value="<?php
-						if (isset($country)) {
-							echo $country;
-						}
-						?>" />
-								
-						<br><span class="text-danger" ><?php
-						if (isset($zipError)) {
-							echo $zipError;
-						}
-						?></span>
-						<span class="text-danger "><?php
-						if (isset($countryError)) {
-							echo $countryError;
-						}
-						?></span>
-					</div>
-				<br />
-				</div>
 
+									
+									
+
+					</div>
+					<hr/>
+			<div class="input-group">
+					<h4 class="text-center">Billing Address</h4>
+					<h5 class="text-center"><em>Choose one from the dropdown or add a new one first</em></h5>
+					
+					<select class="form-control" name="add_id">
+						<?php 
+						$addressquery = "SELECT * FROM address WHERE user_id =" . $_SESSION['user'];
+						$res = mysqli_query($mysqli, $addressquery);
+						$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+						$count = mysqli_num_rows($res);
+							for($i = 0; $i < $count; $i++){
+								?>
+								<option value="<?php echo $addRow['address_id'];?>" <?php if ($addid == $addRow['address_id']) {echo " " . "selected";}?>>  <?php 
+								$addmsg = $addRow['fname'] . " " . $addRow['lname'] . ", " . $addRow['line1'] . ", " . $addRow['zip'];
+								echo $addmsg;
+								?> 
+								</option>
+								<?php
+								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+							}
+
+						?>
+					  </select>
+					</div>
 
 			<div class="input-group text-center">
 
 			<div class="form-check text-right">
-			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck" <?php if($primaryAdd) {echo "checked";}?>>
+			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck" <?php if($primaryCC) {echo "checked";}?>>
 			  <label class="form-check-label" for="primaryCheck">
-				Priamry Address?
+				Priamry Credit Card?
 			  <label>
 			</div>
 
 			<div class="btn-group" Style="margin-bottom: 5px;">
 			<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
-			<button type="submit" name="addbtn" class="btn btn-primary" Style="width: 200px;"/>Update Address</button>
+			<button type="submit" name="addbtn" class="btn btn-primary" Style="width: 200px;"/>Update Card</button>
 			</div>
 
 			<div class="btn-group">
-				<a href="manageaddress.php" class="btn btn-secondary" Style="width: 400px;" />View Your Addresses</a>
+				<a href="manageCC.php" class="btn btn-secondary" Style="width: 400px;" />View Your Credit Cards</a>
 			</div>
 			
 			</div>
