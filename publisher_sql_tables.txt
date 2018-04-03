@@ -11,4 +11,4 @@ CREATE TABLE `publisher` (
  CREATE TABLE `author_publisher` (
  `pub_id` int(255) NOT NULL,
  `a_id` int(255) NOT NULL
- ) ENGINE=MyISAM DEFAULT CHARSET=utf
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
