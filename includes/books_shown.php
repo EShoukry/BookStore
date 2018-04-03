@@ -18,13 +18,13 @@
                     }
                     
                     echo '<div class="book_container">';
-                    echo '<div class="book_cover"><a href="details.php?b_id='.$row["book_id"].'"><img src="'.$row["b_picture"].'" class="cover_img"></div></a>';         
-                    echo '<div class="book_name"><a href="details.php?b_id='.$row["book_id"].'">'.$row["b_name"].'</a></div>';
+                    echo '<div class="book_cover"><a href="bookdetails.php?b_id='.$row["book_id"].'"><img src="'.$row["b_picture"].'" class="cover_img"></div></a>';         
+                    echo '<div class="book_name"><a href="bookdetails.php?b_id='.$row["book_id"].'">'.$row["b_name"].'</a></div>';
                     echo '<div class="book_author"><span>author</span>';
                     
                     $temp_count = $result1->num_rows;
                     while($row1 = $result1->fetch_assoc()){
-                        echo '<a href="details.php?a_id='.$row1["author_id"].'">'.$row1["a_name"].'</a>'; 
+                        echo '<a href="booksbyauthor.php?a_id='.$row1["author_id"].'">'.$row1["a_name"].'</a>'; 
                         if($temp_count >1){
                             echo ", ";
                             $temp_count--;
