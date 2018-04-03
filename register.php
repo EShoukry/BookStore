@@ -215,7 +215,7 @@ if (isset($_POST['regbtn'])) {
     }
 
     // password encrypt using md5();
-    $password = md5($password);
+    $password = password_hash($password, PASSWORD_DEFAULT);
 
     // if there's no error, continue to signup
     if (!$error) {
@@ -310,10 +310,9 @@ if (isset($_POST['regbtn'])) {
         <?php
         require "header.php";
         ?>
-		<div class="hd_container" >
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+		<div class="wrapper backAsImg">
+		<div class="container userContainer">
+
 		
 		
 			<div id="login-form">
@@ -530,7 +529,7 @@ if (isset($_POST['regbtn'])) {
 				</form>
 			</div>
 		</div>
-
+		</div>
 
         <div id="end_body"></div>  
     </body>

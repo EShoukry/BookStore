@@ -73,14 +73,10 @@ if (isset($_POST['edit'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
-
 
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 
     	<div class="page-header">
@@ -150,7 +146,7 @@ if (isset($_POST['edit'])) {
 								echo ("Primary CC: ");
 								echo ($CCRow['p_CC'] ? "Yes" : "No");
 								?>
-							
+								<hr style="width:60%;">
 								<h4 class="text-center">Billing Address</h4>
 
 								<?php

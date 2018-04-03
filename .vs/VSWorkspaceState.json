@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\css",
-    "\\includes"
+    "\\images",
+    "\\includes",
+    "\\sql"
   ],
-  "SelectedNode": "\\config.php",
+  "SelectedNode": "\\sql\\query2_irojas97.sql",
   "PreviewInSolutionExplorer": false
 }
