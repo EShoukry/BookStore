@@ -241,7 +241,7 @@ if (isset($_POST['addbtn'])) {
     ?>
 
     <div class="page-header">
-    <div class=section_title><h3>Add New Address</h3></div>
+    <div class=section_title><h3>Edit Address</h3></div>
     </div>
 	<?php
 							if ( isset($errMSG) ) {

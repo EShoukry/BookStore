@@ -215,7 +215,7 @@ if (isset($_POST['regbtn'])) {
     }
 
     // password encrypt using md5();
-    $password = md5($password);
+    $password = password_hash($password, PASSWORD_DEFAULT);
 
     // if there's no error, continue to signup
     if (!$error) {

@@ -146,7 +146,7 @@ if (isset($_POST['edit'])) {
 								echo ("Primary CC: ");
 								echo ($CCRow['p_CC'] ? "Yes" : "No");
 								?>
-							
+								<hr style="width:60%;">
 								<h4 class="text-center">Billing Address</h4>
 
 								<?php
