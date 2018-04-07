@@ -43,6 +43,15 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
             }
         }
     }
+    if (isset($_POST['add_book_to_cart'])) { //if adding book from main page
+        $bookId = $_POST["book_id"];
+        $userId = $_POST["user_id"];
+
+        $insertQuery = "INSERT INTO books_users (book_id, user_id, b_quantity)"
+        . " VALUES (" . $bookId . "," . $userId . "," . 1 . ");";
+
+        $mysqli->query($insertQuery);
+    }
     ?>
 
     <!--Form for displaying logged in user's shopping cart-->
