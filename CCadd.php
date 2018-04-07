@@ -277,7 +277,7 @@ if (isset($_POST['addbtn'])) {
 
 			<div class="form-check text-right">
 			<?php
-				$addressquery = "SELECT * FROM credit_card WHERE user_id =" . $_SESSION['user'];
+				$addressquery = "SELECT * FROM credit_card WHERE user_id ='" . $_SESSION['user'] . "' AND p_CC = '1'";
 				$res = mysqli_query($mysqli, $addressquery);
 				$count = mysqli_num_rows($res);
 				if ($count > 0){
