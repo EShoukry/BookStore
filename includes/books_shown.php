@@ -6,25 +6,6 @@
 <?php 
           session_start();
           
-        if (isset($_POST['add_book_to_cart'])) {
-            echo "HERE";
-            for ($i = 0; $i < $_SESSION['cart_num_rows']; $i++) {
-                $bookId = $_POST['id_' . $i];
-                $userId = $_SESSION['user'];
-                
-                $updateQuery = ""
-                        . "UPDATE books_users b"
-                        . " SET b.b_quantity = 1" . $toUpdateQuantity
-                        . " WHERE b.book_id = " . $bookId
-                        . " AND b.user_id = " . $userId;
-                if ($mysqli->query($updateQuery) == FALSE) {
-                    echo "Error updating record: " . $mysqli->error;
-                    error_log("Error updating record: " . $mysqli->error);
-                    adad();
-                }
-            }
-        }
-          
           if (!$GLOBALS["result"]) {
                 die('Invalid Query: ' . mysql_error());
             }
@@ -64,11 +45,20 @@
                     //the add book link. only visible if there there exists a logged in user
                     if (isset($_SESSION['user']) != "") {
                         ?>
-                        <input class="book_input_add_to_cart" 
-                            type="image" 
-                            src="images/shoppingCartAdd.png" 
-                            name="add_book_to_cart"
-                            onclick="addBookToUserCart(<?php echo $row["book_id"] ?>, <?php echo $_SESSION['user']; ?> ,false)" />
+                        <form classname="dummy" action="../BookStore/shoppingCart.php" method="post">
+                            <button classname="dummy"
+                                    type="submit" 
+                                    name="add_book_to_cart" 
+                                    value="set">
+                                <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
+                            </button>
+                            <input name="book_id"
+                                value="<?php echo $row["book_id"]; ?>" 
+                                hidden="true" />
+                            <input name="user_id"
+                                value="<?php echo $_SESSION['user']; ?>" 
+                                hidden="true" />
+                        </form>
                         <?php
                     }
                     echo '</div>' ;     
