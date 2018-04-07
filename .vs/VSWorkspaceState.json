@@ -2,8 +2,10 @@
   "ExpandedNodes": [
     "",
     "\\css",
-    "\\includes"
+    "\\images",
+    "\\includes",
+    "\\sql"
   ],
-  "SelectedNode": "\\config.php",
+  "SelectedNode": "\\CCadd.php",
   "PreviewInSolutionExplorer": false
 }

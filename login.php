@@ -55,20 +55,40 @@ if (isset($_POST['login'])) {
     // if there's no error, continue to signup
     if (!$error) {
 
-        $password = md5($password);
 
-        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email'";
         $res = mysqli_query($mysqli, $query);
         $row = mysqli_fetch_array($res, MYSQLI_BOTH);
         $count = mysqli_num_rows($res);
 
         if ($count == 1) {
-            $_SESSION['user'] = $row['user_id_number'];
-            header("Location: home.php");
+			if (password_verify($password, $row['u_password'])){
+				$_SESSION['user'] = $row['user_id_number'];
+				header("Location: home.php");
+			}
+			else if (md5($password) == $row['u_password']){
+				$_SESSION['user'] = $row['user_id_number'];
+				$password = password_hash($password, PASSWORD_DEFAULT);
+				$query = "UPDATE users SET u_password='$password' WHERE user_id_number='" . $row['user_id_number'] . "'";
+				$res = mysqli_query($mysqli, $query);
+				if($res){
+					header("Location: home.php");
+				} else{
+					$errTyp = "danger";
+					$errMSG = "Error in updating password encryption method, Try again...";
+				}
+			}
+			else{
+				$errTyp = "danger";
+				$errMSG = "Incorrect credential for email, Try again...";
+			}
+        } else if ($count > 1) {
+			$errTyp = "danger";
+            $errMSG = "Database corrupted, More than one instance of email...";
         } else {
 			$errTyp = "danger";
-            $errMSG = "Incorrect Credentials, Try again...";
-        }
+            $errMSG = "Email not registered, please register user first...";
+		}
     } else{
 	
 
@@ -98,10 +118,9 @@ if (isset($_POST['login'])) {
         <?php
         require "header.php";
         ?>
-		<div class="hd_container" >
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+		<div class="wrapper backAsImg">
+		<div class="container userContainer" >
+  
 
 
         <div id="login-form">
@@ -186,7 +205,7 @@ if (isset($_POST['login'])) {
 
         </div>  
 		</div>
-
+		</div>
         <div id="end_body"></div>  
     </body>
 

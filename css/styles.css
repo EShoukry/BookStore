@@ -289,6 +289,7 @@ footer{
 
 #team_info ul{
     background-color: rgb(41, 41, 41);
+    margin-bottom: 0px;
 }
 
 #copy_right{
@@ -394,4 +395,15 @@ span.text-danger {
 
 option{
     background-color:#fff;
+}
+
+.backAsImg {
+    background-image: url("/images/index.jpeg");
+    background-color: inherit;
+    background-size: cover;
+}
+
+.userContainer {
+    background-color: beige;
+    width: 75%;
 }

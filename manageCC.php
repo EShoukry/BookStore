@@ -73,14 +73,10 @@ if (isset($_POST['edit'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
-
 
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 
     	<div class="page-header">
@@ -150,7 +146,7 @@ if (isset($_POST['edit'])) {
 								echo ("Primary CC: ");
 								echo ($CCRow['p_CC'] ? "Yes" : "No");
 								?>
-							
+								<hr style="width:60%;">
 								<h4 class="text-center">Billing Address</h4>
 
 								<?php
@@ -171,7 +167,6 @@ if (isset($_POST['edit'])) {
 
 
 
-								$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
 				
 							</div>
@@ -179,7 +174,12 @@ if (isset($_POST['edit'])) {
 							<div class="btn-group-horizontal text-center">
 							<hr/>
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
-								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
+								<?php if ($CCRow['p_CC'] == 0) {
+									echo "<button type=\"delete\"  name=\"delete\" class=\"btn btn-warning\"/>Delete</button>";
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}else{
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}?>
 							</div>
 							</div>
 						</div>

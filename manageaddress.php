@@ -32,7 +32,7 @@ if (isset($_POST['edit'])) {
 	header("Location: addressedit.php?addid=" . $_POST['add_id']);
     exit;
 } else if(isset($_POST['delete'])){
-
+	
 	$query = "DELETE FROM `address` WHERE `address_id` = " . $_POST['add_id'] . " AND user_id =" . $_SESSION['user'];
 	$res = mysqli_query($mysqli, $query);
 	if($res){
@@ -73,14 +73,11 @@ if (isset($_POST['edit'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
 
 
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 
     	<div class="page-header">
@@ -151,14 +148,19 @@ if (isset($_POST['edit'])) {
 								echo ("Primary Address: ");
 								echo ($addRow['p_address'] ? "Yes" : "No");
 
-								$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+
 							?>
 							</div>
 							<hr/>
 							<div class="row">
 							<div class="btn-group-horizontal text-center">
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
-								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
+								<?php if ($addRow['p_address'] == 0) {
+									echo "<button type=\"delete\"  name=\"delete\" class=\"btn btn-warning\"/>Delete</button>";
+									$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}else{
+									$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}?>
 							</div>
 							</div>
 						</div>

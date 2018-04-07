@@ -135,12 +135,18 @@ if (isset($_POST['addbtn'])) {
     } 
 	//add address information as primary(only) address upon session set.
 		if(!$error){
+				$res = True;
+				if($primaryAdd){
+					$query = "UPDATE address SET p_address='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_address='1';";
+					$res = mysqli_query($mysqli, $query);
+				}
+				if ($res) {
 				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
 								VALUES('" . $_SESSION['user'] . "', '$primaryAdd','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
 				$res = mysqli_query($mysqli, $query);
-				if ($res) {
+					if ($res) {
 					$errTyp = "success";
-					$errMSG = "Address Inserted Successfully!" . "\n" . $primaryAdd;
+					$errMSG = "Address Inserted Successfully!";
 					unset($primaryAdd);
 					unset($firstname);
 					unset($lastname);
@@ -150,11 +156,17 @@ if (isset($_POST['addbtn'])) {
 					unset($state);
 					unset($zipcode);
 					unset($country);
+					}
+					else{
+					$error = true;
+					$errTyp = "danger";
+					$errMSG = "Error In Address Insert, Please Enter Try Again...";
+					}
 
 				}else{
 					$error = true;
 					$errTyp = "danger";
-					$errMSG = $errMSG . "Error In Address Insert, Please Enter Try Again...";
+					$errMSG = "Error In Address Insert, Please Enter Try Again...";
 				}
 
         } else {
@@ -187,13 +199,10 @@ if (isset($_POST['addbtn'])) {
         require "header.php";
         ?>
 
-
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+  
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 	<?php
         require "includes/navbar_user.php";
@@ -326,7 +335,7 @@ if (isset($_POST['addbtn'])) {
 			<div class="form-check text-right">
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
 			  <label class="form-check-label" for="primaryCheck">
-				New Priamry Address?
+				Make this your new Priamry Address?
 			  <label>
 			</div>
 

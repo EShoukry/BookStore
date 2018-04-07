@@ -142,29 +142,38 @@ if (isset($_POST['addbtn'])) {
         $error = true;
         $countryError = "Country must be less than 15 Alphanumericals.";
     } 
-	//add address information as primary(only) address upon session set.
 		if(!$error){
+				$res = True;
+				if($primaryAdd){
+					$query = "UPDATE address SET p_address='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_address='1';";
+					$res = mysqli_query($mysqli, $query);
+				}
+				if ($res) {
+				
 				$query = "UPDATE address SET p_address='$primaryAdd', fname='$firstname', lname='$lastname', line1='$address', line2='$address2', city='$city', state='$state', zip='$zipcode', country='$country' 
 								WHERE user_id='$userid' AND address_id='$addid'";
 				$res = mysqli_query($mysqli, $query);
-				if ($res) {
-					$errTyp = "success";
-					$errMSG = "Address Updated Successfully!";
-					unset($primaryAdd);
-					unset($firstname);
-					unset($lastname);
-					unset($address);
-					unset($address2);
-					unset($city);
-					unset($state);
-					unset($zipcode);
-					unset($country);
-
-
+					if ($res) {
+						$errTyp = "success";
+						$errMSG = "Address Updated Successfully!";
+						unset($primaryAdd);
+						unset($firstname);
+						unset($lastname);
+						unset($address);
+						unset($address2);
+						unset($city);
+						unset($state);
+						unset($zipcode);
+						unset($country);
+					}else{
+						$error = true;
+						$errTyp = "danger";
+						$errMSG = "Error In Address Update, Please Try Again...";
+					}
 				}else{
 					$error = true;
 					$errTyp = "danger";
-					$errMSG = $errMSG . "Error In Address Insert, Please Enter Try Again...";
+					$errMSG = "Error In Address Update, Please Try Again...";
 				}
 
         } else {
@@ -233,19 +242,15 @@ if (isset($_POST['addbtn'])) {
         ?>
 
 
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
-	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
     
 	<?php
         require "includes/navbar_user.php";
     ?>
 
     <div class="page-header">
-    <div class=section_title><h3>Add New Address</h3></div>
+    <div class=section_title><h3>Edit Address</h3></div>
     </div>
 	<?php
 							if ( isset($errMSG) ) {

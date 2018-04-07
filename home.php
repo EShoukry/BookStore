@@ -48,19 +48,16 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
         <?php
         require "header.php";
         ?>
-
-
-        <div id=main_image>		
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+  
 
 
 	
-	<div id="wrapper">
-	<div class="container">
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
+
     	<?php
         require "includes/navbar_user.php";
-    ?>
+		?>
     	<div class="page-header">
     	<div class=section_title><h3>User Information</h3></div>
     	</div>

@@ -1,0 +1,14 @@
+CREATE TABLE `publisher` (
+ `publisher_id` int(255) NOT NULL,
+ `p_name` varchar(1024) NOT NULL
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ 
+ CREATE TABLE `book_publisher` (
+ `pub_id` int(255) NOT NULL,
+ `b_id` int(255) NOT NULL
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ 
+ CREATE TABLE `author_publisher` (
+ `pub_id` int(255) NOT NULL,
+ `a_id` int(255) NOT NULL
+ ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
