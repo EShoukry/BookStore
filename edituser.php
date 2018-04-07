@@ -348,7 +348,7 @@ if (isset($_POST['savebtn'])) {
                 </tr>
             </tbody>
         </table>
-		<div
+		<div>
 
 
 
@@ -358,6 +358,13 @@ if (isset($_POST['savebtn'])) {
 					<div class="btn-group">
 					<button type="submit" name="savebtn" class="btn btn-primary" Style="width: 300px;"/>Save Edits</button>
 					<button type="reset"  name="reset" class="btn btn-warning" Style="width: 300px;"/>Reset</button>
+					</div>
+		</div>
+		<div class="form-group text-center">
+					<div class="btn-group">
+					<a class="btn btn-info" href="managePass.php" Style="width: 600px;">
+							Change Password
+							</a>
 					</div>
 		</div>
 

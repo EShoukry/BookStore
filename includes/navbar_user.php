@@ -20,6 +20,9 @@
 							<a class="dropdown-item btn btn-link" href="manageCC.php">
 								<span class="glyphicon glyphicon-credit-card"></span>&nbsp;Manage Payment Methods
 							</a>
+							<a class="dropdown-item btn btn-link" href="managePass.php">
+								<span class="glyphicon glyphicon-lock"></span>&nbsp;Change Password
+							</a>
 							<hr style="margin-top: 5px; margin-bottom: 5px;"/>
 							<!--Leave sign out for last option. -->
 							<a class="dropdown-item btn btn-link" href="logout.php?logout">
