@@ -78,7 +78,9 @@ if (isset($_POST['edit'])) {
 	
 	<div class="wrapper backAsImg">
 	<div class="container userContainer">
-    
+    <?php
+				require "includes/navbar_user.php";
+			?>
 
     	<div class="page-header">
     	<div class=section_title><h3>Add/Edit Addresses</h3></div>
@@ -100,9 +102,7 @@ if (isset($_POST['edit'])) {
 							?>
 
 
-			<?php
-				require "includes/navbar_user.php";
-			?>
+			
 
 
 
