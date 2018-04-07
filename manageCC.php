@@ -167,7 +167,6 @@ if (isset($_POST['edit'])) {
 
 
 
-								$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
 				
 							</div>
@@ -175,7 +174,12 @@ if (isset($_POST['edit'])) {
 							<div class="btn-group-horizontal text-center">
 							<hr/>
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
-								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
+								<?php if ($CCRow['p_CC'] == 0) {
+									echo "<button type=\"delete\"  name=\"delete\" class=\"btn btn-warning\"/>Delete</button>";
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}else{
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}?>
 							</div>
 							</div>
 						</div>
