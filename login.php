@@ -69,7 +69,7 @@ if (isset($_POST['login'])) {
 			else if (md5($password) == $row['u_password']){
 				$_SESSION['user'] = $row['user_id_number'];
 				$password = password_hash($password, PASSWORD_DEFAULT);
-				$query = "UPDATE users SET u_password='$password' WHERE user_id_number = '$row['user_id_number']'";
+				$query = "UPDATE users SET u_password='$password' WHERE user_id_number='" . $row['user_id_number'] . "'";
 				$res = mysqli_query($mysqli, $query);
 				if($res){
 					header("Location: home.php");
@@ -82,10 +82,13 @@ if (isset($_POST['login'])) {
 				$errTyp = "danger";
 				$errMSG = "Incorrect credential for email, Try again...";
 			}
-        } else {
+        } else if ($count > 1) {
 			$errTyp = "danger";
             $errMSG = "Database corrupted, More than one instance of email...";
-        }
+        } else {
+			$errTyp = "danger";
+            $errMSG = "Email not registered, please register user first...";
+		}
     } else{
 	
 
