@@ -1,7 +1,3 @@
-<script type="text/javascript">
-    window.alert("in php!");
-</script>
-
 <?php
 
 /*
@@ -9,8 +5,10 @@
  */
 
 // Create connection
-$dbConfig = include($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+$dbConfig = include($_SERVER['DOCUMENT_ROOT'] . '/Bookstore/config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
+
+sleep(5);
 
 $bookId = $_POST["ajax_bookIdToCart"];
 $userId = $_POST["ajax_userIdToCart"];
