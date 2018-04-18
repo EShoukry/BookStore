@@ -77,7 +77,9 @@ if (isset($_POST['edit'])) {
 	
 	<div class="wrapper backAsImg">
 	<div class="container userContainer">
-    
+    <?php
+				require "includes/navbar_user.php";
+			?>
 
     	<div class="page-header">
     	<div class=section_title><h3>Add/Edit Payment Mehtods</h3></div>
@@ -99,9 +101,7 @@ if (isset($_POST['edit'])) {
 							?>
 
 
-			<?php
-				require "includes/navbar_user.php";
-			?>
+			
 
 
 
@@ -167,7 +167,6 @@ if (isset($_POST['edit'])) {
 
 
 
-								$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
 							?>
 				
 							</div>
@@ -175,7 +174,12 @@ if (isset($_POST['edit'])) {
 							<div class="btn-group-horizontal text-center">
 							<hr/>
 								<button type="submit" name="edit" class="btn btn-primary"/>Edit</button>
-								<button type="delete"  name="delete" class="btn btn-warning"/>Delete</button>
+								<?php if ($CCRow['p_CC'] == 0) {
+									echo "<button type=\"delete\"  name=\"delete\" class=\"btn btn-warning\"/>Delete</button>";
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}else{
+									$CCRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+								}?>
 							</div>
 							</div>
 						</div>

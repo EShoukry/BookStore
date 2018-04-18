@@ -55,6 +55,12 @@ if (isset($_POST['addbtn'])) {
 
 	//add address information as primary(only) address upon session set.
 		if(!$error){
+			$res = True;
+			if ($p_CC){
+				$query = "UPDATE credit_card SET p_CC='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_CC='1';";
+				$res = mysqli_query($mysqli, $query);
+			}
+			if ($res){	
 				$query = "UPDATE credit_card SET add_id = '$addressid', P_CC='$p_CC', CC_title='$cc_title', CC_expmm='$month', CC_expyy='$year' WHERE CC_id= '$CCid' AND user_id= '$userid'";
 				$res = mysqli_query($mysqli, $query);
 				if ($res) {
@@ -73,7 +79,11 @@ if (isset($_POST['addbtn'])) {
 					$errTyp = "danger";
 					$errMSG = $errMSG . "Error In CC Insert, Please Enter Try Again...";
 				}
-
+			}else{
+					$error = true;
+					$errTyp = "danger";
+					$errMSG = $errMSG . "Error In CC Primary Unsetting, Please Try Again...";
+			}
         } else {
             $errTyp = "danger";
             $errMSG = "Something went wrong, try again later...";

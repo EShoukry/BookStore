@@ -2,18 +2,10 @@
 ob_start();
 session_start();
 
-/*$servername = "db720121368.db.1and1.com";
-$username = "dbo720121368";
-$password = "TeamSeven7@";
-$dbname = "db720121368";
-*/
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "bookstore";
+$database = include('config.php');
 
 // Create connection
-$mysqli = new mysqli($servername, $username, $password, $dbname);
+$mysqli = new mysqli($database['host'], $database['user'], $database['pass'], $database['name']);
 
 // Check connection
 if (mysqli_connect_error()) {
@@ -21,10 +13,10 @@ if (mysqli_connect_error()) {
 }
 
 /* @var $comment type */
-$comment = $_GET['bookcomments'];
+$comment = $_POST['bookcomments'];
 $date = date("y-m-d");
 $sql = "INSERT INTO comments (user_id, book_id, comment, c_date)
-VALUES ('6','5', '$comment', '$date')";
+VALUES ($_SESSION[user], $_SESSION[book_id_test],'$comment', '$date')";
 if ($mysqli->query($sql) === TRUE) {
     echo "New record created successfully";
 } else {

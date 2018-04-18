@@ -21,11 +21,10 @@ if (mysqli_connect_error()) {
 }
 
 
+
 //Getting the information send by the forms related to the pages and sorting 
-$sort_values = ['book title', 'author', 'price', 'book rating', 'release date'];
-$sort_sql_values = ['b_name', 'author_id', 'b_price', 'b_rate', 'b_release'];
-$pages_values = ['10', '20', '100'];
-$view = "SELECT user_id, comment, c_date FROM comments";
+
+$view = "SELECT user_id, comment, c_date FROM comments WHERE book_id = $_SESSION[book_id_test]";
 $result = $mysqli->query($view);
 
 if ($result->num_rows > 0) {

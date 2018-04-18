@@ -83,26 +83,37 @@ if (isset($_POST['addbtn'])) {
 
 	//add address information as primary(only) address upon session set.
 		if(!$error){
+				$res = True;
+				if($p_CC){
+					$query = "UPDATE credit_card SET p_CC='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_CC='1';";
+					$res = mysqli_query($mysqli, $query);
+				}
+				if($res){
 				$query = "INSERT INTO credit_card(user_id, add_id, p_CC, CC_title, CC_secure_code, CC_expmm, CC_expyy, CC_number, CC_four) 
 								VALUES('$user_id', '$add_id', '$p_CC','$cc_title','$cc_cvv','$cc_expmm','$cc_expyy', '$cc_num', '$cc_four')";
 				$res = mysqli_query($mysqli, $query);
-				if ($res) {
-					$errTyp = "success";
-					$errMSG = "Credit Card Inserted Successfully!" . "\n";
-					unset($add_id);
-					unset($p_CC);
-					unset($cc_title);
-					unset($cc_cvv);
-					unset($cc_expmm);
-					unset($cc_expyy);
-					unset($cc_num);
-					unset($cc_four);
+					if ($res) {
+						$errTyp = "success";
+						$errMSG = "Credit Card Inserted Successfully!" . "\n";
+						unset($add_id);
+						unset($p_CC);
+						unset($cc_title);
+						unset($cc_cvv);
+						unset($cc_expmm);
+						unset($cc_expyy);
+						unset($cc_num);
+						unset($cc_four);
 
+					}else{
+						$error = true;
+						$errTyp = "danger";
+						$errMSG = "Error In CC Insert, Please Try Again...";
+					}
 				}else{
-					$error = true;
-					$errTyp = "danger";
-					$errMSG = $errMSG . "Error In CC Insert, Please Try Again...";
-				}
+						$error = true;
+						$errTyp = "danger";
+						$errMSG = "Error In primaryy CC unsetting, Please Try Again...";
+					}
 
         } else {
             $errTyp = "danger";
@@ -265,10 +276,29 @@ if (isset($_POST['addbtn'])) {
 			<div class="input-group text-center">
 
 			<div class="form-check text-right">
+			<?php
+
+				$addressquery = "SELECT * FROM credit_card WHERE user_id ='" . $_SESSION['user'] . "' AND p_CC = '1'";
+
+				$res = mysqli_query($mysqli, $addressquery);
+				$count = mysqli_num_rows($res);
+				if ($count > 0){
+			?>
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
 			  <label class="form-check-label" for="primaryCheck">
-				New Primary Payment Method?
+				Make this your new Primary Payment Method?
 			  <label>
+			<?php
+				}else{
+			?>
+			  <input class="form-check-input" name="primary" type="checkbox" value="1" id="primaryCheck" disabled checked>
+			  <label class="form-check-label" for="primaryCheck">
+				Make this your new Primary Payment Method?
+			  <label>
+			  <input class="hidden" name="primaryCheck" value="1">
+			<?php
+				}
+			?>
 			</div>
 
 			<div class="btn-group" Style="margin-bottom: 5px;">
