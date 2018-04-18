@@ -13,6 +13,14 @@
             echo '<form method="post" class = "book_form">';
             
             if ($GLOBALS["result"]->num_rows > 0) {
+                //if a user is logged on, find which books are already in that user's shopping cart
+                $booksInUserCart;
+                if (isset($_SESSION['user']) != "") {
+                    $booksInUserCart = $mysqli->query(""
+                            . "SELECT book_id FROM shoppingcart"
+                            . " WHERE user_id = " . $_SESSION['user']);
+                }
+                
                 // output data of each row
                 for ($i = 0; $i < $GLOBALS["result"]->num_rows; $i++) {
                     $row = $GLOBALS["result"]->fetch_assoc();
@@ -44,22 +52,37 @@
                     
                     //the add book link. only visible if there there exists a logged in user
                     if (isset($_SESSION['user']) != "") {
-                        ?>
-                        <form classname="dummy" action="../BookStore/shoppingCart.php" method="post">
-                            <button classname="dummy"
-                                    type="submit" 
-                                    name="add_book_to_cart" 
-                                    value="set">
-                                <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
-                            </button>
-                            <input name="book_id"
-                                value="<?php echo $row["book_id"]; ?>" 
-                                hidden="true" />
-                            <input name="user_id"
-                                value="<?php echo $_SESSION['user']; ?>" 
-                                hidden="true" />
-                        </form>
-                        <?php
+                        
+                        $isBookInUserCart = false;
+                        mysqli_data_seek($booksInUserCart, 0);
+                        
+                        $numBooksInCart = $booksInUserCart->num_rows;
+                        while($numBooksInCart-- > 0){
+                            $booksInCart = $booksInUserCart->fetch_assoc();
+                            if ($booksInCart['book_id'] == $row["book_id"]) {
+                                $isBookInUserCart = true;
+                                break;
+                            }
+                        }
+                        if ($isBookInUserCart == false) {
+                            echo $row["book_id"];
+                            ?>
+                            <form classname="dummy" action="../BookStore/shoppingCart.php" method="post">
+                                <button classname="dummy"
+                                        type="submit" 
+                                        name="add_book_to_cart" 
+                                        value="set">
+                                    <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
+                                </button>
+                                <input name="add_book_id"
+                                    value="<?php echo $row['book_id']; ?>" 
+                                    hidden="true" />
+                                <input name="add_user_id"
+                                    value="<?php echo $_SESSION['user']; ?>" 
+                                    hidden="true" />
+                            </form>
+                            <?php
+                        }
                     }
                     echo '</div>' ;     
                 }
