@@ -4,13 +4,13 @@
 </head> 
 
 <?php 
-          session_start();
+          
           
           if (!$GLOBALS["result"]) {
                 die('Invalid Query: ' . mysql_error());
             }
             
-            echo '<form method="post" class = "book_form">';
+            //echo '<form method="post" class = "book_form">';
             
             if ($GLOBALS["result"]->num_rows > 0) {
                 // output data of each row
@@ -45,11 +45,12 @@
                     //the add book link. only visible if there there exists a logged in user
                     if (isset($_SESSION['user']) != "") {
                         ?>
-                        <form classname="dummy" action="../BookStore/shoppingCart.php" method="post">
+                        <form classname="dummy" action="shoppingCart.php" method="post">
                             <button classname="dummy"
                                     type="submit" 
                                     name="add_book_to_cart" 
-                                    value="set">
+                                    value="set"
+                                    id= "b_cart">
                                 <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
                             </button>
                             <input name="book_id"
@@ -67,5 +68,5 @@
                 echo "0 results";
             }
             
-            echo '</form>';
+            //echo '</form>';
 ?>

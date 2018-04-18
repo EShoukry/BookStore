@@ -8,10 +8,6 @@ function phpAlert($msg) {
     echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
-if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
-    exit;
-}
 
 // Create connection
 $dbConfig = include('config.php');

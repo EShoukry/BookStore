@@ -8,10 +8,6 @@ function phpAlert($msg) {
     echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
-if (!isset($_SESSION['user'])) {
-    header("Location: login.php");
-    exit;
-}
 
 // Create connection
 $dbConfig = include('config.php');
@@ -35,6 +31,12 @@ $author_name_bio = $mysqli->query("SELECT a_name, a_bio FROM authors WHERE '$aut
 
 $a_info = $author_name_bio->fetch_assoc();
 
+
+
+ $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books WHERE books.book_id IN (SELECT book_id FROM books_authors WHERE '$author_id' = author_id)");
+                      
+                
+                
 ?>
 <!doctype html>
 <html>
@@ -50,16 +52,17 @@ $a_info = $author_name_bio->fetch_assoc();
         <?php
         require "header.php";
         ?>
-         <!---<div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
-        -->
+         
         <section>
            <?php
             echo "<div class=section_title><h1>".$a_info['a_name']."</h1></div>";
             echo "<hr>";
             echo "<h3> Author's bio: </h3>";
             echo "<p>".$a_info['a_bio']."</p>";
+            echo "<br>";
+            echo "<h3>Books written by ".$a_info['a_name'].":</h3>";
+                $GLOBALS["result"] = $result;
+                require "includes/books_shown.php";
            ?>
         </section>   
 
