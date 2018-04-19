@@ -4,13 +4,13 @@
 </head> 
 
 <?php 
-          session_start();
+          
           
           if (!$GLOBALS["result"]) {
                 die('Invalid Query: ' . mysql_error());
             }
             
-            echo '<form method="post" class = "book_form">';
+            //echo '<form method="post" class = "book_form">';
             
             if ($GLOBALS["result"]->num_rows > 0) {
                 //if a user is logged on, find which books are already in that user's shopping cart
@@ -65,13 +65,14 @@
                             }
                         }
                         if ($isBookInUserCart == false) {
-                            echo $row["book_id"];
+                            //echo $row["book_id"];
                             ?>
-                            <form classname="dummy" action="../BookStore/shoppingCart.php" method="post">
+                            <form classname="dummy" action="#" method="post">
                                 <button classname="dummy"
                                         type="submit" 
                                         name="add_book_to_cart" 
-                                        value="set">
+                                        value="set"
+                                        id= "b_cart">
                                     <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
                                 </button>
                                 <input name="add_book_id"

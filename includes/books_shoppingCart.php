@@ -83,7 +83,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     if (isset($_POST['add_book_to_cart'])) { //if adding book from main page or book details
         $bookId = $_POST["add_book_id"];
         $userId = $_POST["add_user_id"];
-
+        
         $insertQuery = "INSERT INTO shoppingcart (book_id, user_id, b_quantity)"
                 . " VALUES (\"" . $bookId . "\"," . $userId . "," . 1 . ");";
 

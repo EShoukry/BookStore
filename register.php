@@ -366,7 +366,7 @@ if (isset($_POST['regbtn'])) {
 										}
 										?>"  />
 										
-										<br<span class="text-danger"><?php
+										<br><span class="text-danger"><?php
 										if (isset($firstnameError)) {
 											echo $firstnameError;
 										}
@@ -510,12 +510,12 @@ if (isset($_POST['regbtn'])) {
 					<div class="form-group text-center">
 
 					<div class="btn-group" Style="margin-bottom: 5px;">
-					<button type="submit" name="regbtn" class="btn btn-primary " />Register</button>
-					<button type="reset"  name="clear" class="btn btn-warning " />Clear</button>
+					<button type="submit" name="regbtn" class="btn btn-primary ">Register</button>
+					<button type="reset"  name="clear" class="btn btn-warning ">Clear</button>
 					</div>
 					<br>
 					<div class="btn-group">
-					<a href="login.php" class="btn btn-secondary btn-responsive"/>Have An Account? Sign In Now</a>
+					<a href="login.php" class="btn btn-secondary btn-responsive">Have An Account? Sign In Now</a>
 					</div>
 
 
