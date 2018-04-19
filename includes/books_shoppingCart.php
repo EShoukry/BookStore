@@ -2,11 +2,9 @@
 // Create connection
 $dbConfig = include('config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
-
 if (!$_SESSION["shoppingCart"]) {
     die('Invalid Query: ' . mysql_error());
 }
-
 //if a user id is passed into shoppingCart session variable
 if ($_SESSION["shoppingCart"]->num_rows > 0) {
     $userId = $_SESSION["shoppingCart"]->fetch_assoc()["user_id_number"];
@@ -22,36 +20,8 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
      * DB Queries
      * 
      */
-    //Query to obtain all data for shopping cart output
-    $wishlistDataTable = $mysqli->query(""
-            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
-            . " FROM books_authors ba, authors a, books b, wishlist w"
-            . " WHERE b.book_id = ba.book_id"
-            . " AND ba.author_id = a.author_id"
-            . " AND b.book_id = w.book_id"
-            . " AND w.user_id = '" . $userId . "'"
-            . " GROUP BY b.book_id");
-
-    $wishlistNumRows = 0;
-    if ($wishlistDataTable != null) {
-        $wishlistNumRows = $wishlistDataTable->num_rows;
-    }
-
-    //Query to obtain all data for output
-    $cartDataTable = $mysqli->query(""
-            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, bu.b_quantity, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
-            . " FROM books_authors ba, authors a, books b, shoppingcart bu"
-            . " WHERE b.book_id = ba.book_id"
-            . " AND ba.author_id = a.author_id"
-            . " AND b.book_id = bu.book_id"
-            . " AND bu.user_id = '" . $userId . "'"
-            . " GROUP BY b.book_id");
-
-    $cartNumRows = 0;
-    if ($cartDataTable != null) {
-        $cartNumRows = $cartDataTable->num_rows;
-    }
-
+   
+    
     /*
      * 
      * Shopping cart updates
@@ -61,7 +31,6 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         for ($i = 0; $i < $_SESSION['cart_num_rows']; $i++) {
             $bookId = $_POST['id_' . $i];
             $toUpdateQuantity = $_POST['quantity_' . $i];
-
             $updateQuery = ""
                     . "UPDATE shoppingcart b"
                     . " SET b.b_quantity = " . $toUpdateQuantity
@@ -71,6 +40,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                 echo "Error updating record: " . $mysqli->error;
                 error_log("Error updating record: " . $mysqli->error);
             }
+           
             $updateDeleteQuery = ""
                     . "DELETE FROM shoppingcart"
                     . " WHERE shoppingcart.b_quantity = 0";
@@ -78,7 +48,9 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                 echo '<h4>Wishlist is Empty</h4>';
                 error_log("Error updating record: " . $mysqli->error);
             }
+            
         }
+         
     }
     if (isset($_POST['add_book_to_cart'])) { //if adding book from main page or book details
         $bookId = $_POST["add_book_id"];
@@ -86,13 +58,10 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         
         $insertQuery = "INSERT INTO shoppingcart (book_id, user_id, b_quantity)"
                 . " VALUES (\"" . $bookId . "\"," . $userId . "," . 1 . ");";
-
         if ($mysqli->query($insertQuery) == FALSE) {
             echo "ERROR: " . $insertQuery;
         }
     }
-
-
     /*
      * 
      * Wishlist updates
@@ -106,22 +75,49 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         $bookId = $_POST['wishlist_book_id'];
         echo "remove: " . $bookId;
     }
-
-
+    
+    
+    
+    //Query to obtain all data for shopping cart output
+    $wishlistDataTable = $mysqli->query(""
+            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
+            . " FROM books_authors ba, authors a, books b, wishlist w"
+            . " WHERE b.book_id = ba.book_id"
+            . " AND ba.author_id = a.author_id"
+            . " AND b.book_id = w.book_id"
+            . " AND w.user_id = '" . $userId . "'"
+            . " GROUP BY b.book_id");
+    $wishlistNumRows = 0;
+    if ($wishlistDataTable != null) {
+        $wishlistNumRows = $wishlistDataTable->num_rows;
+    }
+    //Query to obtain all data for output
+    $cartDataTable = $mysqli->query(""
+            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, bu.b_quantity, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
+            . " FROM books_authors ba, authors a, books b, shoppingcart bu"
+            . " WHERE b.book_id = ba.book_id"
+            . " AND ba.author_id = a.author_id"
+            . " AND b.book_id = bu.book_id"
+            . " AND bu.user_id = '" . $userId . "'"
+            . " GROUP BY b.book_id");
+    $cartNumRows = 0;
+    if ($cartDataTable != null) {
+        $cartNumRows = $cartDataTable->num_rows;
+    }
+    
     /*
      * 
      * Forms
      * 
      */
+    
     ?>
     <!--Form for displaying logged in user's shopping cart-->
     <form method="post" class="shopping_cart_form">
         <h2>Items in Cart</h2>
         <?php
         $cartSubtotalAmount = 0;
-
         // output data of each row
-
         if ($cartNumRows == 0) {
             echo '<h4>Shopping Cart is Empty</h4>';
         }
