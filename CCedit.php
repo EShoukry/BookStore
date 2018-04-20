@@ -259,7 +259,7 @@ if($count == 1){
 			<div class="form-check text-right">
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck" <?php if($primaryCC) {echo "checked";}?>>
 			  <label class="form-check-label" for="primaryCheck">
-				Priamry Credit Card?
+				Primary Credit Card?
 			  <label>
 			</div>
 

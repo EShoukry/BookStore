@@ -7,6 +7,37 @@ function phpAlert($msg) {
     echo '<script type="text/javascript">alert("' . $msg . '")</script>';
 }
 
+/* Luhn algorithm number checker - (c) 2005-2008 shaman - www.planzero.org *
+	 * This code has been released into the public domain, however please      *
+	 * give credit to the original author where possible.                      */
+
+	function luhn_check($cc_num) {
+
+	  // Set the string length and parity
+	  $number_length=strlen($cc_num);
+	  $parity=$number_length % 2;
+
+	  // Loop through each digit and do the maths
+	  $total=0;
+	  for ($i=0; $i<$number_length; $i++) {
+		$digit=$cc_num[$i];
+		// Multiply alternate digits by two
+		if ($i % 2 == $parity) {
+		  $digit*=2;
+		  // If the sum is two digits, add them together (in effect)
+		  if ($digit > 9) {
+			$digit-=9;
+		  }
+		}
+		// Total up the digits
+		$total+=$digit;
+	  }
+
+	  // If the total mod 10 equals 0, the number is valid
+	  return ($total % 10 == 0) ? TRUE : FALSE;
+
+	}
+
 if (!isset($_SESSION['user'])) {
     header("Location: login.php");
     exit;
@@ -63,26 +94,32 @@ if (isset($_POST['addbtn'])) {
 
 	if (empty($cc_num)) {
         $error = true;
-        $cc_numError = "Please enter your CCV.";
-    } else if (strlen($cc_num) < 16) {
+        $cc_numError = "Please enter your CC Number.";
+    } else if (strlen($cc_num) < 13 ){
         $error = true;
         $cc_numError = "CC must have atleast 16 characters.";
     }
 
 	if (empty($cc_cvv)) {
         $error = true;
-        $cc_cvvError = "Please enter your CC Number.";
+        $cc_cvvError = "Please enter your CCV.";
     } else if (strlen($cc_cvv) != 3) {
         $error = true;
         $cc_cvvError = "CVV name must have 3 characters.";
     }
 
 
+	if(!luhn_check($cc_num)){
+		$error = True;
+		$errTyp = "danger";
+		$errMSG = "Card number is not valid according to Luhn check";
+	}
+
 
 
 
 	//add address information as primary(only) address upon session set.
-		if(!$error){
+		else if(!$error){
 				$res = True;
 				if($p_CC){
 					$query = "UPDATE credit_card SET p_CC='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_CC='1';";

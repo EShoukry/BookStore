@@ -133,8 +133,22 @@ if (isset($_POST['addbtn'])) {
         $error = true;
         $countryError = "Country must be less than 15 Alphanumericals.";
     } 
+	//Uses google API to verify if address is correct. 
+	$apiAddress = [$address, $address2, $city, $state, $zipcode, $country];
+	$apiAddress = implode(" ", $apiAddress);
+	$apiAddress = str_replace(' ', '+', $apiAddress);
+	$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
+
+	$geocode = json_decode(file_get_contents($apiAddress));
+	$addressStatus = $geocode->status;
+	if($addressStatus != 'OK'){
+		$error = true;
+		$errTyp = "danger";
+        $errMSG = "\nCould not locate address using Google Maps API\nPlease check address and try again.";
+	} 
+
 	//add address information as primary(only) address upon session set.
-		if(!$error){
+		else if(!$error){
 				$res = True;
 				if($primaryAdd){
 					$query = "UPDATE address SET p_address='0' WHERE user_id='" . $_SESSION['user'] . "' AND p_address='1';";
@@ -335,7 +349,7 @@ if (isset($_POST['addbtn'])) {
 			<div class="form-check text-right">
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
 			  <label class="form-check-label" for="primaryCheck">
-				Make this your new Priamry Address?
+				Make this your new Primary Address?
 			  <label>
 			</div>
 
