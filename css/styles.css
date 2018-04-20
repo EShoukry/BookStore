@@ -473,3 +473,7 @@ option{
         margin: 0 auto;
     }
 }
+
+.glyphicon {
+    background-color: inherit;
+}

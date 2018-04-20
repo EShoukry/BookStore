@@ -217,8 +217,20 @@ if (isset($_POST['regbtn'])) {
     // password encrypt using md5();
     $password = password_hash($password, PASSWORD_DEFAULT);
 
+	$apiAddress = [$address, $address2, $city, $state, $zipcode, $country];
+	$apiAddress = implode(" ", $apiAddress);
+	$apiAddress = str_replace(' ', '+', $apiAddress);
+	$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
+
+	$geocode = json_decode(file_get_contents($apiAddress));
+	$addressStatus = $geocode->status;
+		if($addressStatus != 'OK'){
+		$error = true;
+		$errTyp = "danger";
+        $errMSG = "\nCould not locate address using Google Maps API\nPlease check address and try again.";
+		}  
     // if there's no error, continue to signup
-    if (!$error) {
+    else if (!$error) {
 
         $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$nickname','$lastname')";
         $res = mysqli_query($mysqli, $query);
