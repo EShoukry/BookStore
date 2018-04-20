@@ -11,7 +11,7 @@ Book container
 .cart_book_container{
 	position:relative;
     width: 60%;
-    height: 360px;
+    height: 200px;
     border: solid 2px rgba(11, 95, 4, 0.35);
     display: inline-block;
     float: left;
@@ -39,11 +39,9 @@ Book container
 
 .cart_book_cover{
 	position:absolute;
-	width:30%;
-	height:auto;
-	left: 1%;
-	top: 3%;
-	bottom: 13%;
+	height:100%;
+	width:200px;
+	padding:4%;
 }
 
 .cart_book_rate{
@@ -52,8 +50,8 @@ Book container
     width: 15%;
 	height: auto;
 	float: left;
-	left: 3.5%;
-	bottom: 0px;
+	left: 4%;
+	bottom: 1%;
 }
 
 .cart_book_name{
@@ -139,4 +137,18 @@ Review container
 	position: absolute;
 	bottom: 10px;
 	right: 2%
+}
+
+/*====================
+Wishlist
+====================*/
+.wishlist_remove {
+    position: absolute;
+    bottom: 10px;
+    right: 2%;
+}
+.wishlist_moveToCart {
+    position: absolute;
+    top: 10px;
+    right: 2%;
 }

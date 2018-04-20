@@ -5,7 +5,6 @@
     
 }
 
-
 #hd_container{    
     font-size: 18px;
     width: 100%;      
@@ -52,6 +51,7 @@ nav ul li a{
     background-color: rgba(11, 95, 4, 0);  
     height: 30px; 
     color: black; 
+    font-size: 15px;
 }
 
 nav ul li:last-child{
@@ -75,11 +75,24 @@ nav ul li:last-child{
     width: 25%;
     height: 61px;
     color: black; 
+    font-family: inherit;
 }
 
 #search{
     padding-top: 15px;
+    font-size: 20px;
 }
+
+#mySearch{
+    width: 50%;
+    height: 25px;
+}
+
+#b_search{
+    height: 30px;
+    padding-top: 2px;
+}
+
 
 #log_cart{
     display: block;
@@ -146,16 +159,18 @@ button{
 
 .book_container{
     width: 15%;
-    height: 340px;
+    width: 200px;
+    height: 360px;
     border: solid 2px rgba(11, 95, 4, 0.35);
     display: inline-block;
     float: left;
-    margin: 20px 30px 20px 30px;      
+    margin: 20px 30px 20px 30px; 
+    min-width: 180px;
 }
 
 .book_container:hover{
     box-shadow: 3px 6px rgba(11, 95, 4, 0.35);
-    width: 15.3%;    
+    /*width: 15.3%;*/    
     transition-duration: 1s;    
 }
 
@@ -186,12 +201,45 @@ button{
     padding-left: 10px;
     margin-top: 5px;
     font-size: 15px;
+    
 }
 
+.book_name a{
+    text-decoration: none;
+    color:  rgba(11, 95, 4, 1);
+    font-weight: bold;
+}
 .book_author{
     padding-left: 10px;
     margin-top: 5px;
     font-size: 15px;
+}
+
+.book_author a{
+    text-decoration: none;
+    color:  rgba(11, 95, 4, 0.75);
+    font-style: italic;
+    
+}
+
+
+.book_input_add_to_cart {
+	display: inline-block;
+	height: 25px;
+	width: 25px; 
+    border-radius: 10px;
+    
+}
+
+#b_cart{
+    border: none;
+    padding-left: 2px;
+    margin-left: 5px;
+}
+
+#b_cart:hover{
+    border: solid 0.5px rgba(11, 95, 4, 0.35);
+    border-radius: 5px;
 }
 
 .book_rate{
@@ -308,6 +356,7 @@ h1{
 
 .book_genre{
     padding: 0px 20px 0px 20px;
+    margin: 0 auto;
 }
 
 .book_genre:after{
@@ -392,7 +441,7 @@ option{
 }
 
 .backAsImg {
-    background-image: url("/images/index.jpeg");
+    background-image: url("../images/index.jpeg");
     background-color: inherit;
     background-size: cover;
 }
@@ -400,4 +449,27 @@ option{
 .userContainer {
     background-color: beige;
     width: 75%;
+}
+
+
+/********Responsive Design********/
+@media (max-width: 1160px) {
+    
+    #nav_container {
+        margin: 0 auto;
+        width:auto;
+    }
+    
+    #search_container{
+        margin-left: 0px;
+        margin: 0 auto;
+        width:auto;
+        
+    }
+    
+    #log_cart{
+        /*float:none;*/
+        width: auto;
+        margin: 0 auto;
+    }
 }

@@ -2,6 +2,8 @@
 // Create connection
 $dbConfig = include('config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
+ 
+session_start();
 
 // Check connection 
 if (mysqli_connect_error()) {
@@ -66,7 +68,7 @@ if (isset($_POST['bt_1'])) {  //First page case
         <title>Book Store </title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
-        <script src="scripts/main.js"></script>
+        <script type="text/javascript" src="scripts/js/buttonClick.js"></script>
     </head>
     <body>
         <?php
