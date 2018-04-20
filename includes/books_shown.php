@@ -60,40 +60,40 @@ if ($GLOBALS["result"]->num_rows > 0) {
         echo '<div class="book_rate"><img src="images/' . $row["b_rate"] . 'stars.png"></div>';
         echo '<div class="book_price">$' . $row["b_price"] . '</div>';
 
-        //the add book link. only visible if there there exists a logged in user
-        if (isset($_SESSION['user']) != "") {
+        //shows the button to add book to shopping cart
+        $isBookInUserCart = false;
+        mysqli_data_seek($booksInUserCart, 0);
 
-            $isBookInUserCart = false;
-            mysqli_data_seek($booksInUserCart, 0);
-
-            $numBooksInCart = $booksInUserCart->num_rows;
-            while ($numBooksInCart-- > 0) {
-                $booksInCart = $booksInUserCart->fetch_assoc();
-                if ($booksInCart['book_id'] == $row["book_id"]) {
-                    $isBookInUserCart = true;
-                    break;
-                }
+        $numBooksInCart = $booksInUserCart->num_rows;
+        while ($numBooksInCart-- > 0) {
+            $booksInCart = $booksInUserCart->fetch_assoc();
+            if ($booksInCart['book_id'] == $row["book_id"]) {
+                $isBookInUserCart = true;
+                break;
             }
-            if ($isBookInUserCart == false) {
-                //echo $row["book_id"];
-                ?>
-                <form classname="dummy" action="#" method="post">
-                    <button classname="dummy"
-                            type="submit" 
-                            name="add_book_to_cart" 
-                            value="set"
-                            id= "b_cart">
-                        <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
-                    </button>
-                    <input name="add_book_id"
-                           value="<?php echo $row['book_id']; ?>" 
-                           hidden="true" />
-                    <input name="add_user_id"
-                           value="<?php echo $_SESSION['user']; ?>" 
-                           hidden="true" />
-                </form>
-                <?php
+        }
+        if ($isBookInUserCart == false) {
+            $forwardPage = "#";
+            if (isset($_SESSION['user']) == "") { //if there is no logged in user 
+                $forwardPage = "login.php";
             }
+            ?>
+            <form classname="dummy" action="<?php echo $forwardPage; ?>" method="post">
+                <button classname="dummy"
+                        type="submit" 
+                        name="add_book_to_cart" 
+                        value="set"
+                        id= "b_cart">
+                    <img class="book_input_add_to_cart" src="images/shoppingCartAdd.png">
+                </button>
+                <input name="add_book_id"
+                       value="<?php echo $row['book_id']; ?>" 
+                       hidden="true" />
+                <input name="add_user_id"
+                       value="<?php echo $_SESSION['user']; ?>" 
+                       hidden="true" />
+            </form>
+            <?php
         }
         echo '</div>';
     }
