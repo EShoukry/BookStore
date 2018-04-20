@@ -128,9 +128,12 @@ if (isset($_POST['savebtn'])) {
 	}
 
 	if($email != $userRow['u_email']){
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+		$apiAddress = "https://trumail.io/json/" . $email;
+		$deliverable = json_decode(file_get_contents($apiAddress));
+		$deliverable = $deliverable -> deliverable;
+		if (!$deliverable) {
 			$error = true;
-			$emailError = "Please enter valid email address.";
+			$emailError = "Email Address not deliverable according to TruMail API";
 		} else {
 			// check email exist in db already or not
 			$query = "SELECT u_email FROM users WHERE u_email='$email'";
