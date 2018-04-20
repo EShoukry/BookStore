@@ -368,6 +368,14 @@ if (isset($_POST['savebtn'])) {
 					</div>
 		</div>
 
+		<div class="form-group text-center">
+					<div class="btn-group">
+					<a class="btn btn-info" href="manageAddress.php" Style="width: 600px;">
+							Add/Edit Address
+							</a>
+					</div>
+		</div>
+
 
 		</form>
         </div>
