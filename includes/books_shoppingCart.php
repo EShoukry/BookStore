@@ -23,6 +23,30 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     if (isset($_POST['cart_update'])) { //Update book quantities
         for ($i = 0; $i < $_SESSION['cart_num_rows']; $i++) {
             $bookId = $_POST['id_' . $i];
+
+
+            if (isset($_POST['cart_moveToWishlist_' . $i]) ||
+                    isset($_POST['cart_remove_' . $i])) {
+                $query_removeFromShoppingCart = ""
+                        . "DELETE FROM shoppingcart WHERE "
+                        . "book_id = '" . $bookId . "' AND "
+                        . "user_id = " . $userId . ";";
+                $query_addToWishList = ""
+                        . "INSERT INTO wishlist (book_id, user_id)"
+                        . " VALUES (\"" . $bookId . "\"," . $userId . ");";
+                if ($mysqli->query($query_removeFromShoppingCart) == FALSE) {
+                    echo "Error deleting record: " . $mysqli->error;
+                    error_log("Error updating record: " . $mysqli->error);
+                }
+                if (!isset($_POST['cart_remove_' . $i])) {
+                    if ($mysqli->query($query_addToWishList) == FALSE) {
+                        echo "Error adding record: " . $mysqli->error;
+                        error_log("Error updating record: " . $mysqli->error);
+                    }
+                }
+                continue;
+            }
+
             $toUpdateQuantity = $_POST['quantity_' . $i];
             $updateQuery = ""
                     . "UPDATE shoppingcart s"
@@ -66,17 +90,17 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         $fromWishlistBookId = $_POST['wishlist_book_id'];
         $query_removeFromWishlist = "" .
                 "DELETE FROM wishlist WHERE " .
-                "user_id = " . $userId . " AND " .
-                "book_id = " . $fromWishlistBookId;
+                "book_id = \"" . $fromWishlistBookId . "\" AND " .
+                "user_id = " . $userId;
         if ($mysqli->query($query_removeFromWishlist) == FALSE) {
-            echo "ERROR: " . $insertQuery;
+            echo "ERROR: " . $query_removeFromWishlist;
         }
         //if we are moving it to cart, add it to the shopping cart
         if (isset($_POST['wishlist_moveToCart']) != '') {
             $query_addToShoppingCart = "INSERT INTO shoppingcart (book_id, user_id, b_quantity) "
                     . "VALUES (\"" . $fromWishlistBookId . "\"," . $userId . "," . 1 . ");";
             if ($mysqli->query($query_addToShoppingCart) == FALSE) {
-                echo "ERROR: " . $insertQuery;
+                echo "ERROR: " . $query_addToShoppingCart;
             }
         }
     }
@@ -102,12 +126,13 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     }
     //Query to obtain all data for output
     $cartDataTable = $mysqli->query(""
-            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, bu.b_quantity, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
-            . " FROM books_authors ba, authors a, books b, shoppingcart bu"
+            . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description,"
+            . " sc.b_quantity, b.b_quantity AS quantity_left, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
+            . " FROM books_authors ba, authors a, books b, shoppingcart sc"
             . " WHERE b.book_id = ba.book_id"
             . " AND ba.author_id = a.author_id"
-            . " AND b.book_id = bu.book_id"
-            . " AND bu.user_id = '" . $userId . "'"
+            . " AND b.book_id = sc.book_id"
+            . " AND sc.user_id = '" . $userId . "'"
             . " GROUP BY b.book_id");
     $cartNumRows = 0;
     if ($cartDataTable != null) {
@@ -149,12 +174,25 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                            value="<?php echo $dataTableRow["b_quantity"] ?>"
                            required="true"
                            min="0"
-                           max="50" />
+                           max="<?php echo $dataTableRow["quantity_left"]; ?>" />
+                </div>
+                <div class="cart_book_remove">
+                    <label for="chkbox_remove<?php echo $i; ?>"> Remove </label>
+                    <input type='checkbox' 
+                           name="cart_remove_<?php echo $i ?>" 
+                           id="chkbox_remove<?php echo $i; ?>" />
+                </div>
+                <div class="cart_book_moveToWishlist">
+                    <label for="chkbox_toWishList<?php echo $i; ?>"> To Wishlist </label>
+                    <input type='checkbox' 
+                           name="cart_moveToWishlist_<?php echo $i ?>" 
+                           id="chkbox_toWishList<?php echo $i; ?>" />
                 </div>
                 <input size="1"
                        name="id_<?php echo $i ?>"
                        value="<?php echo $dataTableRow["book_id"] ?>" 
                        hidden="true" />
+
             </div>
             <?php
         }

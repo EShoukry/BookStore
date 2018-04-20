@@ -95,6 +95,32 @@ Book container
     height: auto;
 }
 
+.cart_book_moveToWishlist {
+    position: absolute;
+    bottom: 5%;
+    right: 3%;
+    width: 122;
+    height: 122;
+}
+
+.cart_book_moveToWishlist label {
+    color: mediumblue;
+    font-size: 14px;
+}
+
+.cart_book_remove {
+    position: absolute;
+    top: 5%;
+    right: 3%;
+    width: 122;
+    height: 122;
+}
+
+.cart_book_remove label {
+    color: red;
+    font-size: 15px;
+}
+
 /*====================
 HTML Forms
 ====================*/
@@ -144,8 +170,8 @@ Wishlist
 ====================*/
 .wishlist_remove {
     position: absolute;
-    top: 10px;
-    right: 2%;
+    top: 5%;
+    right: 3%;
 }
 .wishlist_img_remove {
     border: none;
@@ -154,8 +180,8 @@ Wishlist
 
 .wishlist_moveToCart {
     position: absolute;
-    bottom: 10px;
-    right: 2%;
+    bottom: 5%;
+    right: 3%;
 }
 .wishlist_img_moveToCart {
     border: none;

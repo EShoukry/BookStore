@@ -32,6 +32,7 @@ if ($GLOBALS["result"]->num_rows > 0) {
     }
 
     // output data of each row
+    echo '<div id="books_shown_container">';
     for ($i = 0; $i < $GLOBALS["result"]->num_rows; $i++) {
         $row = $GLOBALS["result"]->fetch_assoc();
 
@@ -75,12 +76,12 @@ if ($GLOBALS["result"]->num_rows > 0) {
             }
         }
         if ($isBookInUserCart == false) {
-            $forwardPage = "#";
+            $forwardPage = "#books_shown_container";
             if (isset($_SESSION['user']) == "") { //if there is no logged in user 
                 $forwardPage = "login.php";
             }
             ?>
-            <form classname="dummy" name="form_addToShoppingCart" action="<?php echo $forwardPage; ?>" method="post">
+            <form name="form_addToShoppingCart" action="<?php echo $forwardPage; ?>" method="post">
                 <button classname="dummy"
                         type="submit" 
                         name="add_book_to_cart" 
@@ -99,6 +100,7 @@ if ($GLOBALS["result"]->num_rows > 0) {
         }
         echo '</div>';
     }
+    echo '</div>';
 } else {
     echo "0 results";
 }
