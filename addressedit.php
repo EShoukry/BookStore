@@ -388,7 +388,7 @@ if (isset($_POST['addbtn'])) {
 			<div class="form-check text-right">
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck" <?php if($primaryAdd) {echo "checked";}?>>
 			  <label class="form-check-label" for="primaryCheck">
-				Priamry Address?
+				Primary Address?
 			  <label>
 			</div>
 

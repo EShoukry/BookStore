@@ -335,7 +335,7 @@ if (isset($_POST['addbtn'])) {
 			<div class="form-check text-right">
 			  <input class="form-check-input" name="primaryCheck" type="checkbox" value="1" id="primaryCheck">
 			  <label class="form-check-label" for="primaryCheck">
-				Make this your new Priamry Address?
+				Make this your new Primary Address?
 			  <label>
 			</div>
 
