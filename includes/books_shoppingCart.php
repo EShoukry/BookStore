@@ -17,13 +17,6 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     <?php
     /*
      * 
-     * DB Queries
-     * 
-     */
-   
-    
-    /*
-     * 
      * Shopping cart updates
      * 
      */
@@ -32,15 +25,15 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
             $bookId = $_POST['id_' . $i];
             $toUpdateQuantity = $_POST['quantity_' . $i];
             $updateQuery = ""
-                    . "UPDATE shoppingcart b"
-                    . " SET b.b_quantity = " . $toUpdateQuantity
-                    . " WHERE b.book_id = \"" . $bookId . "\""
-                    . " AND b.user_id = " . $userId;
+                    . "UPDATE shoppingcart s"
+                    . " SET s.b_quantity = " . $toUpdateQuantity
+                    . " WHERE s.book_id = \"" . $bookId . "\""
+                    . " AND s.user_id = " . $userId;
             if ($mysqli->query($updateQuery) == FALSE) {
                 echo "Error updating record: " . $mysqli->error;
                 error_log("Error updating record: " . $mysqli->error);
             }
-           
+
             $updateDeleteQuery = ""
                     . "DELETE FROM shoppingcart"
                     . " WHERE shoppingcart.b_quantity = 0";
@@ -48,36 +41,52 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                 echo '<h4>Wishlist is Empty</h4>';
                 error_log("Error updating record: " . $mysqli->error);
             }
-            
         }
-         
     }
     if (isset($_POST['add_book_to_cart'])) { //if adding book from main page or book details
         $bookId = $_POST["add_book_id"];
         $userId = $_POST["add_user_id"];
-        
+
         $insertQuery = "INSERT INTO shoppingcart (book_id, user_id, b_quantity)"
                 . " VALUES (\"" . $bookId . "\"," . $userId . "," . 1 . ");";
         if ($mysqli->query($insertQuery) == FALSE) {
             echo "ERROR: " . $insertQuery;
         }
     }
+
+
     /*
      * 
      * Wishlist updates
      * 
      */
-    if (isset($_POST['wishlist_moveToCart'])) { //if moving book from wishlist to cart
-        $bookId = $_POST['wishlist_book_id'];
-        echo "moveto: " . $bookId;
+    if (isset($_POST['wishlist_remove']) != '' ||
+            isset($_POST['wishlist_moveToCart']) != '') { //if deleting book from wishlist or moving it to cart
+        //delete the book from wishlist
+        $fromWishlistBookId = $_POST['wishlist_book_id'];
+        $query_removeFromWishlist = "" .
+                "DELETE FROM wishlist WHERE " .
+                "user_id = " . $userId . " AND " .
+                "book_id = " . $fromWishlistBookId;
+        if ($mysqli->query($query_removeFromWishlist) == FALSE) {
+            echo "ERROR: " . $insertQuery;
+        }
+        //if we are moving it to cart, add it to the shopping cart
+        if (isset($_POST['wishlist_moveToCart']) != '') {
+            $query_addToShoppingCart = "INSERT INTO shoppingcart (book_id, user_id, b_quantity) "
+                    . "VALUES (\"" . $fromWishlistBookId . "\"," . $userId . "," . 1 . ");";
+            if ($mysqli->query($query_addToShoppingCart) == FALSE) {
+                echo "ERROR: " . $insertQuery;
+            }
+        }
     }
-    if (isset($_POST['wishlist_remove'])) { //if deleting book from wishlist
-        $bookId = $_POST['wishlist_book_id'];
-        echo "remove: " . $bookId;
-    }
-    
-    
-    
+
+
+    /*
+     * 
+     * DB Queries
+     * 
+     */
     //Query to obtain all data for shopping cart output
     $wishlistDataTable = $mysqli->query(""
             . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
@@ -104,13 +113,13 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     if ($cartDataTable != null) {
         $cartNumRows = $cartDataTable->num_rows;
     }
-    
+
+
     /*
      * 
      * Forms
      * 
      */
-    
     ?>
     <!--Form for displaying logged in user's shopping cart-->
     <form method="post" class="shopping_cart_form">
@@ -168,16 +177,18 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     </form>
 
     <!--Form for displaying logged in user's wishlist-->
-    <form method="post" class="wishlist_form">
-        <h2>Items in Wishlist</h2>
-        <?php
-        if ($wishlistNumRows == 0) {
-            echo '<h4>Wishlist is Empty</h4>';
-        } else {
-            // output data of each row
-            for ($i = 0; $i < $wishlistNumRows; $i++) {
-                $wishlistDataTableRow = $wishlistDataTable->fetch_assoc();
-                ?>
+
+    <h2>Items in Wishlist</h2>
+    <?php
+    if ($wishlistNumRows == 0) {
+        echo '<h4>Wishlist is Empty</h4>';
+    } else {
+        // output data of each row
+
+        for ($i = 0; $i < $wishlistNumRows; $i++) {
+            $wishlistDataTableRow = $wishlistDataTable->fetch_assoc();
+            ?>
+            <form method="post" class="wishlist_form">
                 <div class = "cart_book_container">
                     <div class = "cart_book_cover"><img src = "<?php echo $wishlistDataTableRow["b_picture"] ?>" class = "cover_img"></div>
                     <div class = "cart_book_rate"> <img src = "images/<?php echo $wishlistDataTableRow["b_rate"] ?>stars.png"></div>
@@ -190,14 +201,25 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
                            name="wishlist_book_id"
                            value="<?php echo $wishlistDataTableRow["book_id"] ?>" 
                            hidden="true" />
-                    <input class ="wishlist_remove" type="submit" name="wishlist_remove[]" value="remove" />
-                    <input class ="wishlist_moveToCart" type="submit" name="wishlist_moveToCart[]" value="move to cart" />
+                    <button class="wishlist_remove"
+                            type="submit" 
+                            name="wishlist_remove[]" 
+                            value="move to cart" >
+                        <img class="wishlist_img_remove" src="images/x.png" width="20" height="20">
+                    </button>
+                    <button class="wishlist_moveToCart"
+                            type="submit" 
+                            name="wishlist_moveToCart[]" 
+                            value="remove" >
+                        <img class="wishlist_img_moveToCart" src="images/shoppingCartAdd.png" width="20" height="20">
+                    </button>
                 </div>
-                <?php
-            }
+            </form>
+            <?php
         }
-        ?>
-    </form>
+    }
+    ?>
+
 
     <?php
 } else {

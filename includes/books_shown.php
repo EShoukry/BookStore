@@ -62,9 +62,11 @@ if ($GLOBALS["result"]->num_rows > 0) {
 
         //shows the button to add book to shopping cart
         $isBookInUserCart = false;
-        mysqli_data_seek($booksInUserCart, 0);
-
-        $numBooksInCart = $booksInUserCart->num_rows;
+        $numBooksInCart = 0;
+        if (isset($_SESSION['user'])) {
+            mysqli_data_seek($booksInUserCart, 0);
+            $numBooksInCart = $booksInUserCart->num_rows;
+        }
         while ($numBooksInCart-- > 0) {
             $booksInCart = $booksInUserCart->fetch_assoc();
             if ($booksInCart['book_id'] == $row["book_id"]) {
@@ -78,7 +80,7 @@ if ($GLOBALS["result"]->num_rows > 0) {
                 $forwardPage = "login.php";
             }
             ?>
-            <form classname="dummy" action="<?php echo $forwardPage; ?>" method="post">
+            <form classname="dummy" name="form_addToShoppingCart" action="<?php echo $forwardPage; ?>" method="post">
                 <button classname="dummy"
                         type="submit" 
                         name="add_book_to_cart" 
