@@ -2,14 +2,14 @@
 Shopping Cart main container
 ====================*/
 .shopping_cart_main{
-	min-height:460px;
+    min-height:460px;
 }
 
 /*====================
 Book container
 ====================*/
 .cart_book_container{
-	position:relative;
+    position:relative;
     width: 60%;
     height: 200px;
     border: solid 2px rgba(11, 95, 4, 0.35);
@@ -19,10 +19,10 @@ Book container
 }
 
 .cart_book_container span{
-	position:relative;
-	float: left;
-	bottom: 3px;
-	font-size: 13px;
+    position:relative;
+    float: left;
+    bottom: 3px;
+    font-size: 13px;
     color: blue;
     width: 55px;
 }
@@ -38,105 +38,139 @@ Book container
 }
 
 .cart_book_cover{
-	position:absolute;
-	height:100%;
-	width:200px;
-	padding:4%;
+    position:absolute;
+    height:100%;
+    width:200px;
+    padding:4%;
 }
 
 .cart_book_rate{
     position: absolute;
-	padding: 0px;
+    padding: 0px;
     width: 15%;
-	height: auto;
-	float: left;
-	left: 4%;
-	bottom: 1%;
+    height: auto;
+    float: left;
+    left: 4%;
+    bottom: 1%;
 }
 
 .cart_book_name{
-	position: absolute;
+    position: absolute;
     top: 20%;
-	left: 40%;
-	width: auto;
+    left: 40%;
+    width: auto;
     height: auto;
 }
 
 .cart_book_author{
     position: absolute;
     top: 30%;
-	left: 40%;
-	width: auto;
+    left: 40%;
+    width: auto;
     height: auto;
 }
 
 .cart_book_price{
     position: absolute;
     top: 43%;
-	left: 40%;
-	width: auto;
+    left: 40%;
+    width: auto;
     height: auto;
-	color: #CD5C5C;
+    color: #CD5C5C;
 }
 
 .cart_book_quantity{
-	position: absolute;
+    position: absolute;
     top: 56%;
-	left: 40%;
-	width: auto;
+    left: 40%;
+    width: auto;
     height: auto;
 }
 
 .cart_book_delete{
-	position: absolute;
+    position: absolute;
     top: 5%;
-	right: 3%;
-	width: auto;
+    right: 3%;
+    width: auto;
     height: auto;
+}
+
+.cart_book_moveToWishlist {
+    position: absolute;
+    bottom: 5%;
+    right: 3%;
+    width: 122;
+    height: 122;
+}
+
+.cart_book_moveToWishlist label {
+    color: mediumblue;
+    font-size: 14px;
+}
+
+.cart_book_remove {
+    position: absolute;
+    top: 5%;
+    right: 3%;
+    width: 122;
+    height: 122;
+}
+
+.cart_book_remove label {
+    color: red;
+    font-size: 15px;
 }
 
 /*====================
 HTML Forms
 ====================*/
 .wishlist_form {
-	overflow: auto;
+    overflow: auto;
 }
 
 .shopping_cart_form {
-	overflow: auto;
+    overflow: auto;
 }
 
 /*====================
 Review container
 ====================*/
 .cart_review_container{
-	position:fixed;
+    position:fixed;
     width: 30%;
     height: 13%;
     border: solid 1px rgba(11, 95, 4, 0.35);
     display: inline-block;
     float: right;
-	bottom: 14%;
+    top: 20%;
     margin: 20px 30px 20px 30px;   
 }
 
 .cart_review_container h1 {
-	position: absolute;
-	left: 27%;
-	bottom: 10px;
-	color: red;
+    position: absolute;
+    left: 27%;
+    bottom: 10px;
+    color: red;
 }
 
 .cart_review_container h2 {
-	position: absolute;
-	left: 2%;
-	bottom: 10px;
+    position: absolute;
+    left: 2%;
+    bottom: 10px;
+}
+
+.cart_review_input_purchase {
+    position: absolute;
+    bottom: 10%;
+    right: 2%;
+    color: green;
+    font: bold;
 }
 
 .cart_review_input_update {
-	position: absolute;
-	bottom: 10px;
-	right: 2%
+    position: absolute;
+    top: 2%;
+    right: 2%
 }
 
 /*====================
@@ -144,11 +178,20 @@ Wishlist
 ====================*/
 .wishlist_remove {
     position: absolute;
-    bottom: 10px;
-    right: 2%;
+    top: 5%;
+    right: 3%;
 }
+.wishlist_img_remove {
+    border: none;
+    outline: none;
+}
+
 .wishlist_moveToCart {
     position: absolute;
-    top: 10px;
-    right: 2%;
+    bottom: 5%;
+    right: 3%;
+}
+.wishlist_img_moveToCart {
+    border: none;
+    outline: none;
 }

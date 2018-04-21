@@ -5,7 +5,6 @@
     
 }
 
-
 #hd_container{    
     font-size: 18px;
     width: 100%;      
@@ -160,16 +159,18 @@ button{
 
 .book_container{
     width: 15%;
+    width: 200px;
     height: 360px;
     border: solid 2px rgba(11, 95, 4, 0.35);
     display: inline-block;
     float: left;
-    margin: 20px 30px 20px 30px;      
+    margin: 20px 30px 20px 30px; 
+    min-width: 180px;
 }
 
 .book_container:hover{
     box-shadow: 3px 6px rgba(11, 95, 4, 0.35);
-    width: 15.3%;    
+    /*width: 15.3%;*/    
     transition-duration: 1s;    
 }
 
@@ -355,6 +356,7 @@ h1{
 
 .book_genre{
     padding: 0px 20px 0px 20px;
+    margin: 0 auto;
 }
 
 .book_genre:after{
@@ -447,4 +449,31 @@ option{
 .userContainer {
     background-color: beige;
     width: 75%;
+}
+
+
+/********Responsive Design********/
+@media (max-width: 1160px) {
+    
+    #nav_container {
+        margin: 0 auto;
+        width:auto;
+    }
+    
+    #search_container{
+        margin-left: 0px;
+        margin: 0 auto;
+        width:auto;
+        
+    }
+    
+    #log_cart{
+        /*float:none;*/
+        width: auto;
+        margin: 0 auto;
+    }
+}
+
+.glyphicon {
+    background-color: inherit;
 }

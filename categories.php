@@ -1,4 +1,4 @@
-i<?php
+<?php
 // Create connection
 $dbConfig = include('config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
