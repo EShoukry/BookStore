@@ -1,3 +1,4 @@
+
 <?php
 
 ob_start();
@@ -23,15 +24,16 @@ if(isset($_POST['AnonOrNickname']))
 if ($anonORnickname == "anon")
 {
 $sql = "INSERT INTO comments (user_id, book_id, comment, c_date, anon_check)
-VALUES (" . $_SESSION['user'] . "," . $_SESSION['book_id_test'] . ",'$comment', '$date', '1')";
+VALUES (" . $_SESSION['user'] . "," . $_SESSION['current_book_id'] . ",'$comment', '$date', '1')";
 }
 else
 {
 $sql = "INSERT INTO comments (user_id, book_id, comment, c_date, anon_check)
-VALUES (" . $_SESSION['user'] . "," . $_SESSION['book_id_test'] . ",'$comment', '$date', '0')";
+VALUES (" . $_SESSION['user'] . "," . $_SESSION['current_book_id'] . ",'$comment', '$date', '0')";
 }
 if ($mysqli->query($sql) === TRUE) {
-    echo "New record created successfully";
+    $url='http://watchwinners.com/bookstore/bookdetails.php?b_id=' . $_SESSION['current_book_id'] ;
+   echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
 } else {
     echo "Error: " . $sql . "<br>" . $mysqli->error;
 }
