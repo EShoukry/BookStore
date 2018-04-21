@@ -62,7 +62,7 @@ if (isset($_POST['cart_purchase']) != "") {
                     . " WHERE user_id = " . $userId
                     . " AND book_id = '" . $bookId . "';";
             $checkIfExistsResults = $mysqli->query($checkIfExistsQuery);
-            
+
             //check for existing user_id, book_id pair in books_users
             if ($checkIfExistsResults->num_rows > 0) {
                 $mysqli->query(""
@@ -73,14 +73,17 @@ if (isset($_POST['cart_purchase']) != "") {
                         . " AND book_id = '" . $bookId . "';"
                 );
             } else {
-                echo ""
-                        . "INSERT INTO books_users (book_id, user_id, b_quantity, rated_book, book_rating)"
-                        . " VALUES (\"" . $bookId . "\"," . $userId . "," . $cartRow["b_quantity"] . ",0,0);\n";
                 $mysqli->query(""
                         . "INSERT INTO books_users (book_id, user_id, b_quantity, rated_book, book_rating)"
                         . " VALUES (\"" . $bookId . "\"," . $userId . "," . $cartRow["b_quantity"] . ",0,0);"
                 );
             }
+
+            //finally delete all books from shopping cart for current user
+            $mysqli->query(""
+                    . "DELETE FROM books_users "
+                    . "WHERE user_id = " . $userId . ";"
+            );
         }
     } catch (Exception $e) {
         echo '<h2>Query failed: ' . $e->getMessage() . '</h2>';
@@ -106,9 +109,9 @@ if (isset($_POST['cart_purchase']) != "") {
         <link rel="stylesheet" type="text/css" href="css/reviewOrder_styles.css">
     </head>
     <body>
-<?php
-require "header.php";
-?>
+        <?php
+        require "header.php";
+        ?>
         <section>
             <div class=section_title><h1>Receipt</h1></div>
             <div class="receipt_show">
@@ -116,7 +119,7 @@ require "header.php";
             </div>
         </section>
     </body>
-<?php
-require "footer.php";
-?>
+    <?php
+    require "footer.php";
+    ?>
 </html>
