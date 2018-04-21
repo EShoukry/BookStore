@@ -98,7 +98,8 @@ $b_img = $image->fetch_assoc();
         <!---<div id=main_image>
             <img src="images/index.jpeg" alt="Team 7 book store" >
         </div>  
-        -->
+
+-->
         <section>
             
             <div class="wrapper">
@@ -149,4 +150,8 @@ $b_img = $image->fetch_assoc();
     
 </html>
 
-
+<?php
+require "footer.php";
+echo "</html>";
+mysqli_close($mysqli);
+?>  
