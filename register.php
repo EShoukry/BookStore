@@ -51,9 +51,14 @@ if (isset($_POST['regbtn'])) {
     $confpassword = strip_tags($confpassword);
     $confpassword = htmlspecialchars($confpassword);
 
+	
     $address = trim($_POST['address1']);
     $address = strip_tags($address);
     $address = htmlspecialchars($address);
+
+	$address2 = trim($_POST['address2']);
+    $address2 = strip_tags($address2);
+    $address2 = htmlspecialchars($address2);
 
     $city = trim($_POST['city']);
     $city = strip_tags($city);
@@ -66,6 +71,11 @@ if (isset($_POST['regbtn'])) {
     $zipcode = trim($_POST['zipcode']);
     $zipcode = strip_tags($zipcode);
     $zipcode = htmlspecialchars($zipcode);
+
+    $country = trim($_POST['country']);
+    $country = strip_tags($country);
+    $country = htmlspecialchars($country);
+	
 
     // basic username validation
     if (empty($username)) {
@@ -87,7 +97,7 @@ if (isset($_POST['regbtn'])) {
             $usernameError = "Provided Username is already in use.";
         }
     }
-//
+
     if (empty($firstname)) {
         $error = true;
         $firstnameError = "Please enter your first name.";
@@ -121,10 +131,13 @@ if (isset($_POST['regbtn'])) {
         $nicknameError = "Nick name must contain alphabets and/or Numbers.";
     }
 
-//    //basic email validation
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+//    //API email Validation for deliverable address
+	$apiAddress = "https://trumail.io/json/" . $email;
+	$deliverable = json_decode(file_get_contents($apiAddress));
+	$deliverable = $deliverable -> deliverable;
+    if (!$deliverable) {
         $error = true;
-        $emailError = "Please enter valid email address.";
+        $emailError = "Email Address not deliverable according to TruMail API.";
     } else {
         // check email exist or not
         $query = "SELECT u_email FROM users WHERE u_email='$email'";
@@ -136,13 +149,19 @@ if (isset($_POST['regbtn'])) {
         }
     }
 
-
+	
     if (empty($address)) {
         $error = true;
-        $addressError = "Please enter your address.";
+        $addressError = "Please enter your Street Address, P.O. Box, Company Name, C/O.";
     } else if (strlen($address) < 3) {
         $error = true;
         $addressError = "Address must have atleat 3 characters.";
+    }
+
+
+	if (strlen($address2)>0 && strlen($address2) < 3) {
+        $error = true;
+        $address2Error = "Apt, Suite, Unit, Floor, etc. must have atleat 3 characters.";
     }
 
     if (empty($city)) {
@@ -158,30 +177,32 @@ if (isset($_POST['regbtn'])) {
 
     if (empty($state)) {
         $error = true;
-        $stateError = "Please enter your State.";
-    } else if (strlen($state) != 2) {
+        $stateError = "Please enter your State/Province/Region.";
+    } else if (!ctype_alnum($state)) {
         $error = true;
-        $stateError = "State must have 2 characters.";
-    } else if (!ctype_alpha($state)) {
-        $error = true;
-        $stateError = "State must contain Capitals only.";
+        $stateError = "State/Province/Region must contain Alphanumericals only.";
     }
     $state = strtoupper($state);
 
     if (empty($zipcode)) {
         $error = true;
-        $zipError = "Please enter your Zip Code.";
-    } else if (strlen($zipcode) != 5) {
+        $zipError = "Please enter your Zip/Postal Code.";
+    } else if (strlen($zipcode) > 15) {
         $error = true;
-        $zipError = "Zip Code must have 5 Numbers.";
-    } else if (!is_numeric($zipcode)) {
+        $zipError = "Zip/Postal Code must be less than 15 Alphanumericals.";
+    } else if (!ctype_alnum($zipcode)) {
         $error = true;
-        $zipError = "Zip Code must contain numbers only.";
+        $zipError = "Zip/Postal Code must contain Alphanumericals only.";
     }
-    //concatenate address city state zip
 
-    $address = $address . " " . $city . ", " . $state . " " . $zipcode;
-
+	if (empty($country)) {
+        $error = true;
+        $countryError = "Please enter your Country.";
+    } else if (strlen($country) > 50) {
+        $error = true;
+        $countryError = "Country must be less than 15 Alphanumericals.";
+    } 
+	
 
 
     // password validation
@@ -196,28 +217,83 @@ if (isset($_POST['regbtn'])) {
         $passwordError = "Passwords do not match.";
     }
 
-    // password encrypt using SHA256();
-    $password = md5($password);
+    // password encrypt using md5();
+    $password = password_hash($password, PASSWORD_DEFAULT);
 
+	$apiAddress = [$address, $address2, $city, $state, $zipcode, $country];
+	$apiAddress = implode(" ", $apiAddress);
+	$apiAddress = str_replace(' ', '+', $apiAddress);
+	$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
+
+	$geocode = json_decode(file_get_contents($apiAddress));
+	$addressStatus = $geocode->status;
+		if($addressStatus != 'OK'){
+		$error = true;
+		$errTyp = "danger";
+        $errMSG = "\nCould not locate address using Google Maps API\nPlease check address and try again.";
+		}  
     // if there's no error, continue to signup
-    if (!$error) {
+    else if (!$error) {
 
-        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_address,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$address','$nickname','$lastname')";
+        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$nickname','$lastname')";
         $res = mysqli_query($mysqli, $query);
 
         if ($res) {
             $errTyp = "success";
-            $errMSG = "Successfully registered! You may login now";
-            unset($firstname);
-            unset($lastname);
+			$errMSG = "Registered Successfully!" . "\n";
+
             unset($username);
             unset($nickname);
-            unset($address);
-            unset($email);
+
+			$query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+			$res = mysqli_query($mysqli, $query);
+			$row = mysqli_fetch_array($res, MYSQLI_BOTH);
+			$count = mysqli_num_rows($res);
+			
+
+			unset($email);
             unset($password);
-            unset($city);
-            unset($state);
-            unset($zipcode);
+
+			//set session after registering
+			if ($count == 1) {
+				$_SESSION['user'] = $row['user_id_number'];
+				$errMSG = $errMSG . "Login Successful! User ID: " . $_SESSION['user'] . "\n";
+
+			} else {
+				$error = true;
+				$errTyp = "danger";
+				$errMSG = $errMSG . "Error In Login, Try again...";
+			}
+
+			//add address information as primary(only) address upon session set.
+			if(!$error){
+				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
+								VALUES('" . $_SESSION['user'] . "','1','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
+				$res = mysqli_query($mysqli, $query);
+				if ($res) {
+
+					$errMSG = $errMSG . "Address Inserted Successfully!" . "\n";
+					unset($firstname);
+					unset($lastname);
+					unset($address);
+					unset($address2);
+					unset($city);
+					unset($state);
+					unset($zipcode);
+					unset($country);
+
+				}else{
+					$error = true;
+					$errTyp = "danger";
+					$errMSG = $errMSG . "Error In Address Insert, Please Enter Address Manually...";
+				}
+
+			}				
+            
+
+
+
+			
         } else {
             $errTyp = "danger";
             $errMSG = "Something went wrong, try again later...";
@@ -249,204 +325,226 @@ if (isset($_POST['regbtn'])) {
         <?php
         require "header.php";
         ?>
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+		<div class="wrapper backAsImg">
+		<div class="container userContainer">
+
+		
+		
+			<div id="login-form">
+				<form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
+					<div class="col-lg-12 text-center">
+						<div class="form-group">
+							<div class=section_title>
+								<h3 style="text-center">Register A New Account</h3>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<hr />
+						</div>
+					
+						<?php
+							if ( isset($errMSG) ) {
+						
+								?>
+
+								<div class="form-group">
+								<div class="input-group">
+            					<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+								<span class="glyphicon glyphicon-info-sign"></span> <?php echo nl2br ($errMSG); ?>
+								</div>
+            					</div>
+								</div>
+								<?php
+							}
+							?>
 
 
-        <div id="login-form">
-            <form class="form" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" enctype="multipart/form-data" autocomplete="off">
-                <div class="form-group">
-                    <div class=section_title>
-                        <h1>Register A New Account</h1>
-                    </div>
-                </div>
 
-                <div class="form-group">
-                    <hr />
-                </div>
-                <?php
-                if (isset($errMSG)) {
-                    phpAlert($errMSG);
-                }
-                ?>
+							<div class="form-group" style="width:100%">
+							<div class="col-sm-12 text-left">
+							
+									<div class="input-group">
+									
+										<input type="text" placeholder="First Name" name="firstname" class="form-control" style="width:50%" maxlength="50" value="<?php
+										if (isset($firstname)) {
+											echo $firstname;
+										}
+										?>"  />
+								
+										
+									
+										
+										<input type="text" placeholder="Last Name" name="lastname" class="form-control" style="width:50%" maxlength="50" value="<?php
+										if (isset($lastname)) {
+											echo $lastname;
+										}
+										?>"  />
+										
+										<br><span class="text-danger"><?php
+										if (isset($firstnameError)) {
+											echo $firstnameError;
+										}
+										?></span>
+										<span class="text-danger"><?php
+										if (isset($lastnameError)) {
+											echo $lastnameError;
+										}
+										?></span>
+									</div>
+									
+						
+									<div class="input-group">
+									<input type="text" placeholder="User Name" name="username" class="form-control" maxlength="50" value="<?php
+									if (isset($username)) {
+										echo $username;
+									}
+									?>"  />
+									<br><span class="text-danger"><?php
+									if (isset($usernameError)) {
+										echo $usernameError;
+									}
+									?></span>
+									</div>
+						
+									<div class="input-group">
+									<input type="text" placeholder="Nick Name" name="nickname" class="form-control" maxlength="50" value="<?php
+									if (isset($nickname)) {
+										echo $nickname;
+									}
+									?>"  />
+						
+									<br><span class="text-danger"><?php
+									if (isset($nicknameError)) {
+										echo $nicknameError;
+									}
+									?></span>
+									</div>
+									<div class="input-group">
+									<input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+									if (isset($email)) {
+										echo $email;
+									}
+									?>"  />
+						
+									<br><span class="text-danger"><?php
+									if (isset($emailError)) {
+										echo $emailError;
+									}
+									?></span>
+									</div>
+									<div class="input-group">
+									<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+						
+									<br><span class="text-danger"><?php
+									if (isset($passwordError)) {
+										echo $passwordError;
+									}
+									?></span>
+									</div>
+									<div class="input-group">
+									<input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
+						
+									</div>
+									<div class="input-group">
+									<hr />
+									</div>
+							</div>
+							</div>
+						<div class="form-group" style="width:100%">
+						<div class="col-sm-12 text-left">
+						<h4 class="text-center">Permanent Address</h4>
+							<div class="input-group">
+								<input type="text" placeholder="Street Address, P.O. Box, Company Name, C/O" name="address1" class="form-control" maxlength="50" />
+						
+								<br><span class="text-danger"><?php
+								if (isset($addressError)) {
+									echo $addressError;
+								}
+								?></span>
+							</div>
+							<div class="input-group">
+								<input type="text" placeholder="Apt, Suite, Unit, Floor, etc." name="address2" class="form-control" maxlength="50" />
+						
+								<br><span class="text-danger"><?php
+								if (isset($address2Error)) {
+									echo $address2Error;
+								}
+								?></span>
+							</div>
+							<div class="input-group">
 
+								<input type="text" placeholder="City" name="city" class="form-control" Style="width: 50%;" maxlength="50" value="<?php
+								if (isset($city)) {
+									echo $city;
+								}
+								?>" />
 
+								<input type="text" placeholder="State/Province/Region" name="state" Style="width: 50%;" class="form-control" value="<?php
+								if (isset($state)) {
+									echo $state;
+								}
+								?>" />
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Username</b></label>
-                        <input type="text" placeholder="User Name" name="username" class="form-control" maxlength="50" value="<?php
-                        if (isset($username)) {
-                            echo $username;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($usernameError)) {
-                            echo $usernameError;
-                        }
-                        ?></span>
-                </div>
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>First Name</b></label>
-                        <input type="text" placeholder="First Name" name="firstname" class="form-control" maxlength="50" value="<?php
-                        if (isset($firstname)) {
-                            echo $firstname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($firstnameError)) {
-                            echo $firstnameError;
-                        }
-                        ?></span>
-                </div>
+								<br><span class="text-danger"><?php
+								if (isset($cityError)) {
+									echo $cityError;
+								}
+								?></span>
+								
+								<span class="text-danger"><?php
+								if (isset($stateError)) {
+									echo $stateError;
+								}
+								?></span>
+							</div>
+							<div class="input-group">
+								<input type="text" placeholder="Zip/Poastal Code" name="zipcode" class="form-control" Style="width: 50%;" value="<?php
+								if (isset($zipcode)) {
+									echo $zipcode;
+								}
+								?>" />
+								<input type="text" placeholder="Country" name="country" class="form-control" Style="width: 50%;" maxlength="50" />
+								
+								<br><span class="text-danger" ><?php
+								if (isset($zipError)) {
+									echo $zipError;
+								}
+								?></span>
+								<span class="text-danger "><?php
+								if (isset($countryError)) {
+									echo $countryError;
+								}
+								?></span>
+							</div>
+						<br />
+						</div>
+						</div>
+					
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Last Name</b></label>
-                        <input type="text" placeholder="Last Name" name="lastname" class="form-control" maxlength="50" value="<?php
-                        if (isset($lastname)) {
-                            echo $lastname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($lastnameError)) {
-                            echo $lastnameError;
-                        }
-                        ?></span>
-                </div>
+					<div class="form-group text-center">
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Nick Name</b></label>
-                        <input type="text" placeholder="Nick Name" name="nickname" class="form-control" maxlength="50" value="<?php
-                        if (isset($nickname)) {
-                            echo $nickname;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($nicknameError)) {
-                            echo $nicknameError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Email</b></label>
-                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
-                        if (isset($email)) {
-                            echo $email;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($emailError)) {
-                            echo $emailError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Password</b></label>
-                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($passwordError)) {
-                            echo $passwordError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Confirm Password</b></label>
-                        <input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Permanent Address</b></label>
-                        <input type="text" placeholder="Address Line 1" name="address1" class="form-control" maxlength="50" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($addressError)) {
-                            echo $addressError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>City</b></label>
-                        <input type="text" placeholder="City" name="city" class="form-control" maxlength="50" value="<?php
-                        if (isset($city)) {
-                            echo $city;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($cityError)) {
-                            echo $cityError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>State</b></label>
-                        <input type="text" placeholder="State" name="state" class="form-control" value="<?php
-                        if (isset($state)) {
-                            echo $state;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($stateError)) {
-                            echo $stateError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Zip Code</b></label>
-                        <input type="text" placeholder="Zip Code" name="zipcode" class="form-control" value="<?php
-                        if (isset($zipcode)) {
-                            echo $zipcode;
-                        }
-                        ?>" />
-                    </div> 
-                    <span class="text-danger"><?php
-                        if (isset($zipError)) {
-                            echo $zipError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <hr />
-                </div>
-
-                <button type="submit" name="regbtn" class="btn btn-success btn-block"/>Register</button>
-                <button type="reset"  name="clear" class="btn btn-warning btn-block"/>Clear</button>
+					<div class="btn-group" Style="margin-bottom: 5px;">
+					<button type="submit" name="regbtn" class="btn btn-primary ">Register</button>
+					<button type="reset"  name="clear" class="btn btn-warning ">Clear</button>
+					</div>
+					<br>
+					<div class="btn-group">
+					<a href="login.php" class="btn btn-secondary btn-responsive">Have An Account? Sign In Now</a>
+					</div>
 
 
-                <div class="form-group">
-                    <hr />
-                </div>
 
-            </form>
-        </div>
+					</div>
+					<hr />
 
-
+				
+					</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		</div>
 
         <div id="end_body"></div>  
     </body>

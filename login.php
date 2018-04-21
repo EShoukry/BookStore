@@ -55,21 +55,44 @@ if (isset($_POST['login'])) {
     // if there's no error, continue to signup
     if (!$error) {
 
-        $password = md5($password);
 
-        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+        $query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email'";
         $res = mysqli_query($mysqli, $query);
         $row = mysqli_fetch_array($res, MYSQLI_BOTH);
         $count = mysqli_num_rows($res);
 
         if ($count == 1) {
-            $_SESSION['user'] = $row['user_id_number'];
-            phpAlert("Login Successful! User ID: " . $_SESSION['user']);
-            header("Location: home.php");
+			if (password_verify($password, $row['u_password'])){
+				$_SESSION['user'] = $row['user_id_number'];
+				header("Location: home.php");
+			}
+			else if (md5($password) == $row['u_password']){
+				$_SESSION['user'] = $row['user_id_number'];
+				$password = password_hash($password, PASSWORD_DEFAULT);
+				$query = "UPDATE users SET u_password='$password' WHERE user_id_number='" . $row['user_id_number'] . "'";
+				$res = mysqli_query($mysqli, $query);
+				if($res){
+					header("Location: home.php");
+				} else{
+					$errTyp = "danger";
+					$errMSG = "Error in updating password encryption method, Try again...";
+				}
+			}
+			else{
+				$errTyp = "danger";
+				$errMSG = "Incorrect credential for email, Try again...";
+			}
+        } else if ($count > 1) {
+			$errTyp = "danger";
+            $errMSG = "Database corrupted, More than one instance of email...";
         } else {
-            phpAlert("Incorrect Credentials, Try again...");
-        }
-    }
+			$errTyp = "danger";
+            $errMSG = "Email not registered, please register user first...";
+		}
+    } else{
+	
+
+	}
 }
 ?>
 
@@ -90,23 +113,24 @@ if (isset($_POST['login'])) {
 
         <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
     </head>
     <body>
         <?php
         require "header.php";
         ?>
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
+		<div class="wrapper backAsImg">
+		<div class="container userContainer" >
+  
 
 
         <div id="login-form">
 
             <form action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>" method="post" autocomplete="off">
 
-
+				<div class="col-lg-12">
                 <div class="form-group"><div class=section_title>
-                        <h1>Login to Your Account</h1>
+                        <h2>Login to Your Account</h2>
                     </div>
                 </div>
 
@@ -114,57 +138,75 @@ if (isset($_POST['login'])) {
                     <hr />
                 </div>
 
+				<?php
+						if ( isset($errMSG) ) {
+						
+							?>
 
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Email</b></label>
-                        <input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
-                        if (isset($email)) {
-                            echo $email;
-                        }
-                        ?>"  />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($emailError)) {
-                            echo $emailError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <div class="input-group">
-                        <label><b>Password</b></label>
-                        <input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
-                    </div>
-                    <span class="text-danger"><?php
-                        if (isset($passwordError)) {
-                            echo $passwordError;
-                        }
-                        ?></span>
-                </div>
-
-                <div class="form-group">
-                    <hr />
-                </div>
-                <button type="submit" name="login" class="btn btn-primary btn-block">Login</button>
-                <button type="reset"  name="clear" class="btn btn-warning btn-block">Clear</button>
+							<div class="form-group">
+							<div class="input-group">
+            				<div class="alert alert-<?php echo ($errTyp=="success") ? "success" : $errTyp; ?>">
+							<span class="glyphicon glyphicon-info-sign"></span> <?php echo $errMSG; ?>
+							</div>
+            				</div>
+							</div>
+							<?php
+						}
+				?>
 
 
                 <div class="form-group">
-                    <hr />
-                </div>
+						<div class="input-group">
 
-                <div class="form-group">
-                    <a href="register.php">Sign Up Here...</a>
-                </div>
+							<input type="email" placeholder="Email" name="email" class="form-control" maxlength="50" value="<?php
+							if (isset($email)) {
+								echo $email;
+							}
+							?>"  />
+						
+							<br><span class="text-danger"><?php
+							if (isset($emailError)) {
+								echo $emailError;
+							}
+							?></span>
+					</div></div>
+
+					<div class="form-group">
+						<div class="input-group">
+
+							<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+						
+							<br><span class="text-danger"><?php
+							if (isset($passwordError)) {
+								echo $passwordError;
+							}
+							?></span>
+					</div></div>
 
 
 
+				<div class="form-group text-center">
+
+					<div class="btn-group" Style="margin-bottom: 5px;">
+					<button type="submit" name="login" class="btn btn-primary" Style="width: 200px;"/>Login</button>
+					<button type="reset"  name="clear" class="btn btn-warning" Style="width: 200px;"/>Clear</button>
+					</div>
+					<br>
+					<div class="btn-group">
+					<a href="register.php" class="btn btn-secondary btn-block" Style="width: 400px;"/>Don't Have an Account? Sign Up Now</a>
+					</div>
+
+
+
+					</div>
+
+			</div>
 
             </form>
 
         </div>  
-
+		</div>
+		</div>
         <div id="end_body"></div>  
     </body>
 

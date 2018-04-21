@@ -2,18 +2,9 @@
 ob_start();
 session_start();
 
-$servername = "db720121368.db.1and1.com";
-$username = "dbo720121368";
-$password = "TeamSeven7@";
-$dbname = "db720121368";
-
-//$servername = "localhost";
-//$username = "root";
-//$password = "";
-//$dbname = "bookstore";
-
 // Create connection
-$mysqli = new mysqli($servername, $username, $password, $dbname);
+$dbConfig = include('config.php');
+$mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
 
 // Check connection
 if (mysqli_connect_error()) {
@@ -37,21 +28,19 @@ if (mysqli_connect_error()) {
         <section>
             <div class=section_title><h1>Shopping Cart</h1></div>
             <hr>
-            <div id="Shopping Cart" class="shopping_cart_main">
-
-                <?php
+            <?php
+            if (isset($_SESSION['user'])) {
                 //Query to get the user's checked out books
                 //$currentUserLoginId = $_SESSION['user']; //sets to logged in users Primary Key
-                $currentUserLoginId = "Test Everything";
+                $currentUserLoginId = $_SESSION['user'];
                 $_SESSION["shoppingCart"] = $mysqli->query(""
                         . "SELECT users.user_id_number"
                         . " FROM users"
-                        . " WHERE users.u_login_id = '" . $currentUserLoginId . "'");
+                        . " WHERE users.user_id_number = '" . $currentUserLoginId . "'");
                 mysqli_close($mysqli);
                 require "includes/books_shoppingCart.php";
-                ?>        
-
-            </div>
+            }
+            ?>        
         </section>   
     </body>
     <?php

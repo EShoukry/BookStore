@@ -36,26 +36,36 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
         <title>Welcome <?php echo $userRow['u_login_id']; ?></title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
-        <!-- Latest compiled and minified CSS -->
+		<!-- BootStrap Import from CDN-->
+		<!-- Latest compiled and minified CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-
-        <!-- jQuery library -->
+		        <!-- jQuery library -->
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
-        <!-- Latest compiled JavaScript -->
+		        <!-- Latest compiled JavaScript -->
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     </head>
     <body>
         <?php
         require "header.php";
         ?>
-        <div id=main_image>
-            <img src="images/index.jpeg" alt="Team 7 book store" >
-        </div>  
-        <div class=section_title>
-            <h1>User Information</h1>
-        </div>
-        <table class="table">
+  
+
+
+	
+	<div class="wrapper backAsImg">
+	<div class="container userContainer">
+
+    	<?php
+        require "includes/navbar_user.php";
+		?>
+    	<div class="page-header">
+    	<div class=section_title><h3>User Information</h3></div>
+    	</div>
+        
+        <div class="row">
+        <div class="col-lg-12">
+        
+		<table class="table">
             <tbody>
                 <tr>
                     <th>User ID #</th>
@@ -83,12 +93,40 @@ $userRow = mysqli_fetch_array($res, MYSQLI_BOTH);
                 </tr>
                 <tr>
                     <th>Address</th>
-                    <td><?php echo $userRow['u_address']; ?></td>
+                    <td><?php 
+					$addMSG;
+					$query = "SELECT `fname`, `lname`, `line1`, `line2`, `city`, `state`, `zip`, `country` FROM `address` WHERE `p_address` = 1 AND `user_id` = " . $userRow['user_id_number'];
+					$res = mysqli_query($mysqli, $query);
+					if($res){
+						$addRow = mysqli_fetch_array($res, MYSQLI_BOTH);
+						$addMSG = $addRow['fname'] . " " . $addRow['lname'] . "\n" . $addRow['line1'] . "\n";
+						if($addRow['line2'] != ""){
+							$addMSG = $addMSG . $addRow['line2'] ."\n";
+						}
+
+						$addMSG = $addMSG . $addRow['city'] . ", " . $addRow['state'] . "\n" . $addRow['zip'] . "\n" . $addRow['country'];
+
+					} else{
+						$addMSG = "No Primary Address on File Currently";
+					}
+
+
+
+					echo nl2br ($addMSG);
+					
+					
+					?></td>
                 </tr>
             </tbody>
         </table>
-    <li><a href="logout.php?logout"><span class="glyphicon glyphicon-log-out"></span>&nbsp;Sign Out</a></li>
-    <div id="end_body"></div>  
+
+        </div>
+        </div>
+    </div>
+    
+    </div>
+
+
 </body>
 <?php
 require "footer.php";

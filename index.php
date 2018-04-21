@@ -1,25 +1,18 @@
 <?php
-$servername = "db720121368.db.1and1.com";
-$username = "dbo720121368";
-$password = "TeamSeven7@";
-$dbname = "db720121368";
-
-/*$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "bookstore";*/
-
 // Create connection
-$mysqli = new mysqli($servername, $username, $password, $dbname); 
+$dbConfig = include('config.php');
+$mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
+ 
+session_start();
 
-// Check connection
+// Check connection 
 if (mysqli_connect_error()) {
     die("Database connection failed: " . mysqli_connect_error());
 }
 
 //Getting the information send by the forms related to the pages and sorting 
-$sort_values = ['book title', 'author', 'price', 'book rating', 'release date'];
-$sort_sql_values = ['b_name', 'author_id', 'b_price', 'b_rate', 'b_release'];
+$sort_values = ['book title --- A-Z','book title --- Z-A', 'author --- A-Z', 'author --- Z-A', 'price --- Low-High','price --- High-Low', 'book rating --- Low-High', 'book rating --- High-Low','release date --- Old-New', 'release date --- New-Old'];
+$sort_sql_values = ['b_name', 'b_name', 'author_id', 'author_id', 'b_price', 'b_price','b_rate', 'b_rate', 'b_release', 'b_release'];
 $pages_values = ['10', '20', '100'];
 
 $initial_row = 0;
@@ -75,7 +68,7 @@ if (isset($_POST['bt_1'])) {  //First page case
         <title>Book Store </title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
-        <script src="scripts/main.js"></script>
+        <script type="text/javascript" src="scripts/js/buttonClick.js"></script>
     </head>
     <body>
         <?php
@@ -94,9 +87,9 @@ if (isset($_POST['bt_1'])) {  //First page case
                     <select name="sort_select" id="sort_option" onchange="this.form.submit()">
                         <?php
                         for ($i = 0; $i < count($sort_values); $i++) {
-                            echo '<option value="' . $i . '"';
+                            echo '<option value="'.$i.'"';
                             if ($i == $sort)
-                                echo"selected";
+                                echo "selected";
                             echo '>' . $sort_values[$i] . '</option>';
                         }
                         ?>
@@ -116,12 +109,11 @@ if (isset($_POST['bt_1'])) {  //First page case
                     
                     //Query to get the book information
                     if ($sort_sql_values[$sort] == 'author_id') {
-                        $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name");
-                        
-                    } else {
-                        $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY " . $sort_sql_values[$sort]);
-                        
-                    }
+                             $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name");                         
+                    } else {                                                 
+                             $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY " . $sort_sql_values[$sort]." ASC");                  
+                        }    
+                    
                     
                     $total_pages = ceil($result->num_rows/$pages_values[$page]);
                     echo '<input type=hidden name=tp value="'.$total_pages.'">';
@@ -150,13 +142,23 @@ if (isset($_POST['bt_1'])) {  //First page case
 
                 <?php
                 //Query to get the book information
-                if ($sort_sql_values[$sort] == 'author_id') {
-                    $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name        LIMIT " . $initial_row.",". $offset);
-                } else {
-                    $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY " . $sort_sql_values[$sort] . " LIMIT ". $initial_row.",".$offset);
-                }
-
-
+                    if ($sort_sql_values[$sort] == 'author_id') {
+                        if($sort%2==0){
+                              $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name ASC LIMIT " . $initial_row.",". $offset);
+                        }else{
+                           $result = $mysqli->query("SELECT DISTINCT books.book_id, b_name, b_price, b_picture, b_description, b_rate FROM books, books_authors, authors WHERE books.book_id = books_authors.book_id AND authors.author_id= books_authors.author_id ORDER BY authors.a_name DESC LIMIT " . $initial_row.",". $offset);
+                        }                    
+                        
+                    } else {
+                        if($sort%2==0){                            
+                             $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY " . $sort_sql_values[$sort]." ASC LIMIT ". $initial_row.",".$offset);
+                        }
+                        else{                            
+                             $result = $mysqli->query("SELECT book_id, b_name, b_price, b_picture, b_description, b_rate FROM books ORDER BY " . $sort_sql_values[$sort]." DESC  LIMIT ". $initial_row.",".$offset);
+                        }                     
+                        
+                    }
+                
                 $GLOBALS["result"] = $result;
                 require "includes/books_shown.php";
                 ?>

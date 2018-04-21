@@ -1,0 +1,15 @@
+{
+  "version": "0.2.1",
+  "tasks": [
+    {
+      "taskName": "task-config",
+      "appliesTo": "config.php",
+      "type": "launch"
+    },
+    {
+      "taskName": "task-index",
+      "appliesTo": "index.php",
+      "type": "launch"
+    }
+  ]
+}

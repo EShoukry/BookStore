@@ -12,10 +12,12 @@
          </div>
         
          <div id="search_container"> 
-            <div id=search>Search
+           <form action="results.php" method="POST" id="search_form">
+             <div id=search>Search
                <input type="search" id="mySearch" name="search">
-               <button>Search</button>
+               <button onclick="this.form.submit()" id="b_search">Search</button>
              </div>
+           </form>
          </div>
         
          <div id="log_cart">
