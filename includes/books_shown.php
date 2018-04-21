@@ -6,7 +6,7 @@
 <?php
 if (isset($_POST['add_book_to_cart'])) { //if adding book from main page or book details
     $bookId = $_POST["add_book_id"];
-    $userId = $_POST["add_user_id"];
+    $userId = $_SESSION['user'];
 
     $insertQuery = "INSERT INTO shoppingcart (book_id, user_id, b_quantity)"
             . " VALUES (\"" . $bookId . "\"," . $userId . "," . 1 . ");";
@@ -84,8 +84,7 @@ if ($GLOBALS["result"]->num_rows > 0) {
             }
             ?>
             <form name="form_addToShoppingCart" action="<?php echo $forwardPage; ?>" method="post">
-                <button classname="dummy"
-                        type="submit" 
+                <button type="submit" 
                         name="add_book_to_cart" 
                         value="set"
                         id= "b_cart">
@@ -93,9 +92,6 @@ if ($GLOBALS["result"]->num_rows > 0) {
                 </button>
                 <input name="add_book_id"
                        value="<?php echo $row['book_id']; ?>" 
-                       hidden="true" />
-                <input name="add_user_id"
-                       value="<?php echo $_SESSION['user']; ?>" 
                        hidden="true" />
             </form>
             <?php

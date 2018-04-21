@@ -1,4 +1,7 @@
 <?php
+ob_start();
+session_start();
+
 // Create connection
 $dbConfig = include('config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
@@ -6,6 +9,50 @@ $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $d
 // Check connection
 if (mysqli_connect_error()) {
     die("Database connection failed: " . mysqli_connect_error());
+}
+
+$userId;
+if (isset($_SESSION['user'])) {
+    $userId = $_SESSION['user'];
+} else {
+    exit();
+}
+
+/*
+ * 
+ * DB Queries
+ * 
+ */
+//Query to obtain all data for order
+$cartDataTable = $mysqli->query(""
+        . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description,"
+        . " sc.b_quantity, b.b_quantity AS quantity_left, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
+        . " FROM books_authors ba, authors a, books b, shoppingcart sc"
+        . " WHERE b.book_id = ba.book_id"
+        . " AND ba.author_id = a.author_id"
+        . " AND b.book_id = sc.book_id"
+        . " AND sc.user_id = '" . $userId . "'"
+        . " GROUP BY b.book_id;"
+);
+
+$addressesQuery = $mysqli->query(""
+        . "SELECT address_id,"
+        . " CONCAT(fname,CHAR(13),"
+        . "line1,' ',line2,CHAR(13),"
+        . "city,',',state,' ',zip,CHAR(13))"
+        . " AS formattedOutput"
+        . " FROM address"
+        . " WHERE user_id = " . $userId . ";"
+);
+
+$creditCartQuery = $mysqli->query(""
+        . "SELECT CC_four, CC_id FROM credit_card"
+        . " WHERE user_id = " . $userId
+);
+
+$cartNumRows = 0;
+if ($cartDataTable != null) {
+    $cartNumRows = $cartDataTable->num_rows;
 }
 ?>
 
@@ -16,6 +63,8 @@ if (mysqli_connect_error()) {
         <title>Book Store </title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/cart_styles.css">
+        <link rel="stylesheet" type="text/css" href="css/reviewOrder_styles.css">
     </head>
     <body>
         <?php
@@ -24,75 +73,71 @@ if (mysqli_connect_error()) {
 
         <section>
             <div class=section_title><h1>Checkout</h1></div>
-            <form method="post" class="shopping_cart_form">
-                <h2>Checkout</h2>
+            <div class="shopping_cart_form">
+                <h2>Checkout Items</h2>
                 <?php
                 $cartSubtotalAmount = 0;
                 // output data of each row
                 if ($cartNumRows == 0) {
-                    echo '<h4>Shopping Cart is Empty</h4>';
+                    echo '<h4>Do some shopping to see checkout items!</h4>';
                 }
+
+
                 for ($i = 0; $i < $cartNumRows; $i++) {
                     $dataTableRow = $cartDataTable->fetch_assoc();
                     $cartSubtotalAmount += $dataTableRow["b_price"] * $dataTableRow["b_quantity"];
                     ?>
                     <div class = "cart_book_container">
-                        <div class = "cart_book_cover"><img src = "<?php echo $dataTableRow["b_picture"] ?>" class = "cover_img"></div>
+                        <div class = "cart_book_cover"><img src = "<?php echo $dataTableRow["b_picture"]
+                    ?>" class = "cover_img"></div>
                         <div class = "cart_book_rate"> <img src = "images/<?php echo $dataTableRow["b_rate"] ?>stars.png"></div>
                         <div class = "cart_book_name"><span>title</span><?php echo $dataTableRow["b_name"] ?> </div>
                         <div class = "cart_book_author"><span>author</span><?php echo $dataTableRow["a_name"] ?> </div>
                         <div class = "cart_book_price"><span>price</span>
-                            $<?php echo $dataTableRow["b_price"] ?></div>
+                            $<?php echo $dataTableRow["b_price"] ?>
+                        </div>
                         <div class = "cart_book_quantity"><span>quantity</span>
-                            <input class= "cart_book_quantity_input" 
-                                   type="number" 
-                                   size="1"
-                                   name="quantity_<?php echo $i ?>"
-                                   value="<?php echo $dataTableRow["b_quantity"] ?>"
-                                   required="true"
-                                   min="0"
-                                   max="<?php echo $dataTableRow["quantity_left"]; ?>" />
+                            <?php echo $dataTableRow["b_quantity"] ?>
                         </div>
-                        <div class="cart_book_remove">
-                            <label for="chkbox_remove<?php echo $i; ?>"> Remove </label>
-                            <input type='checkbox' 
-                                   name="cart_remove_<?php echo $i ?>" 
-                                   id="chkbox_remove<?php echo $i; ?>" />
-                        </div>
-                        <div class="cart_book_moveToWishlist">
-                            <label for="chkbox_toWishList<?php echo $i; ?>"> To Wishlist </label>
-                            <input type='checkbox' 
-                                   name="cart_moveToWishlist_<?php echo $i ?>" 
-                                   id="chkbox_toWishList<?php echo $i; ?>" />
-                        </div>
-                        <input size="1"
-                               name="id_<?php echo $i ?>"
-                               value="<?php echo $dataTableRow["book_id"] ?>" 
-                               hidden="true" />
-
                     </div>
                     <?php
                 }
                 ?>
 
-                <?php
-                if ($cartNumRows > 0) {
-                    $_SESSION['cart_num_rows'] = $cartNumRows;
-                    ?>
+                <form class = "reviewOrder_review_container" method="post" name="placeOrder_form" action="orderReceipt.php">
+                    <h2>Subtotal: </h2>
+                    <h1><?php echo "$" . $cartSubtotalAmount; ?> </h1>
+                    <div>
+                        <input class="reviewOrder_checkout" type="submit" name="cart_purchase" value="checkout" />
+                        <div class="reviewOrder_address_text">Address</div>
+                        <select class="reviewOrder_address" name="reviewOrder_address">
+                            <?php
+                            for ($j = 0; $j < $addressesQuery->num_rows; $j++) {
+                                $addrRow = $addressesQuery->fetch_assoc();
+                                echo '<option value=' . $addrRow["address_id"] . '>'
+                                . $addrRow["formattedOutput"] .
+                                '</option>';
+                            }
+                            ?>
+                        </select>
 
-                    <div class="cart_review_container">
-                        <h2>Subtotal: </h2> 
-                        <h1><?php echo "$" . $cartSubtotalAmount; ?> </h1>
-                        <input class="cart_review_input_update" type="submit" name="cart_update" value="update" />
-                        <form method="post" action="../reviewOrder.php">
-                            <input class="cart_review_input_purchase" type="submit" name="cart_purchase" value="purchase" />
-                        </form>
+                        <div class ="reviewOrder_creditCart_text">Card last 4</div>
+                        <select class="reviewOrder_creditCart" name="reviewOrder_creditCart">
+                            <?php
+                            for ($j = 0; $j < $creditCartQuery->num_rows; $j++) {
+                                $ccRow = $creditCartQuery->fetch_assoc();
+                                echo '<option value=' . $ccRow["CC_id"] . '>'
+                                . $ccRow["CC_four"] .
+                                '</option>';
+                            }
+                            ?>
+                        </select>
                     </div>
+                </form>
 
-                    <?php
-                }
-                ?>
-            </form>
+
+
+            </div>
         </section>
     </body>
     <?php
