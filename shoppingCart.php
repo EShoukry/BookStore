@@ -41,7 +41,7 @@ if (mysqli_connect_error()) {
                 require "includes/books_shoppingCart.php";
             }
             ?>        
-        </section>   
+        </section>
     </body>
     <?php
     require "footer.php";

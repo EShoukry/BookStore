@@ -51,12 +51,12 @@ if ($cartDataTable != null) {
         <section>
             <div class=section_title><h1>Checkout</h1></div>
             <form method="post" class="shopping_cart_form">
-                <h2>Checkout</h2>
+                <h2>Checkout Items</h2>
                 <?php
                 $cartSubtotalAmount = 0;
                 // output data of each row
                 if ($cartNumRows == 0) {
-                    echo '<h4>Shopping Cart is Empty</h4>';
+                    echo '<h4>Do some shopping to see checkout items!</h4>';
                 }
 
 
@@ -70,16 +70,10 @@ if ($cartDataTable != null) {
                         <div class = "cart_book_name"><span>title</span><?php echo $dataTableRow["b_name"] ?> </div>
                         <div class = "cart_book_author"><span>author</span><?php echo $dataTableRow["a_name"] ?> </div>
                         <div class = "cart_book_price"><span>price</span>
-                            $<?php echo $dataTableRow["b_price"] ?></div>
+                            $<?php echo $dataTableRow["b_price"] ?>
+                        </div>
                         <div class = "cart_book_quantity"><span>quantity</span>
-                            <input class= "cart_book_quantity_input" 
-                                   type="number" 
-                                   size="1"
-                                   name="quantity_<?php echo $i ?>"
-                                   value="<?php echo $dataTableRow["b_quantity"] ?>"
-                                   required="true"
-                                   min="0"
-                                   max="<?php echo $dataTableRow["quantity_left"]; ?>" />
+                            <?php echo $dataTableRow["b_quantity"] ?>
                         </div>
                         <input size="1"
                                name="id_<?php echo $i ?>"
@@ -99,9 +93,8 @@ if ($cartDataTable != null) {
                     <div class="cart_review_container">
                         <h2>Subtotal: </h2> 
                         <h1><?php echo "$" . $cartSubtotalAmount; ?> </h1>
-                        <input class="cart_review_input_update" type="submit" name="cart_update" value="update" />
                         <form method="post" action="../reviewOrder.php">
-                            <input class="cart_review_input_purchase" type="submit" name="cart_purchase" value="purchase" />
+                            <input class="cart_review_input_purchase" type="submit" name="cart_purchase" value="checkout" />
                         </form>
                     </div>
 
