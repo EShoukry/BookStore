@@ -132,22 +132,27 @@ if (isset($_POST['regbtn'])) {
     }
 
 //    //API email Validation for deliverable address
-	$apiAddress = "https://trumail.io/json/" . $email;
-	$deliverable = json_decode(file_get_contents($apiAddress));
-	$deliverable = $deliverable -> deliverable;
-    if (!$deliverable) {
-        $error = true;
-        $emailError = "Email Address not deliverable according to TruMail API.";
-    } else {
-        // check email exist or not
-        $query = "SELECT u_email FROM users WHERE u_email='$email'";
-        $result = (mysqli_query($mysqli, $query));
-        $count = mysqli_num_rows($result);
-        if ($count != 0) {
-            $error = true;
-            $emailError = "Provided Email is already in use.";
-        }
-    }
+	if(filter_var($email, FILTER_VALIDATE_EMAIL)){
+		$apiEmail = "https://trumail.io/json/" . $email;
+		$deliverable = json_decode(file_get_contents($apiEmail));
+		$deliverable = $deliverable -> deliverable;
+		if (!$deliverable) {
+			$error = true;
+			$emailError = "Email Address not deliverable according to TruMail API.";
+		} else {
+			// check email exist or not
+			$query = "SELECT u_email FROM users WHERE u_email='$email'";
+			$result = (mysqli_query($mysqli, $query));
+			$count = mysqli_num_rows($result);
+			if ($count != 0) {
+				$error = true;
+				$emailError = "Provided Email is already in use.";
+			}
+		}
+	} else{
+		$error = true;
+		$emailError = "Email Address not considered valid.";
+	}
 
 	
     if (empty($address)) {
@@ -209,96 +214,110 @@ if (isset($_POST['regbtn'])) {
     if (empty($password)) {
         $error = true;
         $passwordError = "Please enter password.";
-    } else if (strlen($password) < 6) {
+    } else if (strlen($password) < 8) {
         $error = true;
-        $passwordError = "Password must have atleast 6 characters.";
+        $passwordError = "Password must have atleast 8 characters.";
     } else if ($password != $confpassword) {
         $error = true;
         $passwordError = "Passwords do not match.";
-    }
+    } else{
+		$uppercase = preg_match('@[A-Z]@', $password);
+		$lowercase = preg_match('@[a-z]@', $password);
+		$number    = preg_match('@[0-9]@', $password);
+		$symbols   = preg_match('@[^\w]@', $password);
+		if(!$uppercase || !$lowercase || !$number || !$symbols){
+			$error = true;
+			$passwordError = "Passwords must contain a mix of upper and lowercase letters, numbers & symbols";
+		} 
+
+	}
 
     // password encrypt using md5();
     $password = password_hash($password, PASSWORD_DEFAULT);
 
 	$apiAddress = [$address, $address2, $city, $state, $zipcode, $country];
 	$apiAddress = implode(" ", $apiAddress);
-	$apiAddress = str_replace(' ', '+', $apiAddress);
-	$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
+	if(trim($apiAddress)){
+		echo $apiAddress;
+		$apiAddress = str_replace(' ', '+', $apiAddress);
+		$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
+		
+		$geocode = json_decode(file_get_contents($apiAddress));
+		$addressStatus = $geocode->status;
 
-	$geocode = json_decode(file_get_contents($apiAddress));
-	$addressStatus = $geocode->status;
-		if($addressStatus != 'OK'){
-		$error = true;
-		$errTyp = "danger";
-        $errMSG = "\nCould not locate address using Google Maps API\nPlease check address and try again.";
-		}  
-    // if there's no error, continue to signup
-    else if (!$error) {
+			if($addressStatus != 'OK'){
+			$error = true;
+			$errTyp = "danger";
+			$errMSG = "\nCould not locate address using Google Maps API\nPlease check address and try again.";
+			}  
+		// if there's no error, continue to signup
+			else if (!$error) {
 
-        $query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$nickname','$lastname')";
-        $res = mysqli_query($mysqli, $query);
-
-        if ($res) {
-            $errTyp = "success";
-			$errMSG = "Registered Successfully!" . "\n";
-
-            unset($username);
-            unset($nickname);
-
-			$query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+			$query = "INSERT INTO users(u_fname,u_login_id,u_password,u_email,u_nick,u_lname) VALUES('$firstname','$username','$password','$email','$nickname','$lastname')";
 			$res = mysqli_query($mysqli, $query);
-			$row = mysqli_fetch_array($res, MYSQLI_BOTH);
-			$count = mysqli_num_rows($res);
+
+			if ($res) {
+				$errTyp = "success";
+				$errMSG = "Registered Successfully!" . "\n";
+
+				unset($username);
+				unset($nickname);
+
+				$query = "SELECT user_id_number, u_password, u_email FROM users WHERE u_email = '$email' AND u_password = '$password'";
+				$res = mysqli_query($mysqli, $query);
+				$row = mysqli_fetch_array($res, MYSQLI_BOTH);
+				$count = mysqli_num_rows($res);
 			
 
-			unset($email);
-            unset($password);
+				unset($email);
+				unset($password);
 
-			//set session after registering
-			if ($count == 1) {
-				$_SESSION['user'] = $row['user_id_number'];
-				$errMSG = $errMSG . "Login Successful! User ID: " . $_SESSION['user'] . "\n";
+				//set session after registering
+				if ($count == 1) {
+					$_SESSION['user'] = $row['user_id_number'];
+					$errMSG = $errMSG . "Login Successful! User ID: " . $_SESSION['user'] . "\n";
 
-			} else {
-				$error = true;
-				$errTyp = "danger";
-				$errMSG = $errMSG . "Error In Login, Try again...";
-			}
-
-			//add address information as primary(only) address upon session set.
-			if(!$error){
-				$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
-								VALUES('" . $_SESSION['user'] . "','1','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
-				$res = mysqli_query($mysqli, $query);
-				if ($res) {
-
-					$errMSG = $errMSG . "Address Inserted Successfully!" . "\n";
-					unset($firstname);
-					unset($lastname);
-					unset($address);
-					unset($address2);
-					unset($city);
-					unset($state);
-					unset($zipcode);
-					unset($country);
-
-				}else{
+				} else {
 					$error = true;
 					$errTyp = "danger";
-					$errMSG = $errMSG . "Error In Address Insert, Please Enter Address Manually...";
+					$errMSG = $errMSG . "Error In Login, Try again...";
 				}
 
-			}				
+				//add address information as primary(only) address upon session set.
+				if(!$error){
+					$query = "INSERT INTO address(user_id, p_address, fname, lname, line1, line2, city, state, zip, country) 
+									VALUES('" . $_SESSION['user'] . "','1','$firstname','$lastname','$address','$address2', '$city', '$state', '$zipcode', '$country')";
+					$res = mysqli_query($mysqli, $query);
+					if ($res) {
+
+						$errMSG = $errMSG . "Address Inserted Successfully!" . "\n";
+						unset($firstname);
+						unset($lastname);
+						unset($address);
+						unset($address2);
+						unset($city);
+						unset($state);
+						unset($zipcode);
+						unset($country);
+
+					}else{
+						$error = true;
+						$errTyp = "danger";
+						$errMSG = $errMSG . "Error In Address Insert, Please Enter Address Manually...";
+					}
+
+				}				
             
 
 
 
 			
-        } else {
-            $errTyp = "danger";
-            $errMSG = "Something went wrong, try again later...";
-        }
-    }
+			} else {
+				$errTyp = "danger";
+				$errMSG = "Something went wrong, try again later...";
+			}
+		}
+	}
 }
 ?>
 
@@ -434,7 +453,7 @@ if (isset($_POST['regbtn'])) {
 									?></span>
 									</div>
 									<div class="input-group">
-									<input type="password" placeholder="Password" name="password" class="form-control" maxlength="50" autocomplete="new-password" />
+									<input type="password" placeholder="Password" name="password" class="form-control" minlength="8" required />
 						
 									<br><span class="text-danger"><?php
 									if (isset($passwordError)) {
@@ -443,7 +462,7 @@ if (isset($_POST['regbtn'])) {
 									?></span>
 									</div>
 									<div class="input-group">
-									<input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" maxlength="50" autocomplete="new-password"   />
+									<input type="password" placeholder="Confirm Password" name="confpassword" class="form-control" minlength="8" required/>
 						
 									</div>
 									<div class="input-group">

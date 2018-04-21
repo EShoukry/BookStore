@@ -40,12 +40,22 @@ if(isset($_POST['savebtn'])){
 	if (empty($password)) {
         $error = true;
         $passwordError = "Please enter password.";
-    }
+    } 
 
 	if (empty($newpassword)) {
         $error = true;
         $newpasswordError = "Please enter new password.";
-    }
+    }else{
+		$uppercase = preg_match('@[A-Z]@', $newpassword);
+		$lowercase = preg_match('@[a-z]@', $newpassword);
+		$number    = preg_match('@[0-9]@', $newpassword);
+		$symbols   = preg_match('@[^\w]@', $newpassword);
+		if(!$uppercase || !$lowercase || !$number || !$symbols){
+			$error = true;
+			$errTyp = "danger";
+			$errMSG = "Passwords must contain a mix of upper and lowercase letters, numbers & symbols";
+		} 
+	}
 
 	if (empty($cnewpassword)) {
         $error = true;
@@ -66,7 +76,8 @@ if(isset($_POST['savebtn'])){
 			if($res){
 				$errTyp = "success";
 				$errMSG = "Successfully updated password.";
-			}else{
+			}
+			else{
 				$errTyp = "danger";
 				$errMSG = "Failed to update password. Please try again...";
 			}
@@ -134,19 +145,19 @@ if(isset($_POST['savebtn'])){
 		</div>
 		<div class="col-sm-4 text-left">
 
-			<input type="password" placeholder="Current Password" name="password" class="form-control ">
+			<input type="password" placeholder="Current Password" name="password" class="form-control" minlength="8" required>
 			<span class="text-danger"><?php
 				if (isset($passwordError)) {
 					echo $passwordError;
 				}
 			?></span>
-			<input type="password" placeholder="New Password" name="newpassword" class="form-control">
+			<input type="password" placeholder="New Password" name="newpassword" class="form-control" minlength="8" required>
 			<span class="text-danger"><?php
 				if (isset($newpasswordError)) {
 					echo $newpasswordError;
 				}
 			?></span>
-			<input type="password" placeholder="Confirm Password" name="cnewpassword" class="form-control">
+			<input type="password" placeholder="Confirm Password" name="cnewpassword" class="form-control" required>
 			<span class="text-danger"><?php
 				if (isset($cnewpasswordError)) {
 					echo $cnewpasswordError;
