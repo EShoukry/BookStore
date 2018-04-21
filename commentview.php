@@ -24,14 +24,20 @@ if (mysqli_connect_error()) {
 
 //Getting the information send by the forms related to the pages and sorting 
 
-$view = "SELECT user_id, comment, c_date FROM comments WHERE book_id = $_SESSION[book_id_test]";
+$view = "SELECT user_id, comment, c_date, anon_check FROM comments WHERE book_id =" . $_SESSION['book_id_test'];
+$nickname_retrieval = "SELECT t1.u_nick FROM users t1, comments t2 WHERE t2.user_id = t1.user_id_number";
+
 $result = $mysqli->query($view);
+$result2 =$mysqli->query($nickname_retrieval);
+
 
 if ($result->num_rows > 0) {
-    // output data of each row
     while($row = $result->fetch_assoc()) {
+        if($row["anon_check"]==0)
+        {
+        $nickname = $result2->fetch_assoc();
         echo ""
-        . "Name: " . $row["user_id"]. " " . "        Date: " . $row["c_date"].
+        . "Name: " . $nickname['u_nick'] . "<br>        Date: " . $row["c_date"].
                 "<br>".
                 "<br>".
                 "<br>".
@@ -42,8 +48,29 @@ if ($result->num_rows > 0) {
                 "<br>".
                 "<br>".
                 "<br>".
+                "<br>".
+                "_____________________________________________". 
+                "<br>".
+                 "<br>";
+        }
+        else {
+            
+            echo ""
+        . "Name: Anonymous      <br>    Date: " . $row["c_date"].
+                "<br>".
+                "<br>".
+                "<br>".
+                "<br>"
+                .$row["comment"]. 
+                "<br>".
+                "<br>".
+                "<br>".
+                "<br>".
+                "<br>".
+                "_____________________________________________".
+                "<br>".
                 "<br>";
-        
+        }
     }
 } else {
     echo "0 results";
