@@ -10,10 +10,13 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     $userId = $_SESSION["shoppingCart"]->fetch_assoc()["user_id_number"];
     ?>
 
-    <head><head>
+    <head>
         <link rel="stylesheet" href="css/cart_styles.css">
-    </head></head>
+        <script type="text/javascript" src="../scripts/js/main.js"></script>
+    </head>
+    <body>
 
+    
     <?php
     /*
      * 
@@ -147,7 +150,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
      */
     ?>
     <!--Form for displaying logged in user's shopping cart-->
-    <form method="post" class="shopping_cart_form">
+    <form method="post" class="shopping_cart_form" id="form_shoppingCart">
         <h2>Items in Cart</h2>
         <?php
         $cartSubtotalAmount = 0;
@@ -206,8 +209,12 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
             <div class="cart_review_container">
                 <h2>Subtotal: </h2> 
                 <h1><?php echo "$" . $cartSubtotalAmount; ?> </h1>
-                <input class ="cart_review_input_update" type="submit" name="cart_update" value="update" />
-            </div>
+                <input class="cart_review_input_update" type="submit" name="cart_update" value="update" 
+                       id="cart_input_update" />
+                <input class="cart_review_input_purchase" type="submit" name="cart_purchase" value="purchase" 
+                       id="cart_input_purchase" onclick="return OnSubmitShoppingCartForm()"/>
+                <input name="cart_query" value ="<?php //echo $cartDataTable;   ?>" hidden="true" />
+            </div> 
 
             <?php
         }
@@ -257,7 +264,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         }
     }
     ?>
-
+    </body>
 
     <?php
 } else {

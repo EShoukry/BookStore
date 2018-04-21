@@ -20,15 +20,17 @@ if (!$GLOBALS["result"]) {
     die('Invalid Query: ' . mysql_error());
 }
 
-//echo '<form method="post" class = "book_form">';
-
 if ($GLOBALS["result"]->num_rows > 0) {
-    //if a user is logged on, find which books are already in that user's shopping cart
-    $booksInUserCart;
+    //if a user is logged on, find which books are already in that user's shopping cart or wishlist
+    $booksInUserCartOrWishlist;
     if (isset($_SESSION['user']) != "") {
-        $booksInUserCart = $mysqli->query(""
-                . "SELECT book_id FROM shoppingcart"
-                . " WHERE user_id = " . $_SESSION['user']);
+        $booksInUserCartOrWishlist = $mysqli->query(""
+                . "(SELECT book_id FROM shoppingcart"
+                . " WHERE user_id = " . $_SESSION['user'] . ")"
+                . " UNION"
+                . " (SELECT book_id FROM wishlist"
+                . " WHERE user_id = " . $_SESSION['user'] . ");"
+        );
     }
 
     // output data of each row
@@ -65,11 +67,11 @@ if ($GLOBALS["result"]->num_rows > 0) {
         $isBookInUserCart = false;
         $numBooksInCart = 0;
         if (isset($_SESSION['user'])) {
-            mysqli_data_seek($booksInUserCart, 0);
-            $numBooksInCart = $booksInUserCart->num_rows;
+            mysqli_data_seek($booksInUserCartOrWishlist, 0);
+            $numBooksInCart = $booksInUserCartOrWishlist->num_rows;
         }
         while ($numBooksInCart-- > 0) {
-            $booksInCart = $booksInUserCart->fetch_assoc();
+            $booksInCart = $booksInUserCartOrWishlist->fetch_assoc();
             if ($booksInCart['book_id'] == $row["book_id"]) {
                 $isBookInUserCart = true;
                 break;

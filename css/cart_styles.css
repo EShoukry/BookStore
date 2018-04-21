@@ -142,7 +142,7 @@ Review container
     border: solid 1px rgba(11, 95, 4, 0.35);
     display: inline-block;
     float: right;
-    bottom: 14%;
+    top: 20%;
     margin: 20px 30px 20px 30px;   
 }
 
@@ -159,9 +159,17 @@ Review container
     bottom: 10px;
 }
 
+.cart_review_input_purchase {
+    position: absolute;
+    bottom: 10%;
+    right: 2%;
+    color: green;
+    font: bold;
+}
+
 .cart_review_input_update {
     position: absolute;
-    bottom: 10px;
+    top: 2%;
     right: 2%
 }
 
