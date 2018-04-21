@@ -128,7 +128,7 @@ if (isset($_POST['savebtn'])) {
 	}
 
 	if($email != $userRow['u_email']){
-		$apiAddress = "https://trumail.io/json/" . $email;
+		$apiAddress = "https://api.trumail.io/v1/json/" . $email;
 		$deliverable = json_decode(file_get_contents($apiAddress));
 		$deliverable = $deliverable -> deliverable;
 		if (!$deliverable) {
