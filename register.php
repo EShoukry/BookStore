@@ -133,7 +133,7 @@ if (isset($_POST['regbtn'])) {
 
 //    //API email Validation for deliverable address
 	if(filter_var($email, FILTER_VALIDATE_EMAIL)){
-		$apiEmail = "https://trumail.io/json/" . $email;
+		$apiEmail = "https://api.trumail.io/v1/json/" . $email;
 		$deliverable = json_decode(file_get_contents($apiEmail));
 		$deliverable = $deliverable -> deliverable;
 		if (!$deliverable) {
@@ -238,7 +238,6 @@ if (isset($_POST['regbtn'])) {
 	$apiAddress = [$address, $address2, $city, $state, $zipcode, $country];
 	$apiAddress = implode(" ", $apiAddress);
 	if(trim($apiAddress)){
-		echo $apiAddress;
 		$apiAddress = str_replace(' ', '+', $apiAddress);
 		$apiAddress = "https://maps.googleapis.com/maps/api/geocode/json?address=" . $apiAddress . "&key=AIzaSyDQZNcCCj4JygKaIjPXJOpiTfkrQ0uCiHA";
 		
