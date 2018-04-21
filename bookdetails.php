@@ -1,3 +1,4 @@
+
 <?php
 ob_start();
 session_start();
@@ -57,109 +58,150 @@ $b_img = $image->fetch_assoc();
         
         <section>
            <?php
-            
             echo "<div class=section_title><h1>".$b_nam['b_name']."</h1></div>";
             echo "<hr>";
             echo "<div id='Book's Title' class='title'>";
-            echo "<img class='img' src='".$b_img['b_picture']."' alt='Book cover'>";
+            echo "<img class ='img cover' src='".$b_img['b_picture']."' height='500' width = '400' alt='Book cover'>";
             echo "<h2> Author: ".$b_aut['a_name']."</h2>";
             echo "<p> Biography: ".$b_aut['a_bio']."</p>";
             echo "<p> Book description: ".$b_desc['b_description']." </p>";
             echo "<h3> Genre: ".$b_gen['b_genre']." </h3>";
             echo "<h4> Publishing info: ".$b_pub['b_pub_name']." </h4>";
+            echo "<h5> Book Rating: ".$b_rat['b_rate']." </h5>";
+            echo "</div>";
+
             echo '<h5> Rating: </h5> <div class="book_rate"><img src="images/'.$b_rat["b_rate"].'stars.png"></div></br></br>';
-           
+            
             if (isset($_SESSION['user']) != "")
             {
                 $_SESSION['current_book_id'] = $book_id;
                 $owns_book = "SELECT b1.book_id, b2.b_rate FROM books_users b1, books b2 WHERE b1.user_id =" 
-                    . $_SESSION['user'] . " AND b1.book_id = b2.book_id AND b1.book_id =" . $book_id;
+                    . $_SESSION['user'] . " AND b1.book_id = b2.book_id AND b1.book_id = '$book_id'";
                 $result = $mysqli->query($owns_book);
                 $book_id_testing = $result->fetch_assoc();
-
-        if ($book_id_testing['book_id'] == $book_id)
+                $rated_book = "SELECT rated_book FROM books_users WHERE user_id =" . $_SESSION['user'] . " AND book_id = '$book_id'";
+                $query = $mysqli->query($rated_book);
+                $did_they_rate = $query->fetch_assoc();
+            
+                if ($did_they_rate['rated_book'] != 0)
+            {
+                echo <<< END_OF_TEXT
+                    <html>
+                        <form action="rating.php" method="POST"> 
+                            <input type=submit value="Clear Your Rating"> 
+                    </form>
+                    </br>
+END_OF_TEXT;
+            }
+        if ($book_id_testing['book_id'] == $book_id || strcmp("$book_id_testing", "$book_id"))
         {
             echo <<< END_OF_TEXT
             <html>
                 <head>
                     <meta charset="utf-8">    
                         <form method="post" action="commentsend.php">
+                            <label><b>Comment on this book!</b></label></br>
                             <input type="radio" name="AnonOrNickname" value = "anon"> Anonymous<br>
                             <input type="radio" name="AnonOrNickname" value = "nick"> Username<br>
-                            <label><b>Comment on this book!</b></label>
-                            </br>
-                            </br>
-                            <textarea name= "bookcomments" placeholder="Comment Here" style="width:500px; height:200px;"></textarea>
-                            <input type="submit" name ="submit" value="submit">
-                            </br>
+                                <style type="text/css">
+            body {
+                margin-right: 0;
+                max-width: 50000px;
+            margin-left: 30px;
+                padding: 20px;
+            }
+                                textarea.text_box{
+                                    background-color:#ffffff;
+                                    border-width:1;
+                                    border-style:solid;
+                                    border-color:#cccccc;
+                                    font-family:Arial;
+                                    font-size:12pt;
+                                    color:#000000;}
+                                    input.text_box{
+            
+                                    background-color:#ffffff;
+                                    font-family:Arial;
+                                    font-size:12pt;
+                                    color:#000000;}
+                                    </style>
+                                    <textarea name="bookcomments" cols="40" rows="8" class="text_box">Comment here...</textarea><br>
+                                    <input type="submit" value="Submit" class="text_box"><input type="reset" value="Clear" class="text_box">
                         </form>
                 </head>
             </html>
 END_OF_TEXT;
             
-            $rated_book = "SELECT rated_book FROM books_users WHERE user_id =" . $_SESSION['user'] . " AND book_id =" . $book_id_testing['book_id'];
-            $query = $mysqli->query($rated_book);
-            $did_they_rate = $query->fetch_assoc();
+            
 
             if ($did_they_rate['rated_book'] == 0)
             {
                 echo <<< END_OF_TEXT
+                
                 <html>
+                <style>
+                .button {
+    background-color: beige;
+    border: none;
+                opacity: 0.6;
+  transition: 0.3s;
+    color: white;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+}
+
+                .button:hover {opacity: 1}
+                </style>
                     <form action="rating.php" method="post">
                         <label><b>Rate this book!</b></label>
                         </br>
                         </br>
                         <p>   
-                            <button classname="dummy"
+                            <button class="button"
                                     type="submit" 
                                     name="formRating" 
                                     value="1"
-                                    id= "book_rate">
-                                <div class="book_rate"><img src="images/ratingbutton.png"></div>
+                                    >
+                                <img src="images/ratingbutton.png?34" width = "50" height = "50"></div>
                             </button>
-                            <button classname="dummy"
+                            <button class="button"
                                     type="submit" 
                                     name="formRating" 
                                     value="2"
                                     id= "book_rate">
-                                <div class="book_rate"><img src="images/ratingbutton.png"></div>
+                                <div><img src="images/ratingbutton.png?3" width = "50" height = "50"></div>
                             </button>
-                            <button classname="dummy"
+                            <button class="button"
                                     type="submit" 
                                     name="formRating" 
                                     value="3"
                                     id= "book_rate">
-                                <div class="book_rate"><img src="images/ratingbutton.png"></div>
+                                <div ><img src="images/ratingbutton.png?3" width = "50" height = "50"></div>
                             </button>
-                            <button classname="dummy"
+                            <button class="button"
                                     type="submit" 
                                     name="formRating" 
                                     value="4"
                                     id= "book_rate">
-                                <div class="book_rate"><img src="images/ratingbutton.png"></div>
+                                <div><img src="images/ratingbutton.png?3" width = "50" height = "50"></div>
                             </button>
-                            <button classname="dummy"
+                            <button class="button"
                                     type="submit" 
                                     name="formRating" 
                                     value="5"
                                     id= "book_rate">
-                                <div class="book_rate"><img src="images/ratingbutton.png"></div>
+                                <div><img src="images/ratingbutton.png?3" width = "50" height = "50"></div>
                             </button>
                         </p>
                         </br>
-                        
+                </br>
+                        </div>
                     </form>
 END_OF_TEXT;
             }
-            else 
-            {
-                echo <<< END_OF_TEXT
-                    <html>
-                        <form action="rating.php" method="POST"> 
-                            <input type=submit value="Clear Rating"> 
-                    </form>
-END_OF_TEXT;
-            }
+            
         } 
         else
         {
@@ -204,41 +246,146 @@ END_OF_TEXT;
         $result2 =$mysqli->query($nickname_retrieval);
 
 if ($result->num_rows > 0) {
-    echo "<label><b>Comments</b></label> </br>";
+    
+    echo "
+        <html>
+        <style>
+        div.a {
+    font-size: 30px;
+    padding-top: 10px;
+    
+}
+</style>
+</html>
+<div class='a' > Comments Section </div>";
     while($row = $result->fetch_assoc()) {
         if($row["anon_check"]==0)
         {
         $nickname = $result2->fetch_assoc();
-        echo ""
-        . "<div id='container'>"
-                . "<p class='solid'>". $nickname['u_nick'] . "<br>" . $row["c_date"].
-                "<br>".
-                "<br>".
-                $row["comment"]. 
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>". 
-                "<br>".
-                 "<br></p></div>";
+        $space = "              ";   
+        echo <<< END_OF_TEXT
+   <html>
+       <style>
+   body {
+                margin-right: 0;
+                max-width: 50000px;
+                padding: 0 20px;
+            }
+
+.container {
+    border: 2px solid #dedede;
+    border-top: 5px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 30px;
+    margin: 20px;
+    margin-right: 900px;
+        
+}
+.name{
+        font-size: 30px;
+   }
+.comment{
+        padding-left: 20px;
+        font-size: 20px;
+        }
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+        
+        
+}
+    .date-right {
+    float: right;
+    color: #000000;
+}
+        </style>
+        </html>
+        
+<div class="container darker">
+  <p class="name" style = "background-color: #ccc;">$space $space $nickname[u_nick]  <span class="date-right" style = "background-color: #ccc;"> $row[c_date]</span></p>
+                <br>
+                <br>
+                <p class = "comment" style = "background-color: #ddd;"> $row[comment]</p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br> 
+                <br>
+                <br></p>
+  
+</div>
+        
+                
+               
+END_OF_TEXT;
         }
         else {
             
-            echo ""
-        ."<div id='container'>"
-                    . "<p class='solid'>Anonymous      <br>" . $row["c_date"].
-                "<br>".
-                "<br>".
-                $row["comment"]. 
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br>".
-                "<br></p></div>"; 
+        echo <<< END_OF_TEXT
+                <html>
+       <style>
+   body {
+                margin-right: 0;
+                max-width: 50000px;
+                padding: 0 20px;
+            }
+
+.container {
+    border: 2px solid #dedede;
+    border-top: 5px solid #dedede;
+    background-color: #f1f1f1;
+    border-radius: 5px;
+    padding-top: 0px;
+    padding-left: 0px;
+    padding-right: 0px;
+    padding-bottom: 30px;
+    margin: 20px;
+    margin-right: 900px;
+        
+}
+.name{
+        font-size: 30px;
+   }
+.comment{
+        padding-left: 20px;
+        font-size: 20px;
+        }
+.darker {
+    border-color: #ccc;
+    background-color: #ddd;
+        
+        
+}
+    .date-right {
+    float: right;
+    color: #000000;
+}
+        </style>
+        </html>
+        
+<div class="container darker">
+  <p class="name" style = "background-color: #ccc;">Anonymous  <span class="date-right" style = "background-color: #ccc;"> $row[c_date]</span></p>
+                <br>
+                <br>
+                <p class = "comment" style = "background-color: #ddd;"> $row[comment]</p>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br>
+                <br> 
+                <br>
+                <br></p>
+  
+</div>
+        
+END_OF_TEXT;
         }
     }
 } else {
