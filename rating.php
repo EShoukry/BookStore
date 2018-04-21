@@ -46,7 +46,8 @@ $mysqli->query($delete_rating);
 
 }
 if ($mysqli->query($sql) === TRUE) {
-    echo "New rating created successfully";
+    $url='http://watchwinners.com/bookstore/bookdetails.php?b_id=' . $_SESSION['current_book_id'] ;
+   echo '<META HTTP-EQUIV=REFRESH CONTENT="0; '.$url.'">';
 } else {
     echo "Error: " . $sql . "<br>" . $mysqli->error;
 }
