@@ -1,0 +1,63 @@
+// HTML and CSS only
+// Implementing a grid system
+// Figuring out how to set up a good grid system; once content fits well, I' ll style the text and polish
+// Once bookdetails is styled, booksbyauthor should be easy since it contains very simple content with the help of bookshown
+<div class="wrapper">
+
+  <div class="book_title">
+  <h1>".$b_nam['b_name']."</h1>
+  </div>;
+  
+  <div class="book_cover">id='Book Cover'>;
+  echo "<img src='".$b_img['b_picture']."' alt='Book cover'>";
+  </div>
+  
+  <div class="book_details">
+  <h2> Author ".$b_aut['a_name']."</h2>;
+  <p> ".$b_aut['a_name']." </p>
+  <h3> Genre ".$b_gen['b_genre']." </h3>;
+  <p> ".$b_gen['b_genre']." </p>
+  <h4> Publisher </h4>;
+  <p> ".$b_pub['b_pub_name']." </p>
+  <p> Book description ".$b_desc['b_description']." </p>;
+  </div>
+  
+  <div class="author_info">
+  <h1> Author </h1>;
+  <p> ".$b_aut['a_name']." </p>
+  <h2> Biography <h2>;
+  <p> ".$b_aut['a_bio']." </p>
+  
+  </div>
+  
+  <div class="ratings_comments">
+  </div>
+  
+</div>
+
+.wrapper {
+  display: grid;
+  grid-template-columns: auto auto auto auto auto;
+  grid-gap: 5px;
+  grid-auto-rows: minmax(100px, auto);
+}
+.book_title {
+  grid-column: 1 / 3;
+  grid-row: 1;
+}
+.book_cover { 
+  grid-column: 2 / 4;
+  grid-row: 1 / 3;
+}
+.book_details {
+  grid-column: 1;
+  grid-row: 2 / 5;
+}
+.author_info {
+  grid-column: 3;
+  grid-row: 3;
+}
+.ratings_comments {
+  grid-column: 2;
+  grid-row: 4;
+}
