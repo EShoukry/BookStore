@@ -11,5 +11,6 @@ return [
 //    'name' => 'bookstore',
 //    'user' => 'root',
 //    'pass' => ''
-//	
+	
+];
 ?>
