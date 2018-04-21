@@ -265,7 +265,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
         ?>
         <script>
             document.getElementById('cart_input_purchase').onclick = function () {
-                window.location.replace('http://localhost/BookStore/reviewOrder.php');
+                window.location.href = '/bokstore/reviewOrder.php';
                 return false;
             };
         </script>
