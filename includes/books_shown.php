@@ -6,7 +6,7 @@
 <?php
 if (isset($_POST['add_book_to_cart'])) { //if adding book from main page or book details
     $bookId = $_POST["add_book_id"];
-    $userId = $_POST["add_user_id"];
+    $userId = $_SESSION['user'];
 
     $insertQuery = "INSERT INTO shoppingcart (book_id, user_id, b_quantity)"
             . " VALUES (\"" . $bookId . "\"," . $userId . "," . 1 . ");";
@@ -79,10 +79,6 @@ if ($GLOBALS["result"]->num_rows > 0) {
         }
         if ($isBookInUserCart == false) {
             $forwardPage = "#books_shown_container";
-            $userId = "";
-            if (isset($_SESSION['user']) != '') {
-                $userId = $_SESSION['user'];
-            }
             if (isset($_SESSION['user']) == "") { //if there is no logged in user 
                 $forwardPage = "login.php";
             }
@@ -96,9 +92,6 @@ if ($GLOBALS["result"]->num_rows > 0) {
                 </button>
                 <input name="add_book_id"
                        value="<?php echo $row['book_id']; ?>" 
-                       hidden="true" />
-                <input name="add_user_id"
-                       value="<?php echo $userId; ?>" 
                        hidden="true" />
             </form>
             <?php
