@@ -1,4 +1,7 @@
 <?php
+ob_start();
+session_start();
+
 // Create connection
 $dbConfig = include('config.php');
 $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $dbConfig['name']);
@@ -6,6 +9,28 @@ $mysqli = new mysqli($dbConfig['host'], $dbConfig['user'], $dbConfig['pass'], $d
 // Check connection
 if (mysqli_connect_error()) {
     die("Database connection failed: " . mysqli_connect_error());
+}
+
+$userId;
+if (isset($_SESSION['user'])) {
+    $userId = $_SESSION['user'];
+} else {
+    exit();
+}
+
+//Query to obtain all data for order
+$cartDataTable = $mysqli->query(""
+        . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description,"
+        . " sc.b_quantity, b.b_quantity AS quantity_left, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
+        . " FROM books_authors ba, authors a, books b, shoppingcart sc"
+        . " WHERE b.book_id = ba.book_id"
+        . " AND ba.author_id = a.author_id"
+        . " AND b.book_id = sc.book_id"
+        . " AND sc.user_id = '" . $userId . "'"
+        . " GROUP BY b.book_id");
+$cartNumRows = 0;
+if ($cartDataTable != null) {
+    $cartNumRows = $cartDataTable->num_rows;
 }
 ?>
 
@@ -16,6 +41,7 @@ if (mysqli_connect_error()) {
         <title>Book Store </title>
         <meta http-equiv="content-type" content="text/plain">
         <link rel="stylesheet" type="text/css" href="css/styles.css">
+        <link rel="stylesheet" type="text/css" href="css/cart_styles.css">
     </head>
     <body>
         <?php
@@ -32,6 +58,8 @@ if (mysqli_connect_error()) {
                 if ($cartNumRows == 0) {
                     echo '<h4>Shopping Cart is Empty</h4>';
                 }
+
+
                 for ($i = 0; $i < $cartNumRows; $i++) {
                     $dataTableRow = $cartDataTable->fetch_assoc();
                     $cartSubtotalAmount += $dataTableRow["b_price"] * $dataTableRow["b_quantity"];
@@ -52,18 +80,6 @@ if (mysqli_connect_error()) {
                                    required="true"
                                    min="0"
                                    max="<?php echo $dataTableRow["quantity_left"]; ?>" />
-                        </div>
-                        <div class="cart_book_remove">
-                            <label for="chkbox_remove<?php echo $i; ?>"> Remove </label>
-                            <input type='checkbox' 
-                                   name="cart_remove_<?php echo $i ?>" 
-                                   id="chkbox_remove<?php echo $i; ?>" />
-                        </div>
-                        <div class="cart_book_moveToWishlist">
-                            <label for="chkbox_toWishList<?php echo $i; ?>"> To Wishlist </label>
-                            <input type='checkbox' 
-                                   name="cart_moveToWishlist_<?php echo $i ?>" 
-                                   id="chkbox_toWishList<?php echo $i; ?>" />
                         </div>
                         <input size="1"
                                name="id_<?php echo $i ?>"

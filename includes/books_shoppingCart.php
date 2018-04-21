@@ -114,7 +114,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
      * DB Queries
      * 
      */
-    //Query to obtain all data for shopping cart output
+    //Query to obtain all data for wishlist output
     $wishlistDataTable = $mysqli->query(""
             . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"
             . " FROM books_authors ba, authors a, books b, wishlist w"
@@ -127,7 +127,7 @@ if ($_SESSION["shoppingCart"]->num_rows > 0) {
     if ($wishlistDataTable != null) {
         $wishlistNumRows = $wishlistDataTable->num_rows;
     }
-    //Query to obtain all data for output
+    //Query to obtain all data for cart output
     $cartDataTable = $mysqli->query(""
             . "SELECT b.book_id, b.b_release, b.b_rate, b.b_name, b_price, b.b_picture, b.b_description,"
             . " sc.b_quantity, b.b_quantity AS quantity_left, GROUP_CONCAT(DISTINCT a.a_name SEPARATOR ', ') AS a_name"

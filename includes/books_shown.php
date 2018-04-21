@@ -84,8 +84,7 @@ if ($GLOBALS["result"]->num_rows > 0) {
             }
             ?>
             <form name="form_addToShoppingCart" action="<?php echo $forwardPage; ?>" method="post">
-                <button classname="dummy"
-                        type="submit" 
+                <button type="submit" 
                         name="add_book_to_cart" 
                         value="set"
                         id= "b_cart">
